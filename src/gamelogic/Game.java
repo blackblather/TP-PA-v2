@@ -1,4 +1,4 @@
 package gamelogic;
 
-public class game {
+public class Game {
 }
