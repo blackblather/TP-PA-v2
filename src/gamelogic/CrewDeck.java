@@ -10,7 +10,7 @@ public class CrewDeck {
     public ArrayList<CrewMember> GetCards(){
         return cards;
     }
-    public CrewMember ChooseCardAt(Integer pos){
+    public CrewMember ChooseCardAt(Integer pos) throws IndexOutOfBoundsException{
         CrewMember crewMember = cards.get(pos);
         if(crewMember.Choose())
             return crewMember;
