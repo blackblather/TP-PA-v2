@@ -20,7 +20,7 @@ public class Room {
         if(!IsSealed())
             sealed = true;
         else
-            throw new IllegalStateException("The rrCant' seal a room that's already been sealed.");
+            throw new IllegalStateException("Cant' seal a room that's already been sealed before.");
     }
     //Getters
     Integer GetId(){
