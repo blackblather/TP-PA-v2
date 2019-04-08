@@ -9,7 +9,20 @@ public class ShipBoard {
     private Integer hull = 8;
     private Integer journeyTracker = 0;
     private LinkedList<String> journey = new LinkedList<>(Arrays.asList("S","2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A","E"));
-    private ArrayList<Room> rooms = new ArrayList<>();
+    private ArrayList<Room> rooms = new ArrayList<>(Arrays.asList(
+            new Room(1, "Bridge"),
+            new Room(2, "Sick Bay"),
+            new Room(3, "Brig"),
+            new Room(4, "Crew Quarters"),
+            new Room(5, "Conference Room"),
+            new Room(6, "Shuttle Bay"),
+            new Room(7, "Weapons Bay"),
+            new Room(8, "Mess Hall"),
+            new Room(9, "Engineering"),
+            new Room(10, "Astrometrics"),
+            new Room(11, "Holodeck"),
+            new Room(12, "Hydroponics")
+    ));
     //Private functions
     private boolean IsValidJourneyPart(String part){
         //TODO: IsValidJourneyPart
@@ -20,21 +33,7 @@ public class ShipBoard {
          */
         return false;
     }
-    private void CreateDefaultRooms(){
-        rooms.add(new Room(1, "Bridge"));
-        rooms.add(new Room(2, "Sick Bay"));
-        rooms.add(new Room(3, "Brig"));
-        rooms.add(new Room(4, "Crew Quarters"));
-        rooms.add(new Room(5, "Conference Room"));
-        rooms.add(new Room(6, "Shuttle Bay"));
-        rooms.add(new Room(7, "Weapons Bay"));
-        rooms.add(new Room(8, "Mess Hall"));
-        rooms.add(new Room(9, "Engineering"));
-        rooms.add(new Room(10, "Astrometrics"));
-        rooms.add(new Room(11, "Holodeck"));
-        rooms.add(new Room(12, "Hydroponics"));
-    }
-    private void CreateCustomJourney(String[] customJourney) throws ArrayStoreException, ArrayIndexOutOfBoundsException{
+    private void CreateCustomJourney(String[] customJourney) throws ArrayStoreException{
         /* This is done in 2 steps, because I only want to copy to the "journeyTracker" array, if
          * and only if, all the values in "customJourney" are valid.*/
         if(customJourney.length == 13) {
@@ -44,15 +43,13 @@ public class ShipBoard {
             System.arraycopy(customJourney, 0, journey, 1, 13);
         }
         else
-            throw new ArrayIndexOutOfBoundsException("customJourney array must have 13 elements.");
+            throw new ArrayStoreException("customJourney array must have 13 elements.");
     }
     //Constructor
     public ShipBoard(){
-        CreateDefaultRooms();
     }
-    public ShipBoard(String[] customJourney) throws ArrayStoreException, ArrayIndexOutOfBoundsException{
+    public ShipBoard(String[] customJourney) throws ArrayStoreException{
         CreateCustomJourney(customJourney);
-        CreateDefaultRooms();
     }
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
