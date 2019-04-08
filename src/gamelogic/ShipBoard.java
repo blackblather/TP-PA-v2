@@ -34,11 +34,7 @@ public class ShipBoard {
         rooms.add(new Room(11, "Holodeck"));
         rooms.add(new Room(12, "Hydroponics"));
     }
-    //Constructor
-    public ShipBoard(){
-        CreateDefaultRooms();
-    }
-    public ShipBoard(String[] customJourney) throws ArrayStoreException, ArrayIndexOutOfBoundsException{
+    private void CreateCustomJourney(String[] customJourney) throws ArrayStoreException, ArrayIndexOutOfBoundsException{
         /* This is done in 2 steps, because I only want to copy to the "journeyTracker" array, if
          * and only if, all the values in "customJourney" are valid.*/
         if(customJourney.length == 13) {
@@ -46,10 +42,17 @@ public class ShipBoard {
                 if (IsValidJourneyPart(customJourney[i]))
                     throw new ArrayStoreException("Invalid customJourney element in position: " + i);
             System.arraycopy(customJourney, 0, journey, 1, 13);
-            CreateDefaultRooms();
         }
         else
             throw new ArrayIndexOutOfBoundsException("customJourney array must have 13 elements.");
+    }
+    //Constructor
+    public ShipBoard(){
+        CreateDefaultRooms();
+    }
+    public ShipBoard(String[] customJourney) throws ArrayStoreException, ArrayIndexOutOfBoundsException{
+        CreateCustomJourney(customJourney);
+        CreateDefaultRooms();
     }
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
