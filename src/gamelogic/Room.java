@@ -1,7 +1,5 @@
 package gamelogic;
 
-import javax.crypto.IllegalBlockSizeException;
-
 public class Room {
     //Private vars
     private Integer id;
