@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private Integer inspirationTracker = 0, healthTracker, actionPointsPerTurn, actionPoints;
+    private Integer inspirationTracker = 0, healthTracker, actionPointsPerTurn, actionPoints, alienCounter = 15;
     //Constructor
     public PlayerBoard(){
         healthTracker = 8;
@@ -22,5 +22,14 @@ public class PlayerBoard {
             return false;
         }
         return false;
+    }
+    int DecreaseAlienCounterBy(int ammount){
+        if(alienCounter-ammount >= 0)
+            alienCounter -= ammount;
+        else{
+            ammount = alienCounter;
+            alienCounter = 0;
+        }
+        return ammount;
     }
 }
