@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CrewMember {
     //Private vars
     private String name;
-    private Integer movement, attack, minimumAttackRoll = 5;
+    private Integer movement, attack, minimumAttackRoll = 5;    //1 of attack -> means 1 D6 die
     private boolean isAvailable = true;
     //-------------------------------------------------
     //Private functions
@@ -45,10 +45,7 @@ public class CrewMember {
         }
         return false;
     }
-    Integer RollAttackDice(){
-        //rangre = [attack, (attack*6)+1]
-        return ThreadLocalRandom.current().nextInt(attack, (attack*6)+1);
-    }
+
     //-------------------------------------------------
     //Getters
     public String GetName(){
