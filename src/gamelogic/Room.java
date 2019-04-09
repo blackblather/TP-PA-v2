@@ -1,8 +1,8 @@
 package gamelogic;
 
-public class Room {
+class Room {
     //Private vars
-    private Integer id;
+    private int id, alienCounter;
     private String name;
     private boolean sealed = false;
     //Constructor
@@ -11,7 +11,7 @@ public class Room {
         this.name = name;
     }
     //Package-Protected functions
-    boolean IsSealed(){
+    private boolean IsSealed(){
         return sealed;
     }
     void SealRoom() throws IllegalStateException {
@@ -20,6 +20,13 @@ public class Room {
         else
             throw new IllegalStateException("Cant' seal a room that's already been sealed before.");
     }
+    void SpawnAlien(){
+        alienCounter++;
+    }
+    void KillAlien(){
+        if(alienCounter-1>=0)
+            alienCounter--;
+    }
     //Getters
     Integer GetId(){
         return id;
@@ -27,4 +34,5 @@ public class Room {
     String GetName(){
         return name;
     }
+
 }
