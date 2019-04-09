@@ -2,13 +2,16 @@ package gamelogic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.function.ToIntFunction;
 
 public class ShipBoard {
     //Private vars
     private Integer hull = 8;
-    private Integer journeyTracker = 0;
-    private LinkedList<String> journey = new LinkedList<>(Arrays.asList("S","2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A","E"));
+    private LinkedList<String> journey = new LinkedList<>(Arrays.asList("2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A"));
+    private Iterator<String> journeyTracker = journey.iterator();
+    private String currentJourneyPart;
     private ArrayList<Room> rooms = new ArrayList<>(Arrays.asList(
             new Room(1, "Bridge"),
             new Room(2, "Sick Bay"),
@@ -41,9 +44,13 @@ public class ShipBoard {
                 if (IsValidJourneyPart(customJourney[i]))
                     throw new ArrayStoreException("Invalid customJourney element in position: " + i);
             System.arraycopy(customJourney, 0, journey, 1, 13);
+            //TODO: Fix this part above
         }
         else
             throw new ArrayStoreException("customJourney array must have 13 elements.");
+    }
+    private boolean ReachedEarth(){
+        return !journeyTracker.hasNext();
     }
     //Constructor
     public ShipBoard(){
@@ -67,8 +74,18 @@ public class ShipBoard {
         else
             hull = 12;
     }
-    Integer GetJourneyTracker(){
-        return journeyTracker;
+    String GetCurrentJourneyPart(){
+        return currentJourneyPart;
     }
-
+    void MoveJourneyTracker() throws Exception{
+        if(!ReachedEarth())
+            currentJourneyPart = journeyTracker.next();
+        else{
+            throw new Exception("Reached Earth");
+        }
+    }
+    void SpawnAliens(int nrAliens, final ToIntFunction RollDice){
+        for(int i = 0; i < nrAliens; i++)
+            rooms.get(RollDice.applyAsInt(2)).SpawnAlien();
+    }
 }
