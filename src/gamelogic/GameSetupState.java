@@ -2,10 +2,11 @@ package gamelogic;
 
 public enum GameSetupState {
     WaitGameStart,
-    SetParams,
+    CustomJourney,
     SelectCrewMembers,
     SetCrewMembers3rdToken,
     StartGame,
     GameOver,
-    Win
+    Win,
+    Exit
 }
