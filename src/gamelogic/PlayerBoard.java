@@ -11,7 +11,7 @@ public class PlayerBoard {
         healthTracker = 8;
     }
     boolean AddCrewMember(int pos){
-        CrewDeck deck = new CrewDeck();
+        Deck deck = new Deck();
         try {
             CrewMember crewMember = deck.ChooseCardAt(pos);
             if(crewMember != null){
