@@ -2,9 +2,9 @@ package gamelogic;
 
 import java.util.ArrayList;
 
-public class CrewDeck {
+public class Deck {
     private ArrayList<CrewMember> cards = new ArrayList<>(12);
-    public CrewDeck(){
+    public Deck(){
         //cards.add(new CrewMember("Doctor",1, 106, 3));
     }
     public ArrayList<CrewMember> GetCards(){
