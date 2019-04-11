@@ -1,14 +1,16 @@
-package gamelogic;
+package gamelogic.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.function.ToIntFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ShipBoard {
+class ShipBoard {
     //Private vars
-    private Integer hull = 8;
+    private int hull = 8;
     private LinkedList<String> journey = new LinkedList<>(Arrays.asList("2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A"));
     private Iterator<String> journeyTracker = journey.iterator();
     private String currentJourneyPart;
@@ -28,35 +30,52 @@ public class ShipBoard {
     ));
     //Private functions
     private boolean IsValidJourneyPart(String part){
-        //TODO: IsValidJourneyPart
-        /*Há 2 opções:
+        /* Regular Expression: ^(?<!.)([1-9]|1[0-5])?[Aa][*]?(?!.)$|^(?<!.)R(?!.)$
+         * Explanation:
+         *
+         * ^                    -> Matches the beginning of the input
+         * (?<!.)               -> Lookbehind -> There's no character behind
+         * ([1-9]|1[0-5])?      -> Matches range [1 - 15], 0 or 1 times
+         * [Aa]                 -> Matches literal "A" or "a"
+         * [*]?                 -> Matches literal "*", 0 or 1 times
+         * (?!.)                -> Lookaheead -> There's no character after
+         * $                    -> Matches the end of the input
+         * ----------------------------------------------------
+         * |                    -> OR
+         * ----------------------------------------------------
+         * ^                    -> Matches the beginning of the input
+         * (?<!.)               -> Lookbehind -> There's no character behind
+         * R                    -> Matches literal "R"
+         * (?!.)                -> Lookaheead -> There's no character after
+         * $                    -> Matches the end of the input
+         *
+         ***************************************************************************
+         *
+         * Simple explanation:
+         * -> Ou é (opcionalmente) um número de 1 a 15 , seguido (obrigatóriamente) de um "A" ou "a" e de (opcionalmente) um "*"
          * -> Ou é um "R"
-         * -> Ou é um numero, seguido de um "A" e de (opcionalmente) um "*"
-         * TODO: Usar RegEx para isto
          */
-        return false;
+        Pattern p = Pattern.compile("^(?<!.)([1-9]|1[0-5])?[Aa][*]?(?!.)$|^(?<!.)R(?!.)$");
+        Matcher m = p.matcher(part);
+        return m.find();
     }
-    private void CreateCustomJourney(String[] customJourney) throws ArrayStoreException{
+    void ChangeJourney(String[] customJourney) throws ArrayStoreException{
         /* This is done in 2 steps, because I only want to copy to the "journeyTracker" array, if
          * and only if, all the values in "customJourney" are valid.*/
-        if(customJourney.length == 13) {
-            for (int i = 1; i < 14; i++)
-                if (IsValidJourneyPart(customJourney[i]))
+        final int journeySize = 13;
+        if(customJourney.length == journeySize) {
+            for (int i = 0; i < journeySize; i++)
+                if (!IsValidJourneyPart(customJourney[i])) {
                     throw new ArrayStoreException("Invalid customJourney element in position: " + i);
-            System.arraycopy(customJourney, 0, journey, 1, 13);
-            //TODO: Fix this part above
+                }
+            //Copies custom journey (garbage collector removes old one)
+            journey = new LinkedList<>(Arrays.asList(customJourney));
         }
         else
             throw new ArrayStoreException("customJourney array must have 13 elements.");
     }
     private boolean ReachedEarth(){
         return !journeyTracker.hasNext();
-    }
-    //Constructor
-    public ShipBoard(){
-    }
-    public ShipBoard(String[] customJourney) throws ArrayStoreException{
-        CreateCustomJourney(customJourney);
     }
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
