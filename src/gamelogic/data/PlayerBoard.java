@@ -1,14 +1,13 @@
-package gamelogic;
+package gamelogic.data;
 
 import java.util.ArrayList;
 
-public class PlayerBoard {
+class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private Integer inspirationTracker = 0, healthTracker, actionPointsPerTurn, actionPoints, alienCounter = 15;
-    //Constructor
-    public PlayerBoard(){
-        healthTracker = 8;
+    private Integer inspirationPoints = 0, health = 8, maxActionPoints, actionPoints, alienCounter = 15;
+    ArrayList<CrewMember> GetCrewMembers(){
+        return crewMembers;
     }
     boolean AddCrewMember(int pos){
         Deck deck = new Deck();
