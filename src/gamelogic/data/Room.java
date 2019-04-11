@@ -1,4 +1,4 @@
-package gamelogic;
+package gamelogic.data;
 
 class Room {
     //Private vars

@@ -1,4 +1,4 @@
-package gamelogic;
+package gamelogic.data;
 
 import java.util.concurrent.ThreadLocalRandom;
 
