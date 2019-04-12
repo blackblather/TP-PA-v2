@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 public class Deck {
     private ArrayList<CrewMember> cards = new ArrayList<>(12);
-    public Deck(){
-        //cards.add(new CrewMember("Doctor",1, 106, 3));
+    Deck(){
+        cards.add(new CrewMember("Captain",1, 1, 3));
+        cards.add(new CrewMember("Transporter Chief",0, 1));
     }
     public ArrayList<CrewMember> GetCards(){
         return cards;
     }
-    public CrewMember ChooseCardAt(Integer pos) throws IndexOutOfBoundsException{
-        CrewMember crewMember = cards.get(pos);
+    CrewMember ChooseCardAt(int pos) throws IndexOutOfBoundsException, IllegalAccessException {
+        CrewMember crewMember = cards.get(pos-1);
         if(crewMember.Choose())
             return crewMember;
-        return null;
+        else
+            throw new IllegalAccessException("Can't choose the same card twice.");
     }
 }
