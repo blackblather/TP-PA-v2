@@ -16,19 +16,16 @@ public class CrewMember {
     private boolean IsValidAttackValue(Integer attack){
         return (attack >= 1 && attack <= 3);
     }
-    private boolean IsAvailable(){
-        return isAvailable;
-    }
     //-------------------------------------------------
     //Constrcutor
-    public CrewMember(String name, Integer movement, Integer attack){
+    CrewMember(String name, Integer movement, Integer attack){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
             this.name = name;
             this.movement = movement;
             this.attack = attack;
         }
     }
-    public CrewMember(String name, Integer movement, Integer attack, Integer minimumAttackRoll){
+    CrewMember(String name, Integer movement, Integer attack, Integer minimumAttackRoll){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
             this.name = name;
             this.movement = movement;
@@ -39,7 +36,7 @@ public class CrewMember {
     //-------------------------------------------------
     //Package-private functions
     boolean Choose(){
-        if(IsAvailable()){
+        if(isAvailable){
             isAvailable = false;
             return true;
         }
