@@ -7,17 +7,12 @@ import gamelogic.states.gameSetup.NewGame;
 
 public class Logic {
     //Private vars
-    private EncapsulatedGameData encapsulatedGameData;
+    private EncapsulatedGameData encapsulatedGameData = new EncapsulatedGameData();
     private IGameState gameState;
-    private IGameSetupState gameSetupState;
+    private IGameSetupState gameSetupState = new NewGame(encapsulatedGameData);
 
-    //Constructor
-    public Logic(){
-        encapsulatedGameData = new EncapsulatedGameData();
-        this.gameSetupState = new NewGame(encapsulatedGameData);
-        //TODO: Inicializer gameState aqui
-            //TODO: Criar classes filhas de GameStateAdapter
-    }
+    //Constructor -> TODO: Inicializer gameState aqui (riar classes filhas de GameStateAdapter)
+    public Logic(){}
 
     //Getters
     public IGameSetupState GetGameSetupState(){
