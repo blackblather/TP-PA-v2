@@ -7,17 +7,12 @@ public class NewGame extends GameSetupStateAdapter {
         super(encapsulatedGameData);
     }
 
-    public IGameSetupState InitialMenu(int opt){
-
-        return this;
-    }
-
     @Override
     public IGameSetupState _NewGame() {
-        return new ChooseJourney(GetEncapsulatedGameData());
+        return new ChooseJourney(encapsulatedGameData);
     }
     @Override
     public IGameSetupState _Exit() {
-        return new Exit(GetEncapsulatedGameData());
+        return new Exit(encapsulatedGameData);
     }
 }

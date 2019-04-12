@@ -9,13 +9,11 @@ public class SelectCrewMembers extends GameSetupStateAdapter {
 
     @Override
     public IGameSetupState _SelectCrewMembers(int pos) {
-        EncapsulatedGameData egd = GetEncapsulatedGameData();
-
         try {
-            egd.AddCrewMember(pos);
+            encapsulatedGameData.AddCrewMember(pos);
             //Só passa para o próximo estado quando o utilizador tiver escolhido 2 crew members válidos
-            if(egd.GetTotalChosenCrewMembers() == 2)
-                return new SetCrewMemberShipLocation(GetEncapsulatedGameData());        //Já escolheu 2
+            if(encapsulatedGameData.GetTotalChosenCrewMembers() == 2)
+                return new SetCrewMemberShipLocation(encapsulatedGameData);        //Já escolheu 2
             else
                 return this;                                                            //Ainda não escolheu 2
         } catch (Exception ex) {

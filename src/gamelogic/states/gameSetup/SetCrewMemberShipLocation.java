@@ -9,6 +9,6 @@ public class SetCrewMemberShipLocation extends GameSetupStateAdapter {
 
     @Override
     public IGameSetupState _SetCrewMemberShipLocation() {
-        return new StartGame(GetEncapsulatedGameData());
+        return new StartGame(encapsulatedGameData);
     }
 }

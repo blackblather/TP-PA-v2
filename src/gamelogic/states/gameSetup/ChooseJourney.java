@@ -7,17 +7,16 @@ public class ChooseJourney extends GameSetupStateAdapter {
         super(encapsulatedGameData);
     }
 
-
     @Override
     public IGameSetupState _ChooseJourney() {
-        return new SelectCrewMembers(GetEncapsulatedGameData());
+        return new SelectCrewMembers(encapsulatedGameData);
     }
 
     @Override
     public IGameSetupState _ChooseJourney(String[] customJourney) {
         try{
-            GetEncapsulatedGameData().CreateCustomJourney(customJourney);
-            return new SelectCrewMembers(GetEncapsulatedGameData());
+            encapsulatedGameData.CreateCustomJourney(customJourney);
+            return new SelectCrewMembers(encapsulatedGameData);
         } catch (ArrayStoreException ex){
             return this;
         }
