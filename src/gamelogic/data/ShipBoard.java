@@ -45,17 +45,17 @@ class ShipBoard {
          * ----------------------------------------------------
          * ^                    -> Matches the beginning of the input
          * (?<!.)               -> Lookbehind -> There's no character behind
-         * R                    -> Matches literal "R"
+         * [Rr]                 -> Matches literal "R" or "r"
          * (?!.)                -> Lookaheead -> There's no character after
          * $                    -> Matches the end of the input
          *
          ***************************************************************************
          *
          * Simple explanation:
-         * -> Ou é (opcionalmente) um número de 1 a 15 , seguido (obrigatóriamente) de um "A" ou "a" e de (opcionalmente) um "*"
-         * -> Ou é um "R"
+         * -> É (opcionalmente) um número de 1 a 15 , seguido (obrigatóriamente) de um "A" ou "a" e de (opcionalmente) um "*"
+         * -> É um "R" ou "r"
          */
-        Pattern p = Pattern.compile("^(?<!.)([1-9]|1[0-5])?[Aa][*]?(?!.)$|^(?<!.)R(?!.)$");
+        Pattern p = Pattern.compile("^(?<!.)([1-9]|1[0-5])?[Aa][*]?(?!.)$|^(?<!.)[Rr](?!.)$");
         Matcher m = p.matcher(part);
         return m.find();
     }
