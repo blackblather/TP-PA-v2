@@ -2,10 +2,7 @@ package ui.text;
 
 import gamelogic.Logic;
 import gamelogic.data.CrewMember;
-import gamelogic.states.gameSetup.ChooseJourney;
-import gamelogic.states.gameSetup.Exit;
-import gamelogic.states.gameSetup.NewGame;
-import gamelogic.states.gameSetup.SelectCrewMembers;
+import gamelogic.states.gameSetup.*;
 
 import java.util.Scanner;
 
@@ -13,8 +10,8 @@ public class TextUI {
     //Private vars
     private Logic logic = new Logic();
     private Scanner s = new Scanner(System.in);
-    private boolean printedDeck = false;
-    //Helper functions
+
+    //Private helper functions
     private int DisplayMenu(String text, int optMin, int optMax){
         System.out.println(text);
         int opt;
@@ -31,12 +28,15 @@ public class TextUI {
         int i = 1;
         System.out.println("Available Crew Members:");
         for (CrewMember c : logic.GetEncapsulatedGameData().GetDeck().GetCards()) {
-
-            System.out.println("Crew Member " + i + ":\n  Name: " + c.GetName() + "\n  Movement: " + c.GetMovement() + "\n  Attack: " + c.GetAttack() + "\n");
+            if(c.IsAvailable())
+                System.out.println("Crew Member " + i + ":\n" + c.toString()+"\n.........................");
             i++;
         }
-        printedDeck = true;
     }
+    private void HorizontalLine() {
+        System.out.println("--------------------------------------------------");
+    }
+
     //Functions that read user-input
     private void WaitInitialMenuInput(){
         int opt = DisplayMenu("Initial menu:\n 1) - New Game;\n 2) - Exit;", 1, 2);
@@ -46,6 +46,7 @@ public class TextUI {
             logic.ExitGame();
     }
     private void WaitJourneyChoice(){
+        HorizontalLine();
         int opt = DisplayMenu("Chose a journey:\n 1) - Default Journey;\n 2) - Custom Journey;", 1, 2);
         if(opt == 1)
             logic.ChooseJourney();
@@ -56,18 +57,24 @@ public class TextUI {
         }
     }
     private void WaitToSelectCrewMembers(){
-        if(!printedDeck)
-            PrintDeck();
-
+        HorizontalLine();
         //Used to print "1st"  or "2nd"
         int ChosenCrewMembersPos = logic.GetEncapsulatedGameData().GetTotalChosenCrewMembers() + 1;
         String FirstOrSecond = ChosenCrewMembersPos + (ChosenCrewMembersPos == 1?"st":"nd");
 
-        int totalCards = logic.GetEncapsulatedGameData().GetDeck().GetCards().size();
-
-        int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, totalCards);
+        PrintDeck();
+        int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, logic.GetEncapsulatedGameData().GetTotalDeckCards());
         logic.SelectCrewMembers(opt);
     }
+    private void WaitToSetCrewMemberShipLocation(){
+        HorizontalLine();
+        int totalCrewMembersInRooms = logic.GetEncapsulatedGameData().GetTotalCrewMembersInRooms();
+        String chosenCrewMember = logic.GetEncapsulatedGameData().GetChosenCrewMemberToStringAt(totalCrewMembersInRooms);
+        int opt = DisplayMenu("Select room (1 - 12) to spawn crew member #" + (totalCrewMembersInRooms+1) + ":\n" + chosenCrewMember,1,12);
+        //Posso usar "totalCrewMembersInRooms" para referenciar o crewMember a seleccionar
+        logic.SetCrewMemberShipLocation(opt, totalCrewMembersInRooms);
+    }
+
     //Public function to call in the User Interfaces
     public void Start(){
         while (!(logic.GetGameSetupState() instanceof Exit)){
@@ -77,6 +84,8 @@ public class TextUI {
                 WaitJourneyChoice();
             else if(logic.GetGameSetupState() instanceof SelectCrewMembers)
                 WaitToSelectCrewMembers();
+            else if(logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
+                WaitToSetCrewMemberShipLocation();
         }
         System.out.println("Exiting Destination Earth...");
     }
