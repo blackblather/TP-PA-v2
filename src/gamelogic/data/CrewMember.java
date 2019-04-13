@@ -1,13 +1,12 @@
 package gamelogic.data;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class CrewMember {
     //Private vars
     private String name;
     private Integer movement, attack, minimumAttackRoll = 5;    //1 of attack -> means 1 D6 die
+    private Room currentRoom;
     private boolean isAvailable = true;
-    //-------------------------------------------------
+
     //Private functions
     private boolean IsValidMovementValue(Integer movement){
         //0 means teleport
@@ -16,7 +15,7 @@ public class CrewMember {
     private boolean IsValidAttackValue(Integer attack){
         return (attack >= 1 && attack <= 3);
     }
-    //-------------------------------------------------
+
     //Constrcutor
     CrewMember(String name, Integer movement, Integer attack){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
@@ -33,7 +32,7 @@ public class CrewMember {
             this.minimumAttackRoll = minimumAttackRoll;
         }
     }
-    //-------------------------------------------------
+
     //Package-private functions
     boolean Choose(){
         if(isAvailable){
@@ -43,7 +42,6 @@ public class CrewMember {
         return false;
     }
 
-    //-------------------------------------------------
     //Getters
     public String GetName(){
         return name;
@@ -57,6 +55,22 @@ public class CrewMember {
     public Integer GetMinimumAttackRoll(){
         return minimumAttackRoll;
     }
-    //-------------------------------------------------
+    public boolean IsAvailable(){
+        return isAvailable;
+    }
+    Room GetRoom(){
+        return currentRoom;
+    }
 
+    //Setters
+    void SetRoom(Room room){
+        currentRoom = room;
+    }
+
+    //Overrides
+    @Override
+    public String toString(){
+        //TODO: List specials
+        return "Name: " + this.name + "\nMovement: " + this.movement + "\nAttack: " + this.attack;
+    }
 }
