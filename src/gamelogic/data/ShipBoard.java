@@ -28,6 +28,7 @@ class ShipBoard {
             new Room(11, "Holodeck"),
             new Room(12, "Hydroponics")
     ));
+
     //Private functions
     private boolean IsValidJourneyPart(String part){
         /* Regular Expression: ^(?<!.)([1-9]|1[0-5])?[Aa][*]?(?!.)$|^(?<!.)R(?!.)$
@@ -77,10 +78,15 @@ class ShipBoard {
     private boolean ReachedEarth(){
         return !journeyTracker.hasNext();
     }
+
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
         return rooms;
     }
+    void MoveCrewMemberToRoom(int roomPos, CrewMember crewMember) throws IndexOutOfBoundsException, UnsupportedOperationException {
+        rooms.get(roomPos).MoveCrewMemberHere(crewMember);
+    }
+
     void DamageHullBy(int value){
         if(hull-value >= 0)
             hull -= value;
