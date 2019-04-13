@@ -11,7 +11,7 @@ public class Logic {
     private IGameState gameState;
     private IGameSetupState gameSetupState = new NewGame(encapsulatedGameData);
 
-    //Constructor -> TODO: Inicializer gameState aqui (riar classes filhas de GameStateAdapter)
+    //Constructor -> TODO: Inicializer gameState aqui (criar classes filhas de GameStateAdapter)
     public Logic(){}
 
     //Getters
@@ -30,7 +30,10 @@ public class Logic {
     public void ExitGame() {gameSetupState = gameSetupState._Exit();}
     public void ChooseJourney(){gameSetupState = gameSetupState._ChooseJourney();}
     public void ChooseJourney(String[] customJourneyStr){gameSetupState = gameSetupState._ChooseJourney(customJourneyStr);}
-    public void SelectCrewMembers(int pos){
-        gameSetupState = gameSetupState._SelectCrewMembers(pos);
+    public void SelectCrewMembers(int deckPos){
+        gameSetupState = gameSetupState._SelectCrewMembers(deckPos);
+    }
+    public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){
+        gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos);
     }
 }
