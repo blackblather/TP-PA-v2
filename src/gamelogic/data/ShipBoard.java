@@ -79,30 +79,6 @@ class ShipBoard {
     private boolean ReachedEarth(){
         return !journeyTracker.hasNext();
     }
-    private int GetNrOfAliensToSpawn(){
-        String[] journeyPartParts = currentJourneyPart.split("A");
-        int nrOfAliensToSpawn;
-        switch (journeyPartParts.length){
-            //A
-            case 0: nrOfAliensToSpawn = 1; break;
-            //nA || A*
-            case 1: {
-                if(!journeyPartParts[0].equals("*"))
-                    nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
-                else {
-                    nrOfAliensToSpawn = 1;
-                    removeAliensFlag = true;
-                }
-            } break;
-            //nA*
-            case 2:{
-                nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
-                removeAliensFlag = true;
-            } break;
-            default: nrOfAliensToSpawn = 0; break;
-        }
-        return nrOfAliensToSpawn;
-    }
 
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
@@ -135,8 +111,31 @@ class ShipBoard {
             throw new UnsupportedOperationException("Reached the end of the journey");
         }
     }
-    void SpawnAliens(ToIntFunction<Integer> RollDice){
-        int nrOfAliensToSpawn = GetNrOfAliensToSpawn();
+    int GetNrOfAliensToSpawnOnCurrentJourneyPart(){
+        String[] journeyPartParts = currentJourneyPart.split("A");
+        int nrOfAliensToSpawn;
+        switch (journeyPartParts.length){
+            //A
+            case 0: nrOfAliensToSpawn = 1; break;
+            //nA || A*
+            case 1: {
+                if(!journeyPartParts[0].equals("*"))
+                    nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
+                else {
+                    nrOfAliensToSpawn = 1;
+                    removeAliensFlag = true;
+                }
+            } break;
+            //nA*
+            case 2:{
+                nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
+                removeAliensFlag = true;
+            } break;
+            default: nrOfAliensToSpawn = 0; break;
+        }
+        return nrOfAliensToSpawn;
+    }
+    void SpawnAliens(ToIntFunction<Integer> RollDice, int nrOfAliensToSpawn){
         int roll;
         for(int i = 0; i < nrOfAliensToSpawn; i++){
             roll = RollDice.applyAsInt(2);

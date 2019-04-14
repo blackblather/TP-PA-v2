@@ -61,7 +61,8 @@ public class GameDataHandler {
         shipBoard.MoveJourneyTracker();
     }
     public void SpawnAliens(){
-        shipBoard.SpawnAliens(rollDiceLambda);
+        int nrOfAliensToSpawn = playerBoard.DecreaseAlienCounterBy(shipBoard.GetNrOfAliensToSpawnOnCurrentJourneyPart());
+        shipBoard.SpawnAliens(rollDiceLambda, nrOfAliensToSpawn);
     }
     public boolean PlayerIsAlive(){
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
