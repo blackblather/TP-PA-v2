@@ -26,7 +26,9 @@ class PlayerBoard {
         }
         return ammount;
     }
+    int GetHealth(){ return health; }
     String CrewMemberToStringAt(int pos) throws IndexOutOfBoundsException{
         return crewMembers.get(pos).toString();
     }
+
 }
