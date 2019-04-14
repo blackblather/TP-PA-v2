@@ -14,6 +14,7 @@ class ShipBoard {
     private LinkedList<String> journey = new LinkedList<>(Arrays.asList("2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A"));
     private Iterator<String> journeyTracker = journey.iterator();
     private String currentJourneyPart;
+    private boolean removeAliensFlag = false;
     private ArrayList<Room> rooms = new ArrayList<>(Arrays.asList(
             new Room(1, "Bridge"),
             new Room(2, "Sick Bay"),
@@ -78,6 +79,30 @@ class ShipBoard {
     private boolean ReachedEarth(){
         return !journeyTracker.hasNext();
     }
+    private int GetNrOfAliensToSpawn(){
+        String[] journeyPartParts = currentJourneyPart.split("A");
+        int nrOfAliensToSpawn;
+        switch (journeyPartParts.length){
+            //A
+            case 0: nrOfAliensToSpawn = 1; break;
+            //nA || A*
+            case 1: {
+                if(!journeyPartParts[0].equals("*"))
+                    nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
+                else {
+                    nrOfAliensToSpawn = 1;
+                    removeAliensFlag = true;
+                }
+            } break;
+            //nA*
+            case 2:{
+                nrOfAliensToSpawn = Integer.parseInt(journeyPartParts[0]);
+                removeAliensFlag = true;
+            } break;
+            default: nrOfAliensToSpawn = 0; break;
+        }
+        return nrOfAliensToSpawn;
+    }
 
     //Package-Protected functions
     ArrayList<Room> GetRooms(){
@@ -87,6 +112,7 @@ class ShipBoard {
         rooms.get(roomPos).MoveCrewMemberHere(crewMember);
     }
 
+    int GetHull(){ return hull; }
     void DamageHullBy(int value){
         if(hull-value >= 0)
             hull -= value;
@@ -102,15 +128,19 @@ class ShipBoard {
     String GetCurrentJourneyPart(){
         return currentJourneyPart;
     }
-    void MoveJourneyTracker() throws Exception{
+    void MoveJourneyTracker() throws UnsupportedOperationException{
         if(!ReachedEarth())
             currentJourneyPart = journeyTracker.next();
         else{
-            throw new Exception("Reached Earth");
+            throw new UnsupportedOperationException("Reached the end of the journey");
         }
     }
-    void SpawnAliens(int nrAliens, final ToIntFunction RollDice){
-        for(int i = 0; i < nrAliens; i++)
-            rooms.get(RollDice.applyAsInt(2)).SpawnAlien();
+    void SpawnAliens(ToIntFunction<Integer> RollDice){
+        int nrOfAliensToSpawn = GetNrOfAliensToSpawn();
+        int roll;
+        for(int i = 0; i < nrOfAliensToSpawn; i++){
+            roll = RollDice.applyAsInt(2);
+            rooms.get(roll).SpawnAlien();
+        }
     }
 }
