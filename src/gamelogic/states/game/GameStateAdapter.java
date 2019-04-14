@@ -1,6 +1,12 @@
 package gamelogic.states.game;
 
+import gamelogic.data.GameDataHandler;
+
 public abstract class GameStateAdapter implements IGameState {
+    GameDataHandler gameDataHandler;
+    GameStateAdapter(GameDataHandler gameDataHandler) {
+        this.gameDataHandler = gameDataHandler;
+    }
 
     //Estes métodos estão aqui para caso se use um objecto de uma classe filha para chamar um método que não se deva, o estado nao mudar
     @Override
@@ -10,6 +16,11 @@ public abstract class GameStateAdapter implements IGameState {
 
     @Override
     public IGameState _ScanningPhase() {
+        return this;
+    }
+
+    @Override
+    public IGameState _SpawnAliensPhase() {
         return this;
     }
 
