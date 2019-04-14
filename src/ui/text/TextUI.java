@@ -28,7 +28,7 @@ public class TextUI {
     private void PrintDeck(){
         int i = 1;
         System.out.println("Available Crew Members:");
-        for (CrewMember c : logic.GetEncapsulatedGameData().GetDeck().GetCards()) {
+        for (CrewMember c : logic.GetGameDataHandler().GetDeck().GetCards()) {
             if(c.IsAvailable())
                 System.out.println("Crew Member " + i + ":\n" + c.toString()+"\n.........................");
             i++;
@@ -61,17 +61,17 @@ public class TextUI {
     private void WaitToSelectCrewMembers(){
         HorizontalLine();
         //Used to print "1st"  or "2nd"
-        int ChosenCrewMembersPos = logic.GetEncapsulatedGameData().GetTotalChosenCrewMembers() + 1;
+        int ChosenCrewMembersPos = logic.GetGameDataHandler().GetTotalChosenCrewMembers() + 1;
         String FirstOrSecond = ChosenCrewMembersPos + (ChosenCrewMembersPos == 1?"st":"nd");
 
         PrintDeck();
-        int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, logic.GetEncapsulatedGameData().GetTotalDeckCards());
+        int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, logic.GetGameDataHandler().GetTotalDeckCards());
         logic.SelectCrewMembers(opt);
     }
     private void WaitToSetCrewMemberShipLocation(){
         HorizontalLine();
-        int totalCrewMembersInRooms = logic.GetEncapsulatedGameData().GetTotalCrewMembersInRooms();
-        String chosenCrewMember = logic.GetEncapsulatedGameData().GetChosenCrewMemberToStringAt(totalCrewMembersInRooms);
+        int totalCrewMembersInRooms = logic.GetGameDataHandler().GetTotalCrewMembersInRooms();
+        String chosenCrewMember = logic.GetGameDataHandler().GetChosenCrewMemberToStringAt(totalCrewMembersInRooms);
         int opt = DisplayMenu("Select room (1 - 12) to spawn crew member #" + (totalCrewMembersInRooms+1) + ":\n" + chosenCrewMember,1,12);
         //Posso usar "totalCrewMembersInRooms" para referenciar o crewMember a seleccionar
         logic.SetCrewMemberShipLocation(opt, totalCrewMembersInRooms);
@@ -82,10 +82,13 @@ public class TextUI {
         logic.StartGame();
         while (!(logic.GetGameState() instanceof GameOver) && !(logic.GetGameState() instanceof Win)){
             if(logic.GetGameState() instanceof JourneyPhase){
+                //TODO: Add text
                 logic.JourneyPhase();
             } else if(logic.GetGameState() instanceof ScanningPhase){
+                //TODO: Add text
                 logic.ScanningPhase();
             } else if(logic.GetGameState() instanceof SpawnAliensPhase){
+                //TODO: Add text
                 logic.SpawnAliensPhase();
             } else if(logic.GetGameState() instanceof RestPhase){
 

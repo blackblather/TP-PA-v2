@@ -22,10 +22,10 @@ public class Logic {
     public IGameState GetGameState(){
         return gameState;
     }
-    public GameDataHandler GetEncapsulatedGameData(){
+    public GameDataHandler GetGameDataHandler(){
         return gameDataHandler;
     }
-
+//GetEncapsulatedGameData
     //Interact with gameSetupState:
     public void NewGame(){ gameSetupState = gameSetupState._NewGame(); }
     public void ExitGame() {gameSetupState = gameSetupState._Exit();}
