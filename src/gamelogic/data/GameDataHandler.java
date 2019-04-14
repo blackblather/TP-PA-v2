@@ -1,26 +1,28 @@
 package gamelogic.data;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.ToIntFunction;
+
 /*TODO: Maybe só inicializar o playerBoard e o shipBoard no inicio do jogo, para evitar andar a criar vars e a mudar os saus
         seus parametros depois de inicializadas. Por essa razão é que se costuma fazer override aos construtores default.*/
-public class EncapsulatedGameData {
+public class GameDataHandler {
     //Private vars
     private PlayerBoard playerBoard;
     private ShipBoard shipBoard;
     private Deck deck;
 
+    //Private Lambdas
+    //Roll rangre = [NrOfDice, (NrOfDice*6)+1]
+    private final ToIntFunction<Integer> rollDiceLambda = (NrOfDice) -> (ThreadLocalRandom.current().nextInt(NrOfDice, (NrOfDice*6)+1))-1;
+
     //Constructor
-    public EncapsulatedGameData(){
+    public GameDataHandler(){
         shipBoard = new ShipBoard();
         playerBoard = new PlayerBoard();
         deck = new Deck();
     }
 
-    //Private functions
-    private  void LoadChosenCrewMemberSpecials(){
-        //TODO: Alterar as infos no shipBoard e no playerBoard aqui (com base nas cartas escolhidas)
-    }
-
-    //Public functions
+    //Public functions -> GameSetup
     public void CreateCustomJourney(String[] customJourney) throws ArrayStoreException{
         shipBoard.ChangeJourney(customJourney);
     }
@@ -30,10 +32,9 @@ public class EncapsulatedGameData {
     public void MoveCrewMemberToRoom(int roomPos, int crewMemberPos) throws IndexOutOfBoundsException, UnsupportedOperationException {
         shipBoard.MoveCrewMemberToRoom(roomPos, playerBoard.GetCrewMemberAt(crewMemberPos));
     }
-
-    //Getters
+    //Getters -> GameSetup
     public int GetTotalDeckCards(){
-       return deck.GetCards().size();
+        return deck.GetCards().size();
     }
     public int GetTotalChosenCrewMembers(){
         return playerBoard.GetCrewMembers().size();
@@ -50,5 +51,23 @@ public class EncapsulatedGameData {
     public Deck GetDeck()
     {
         return deck;
+    }
+
+    //Public functions -> Game
+    public void LoadChosenCrewMemberSpecials(){
+        //TODO: Alterar as infos no shipBoard e no playerBoard aqui (com base nas cartas escolhidas)
+    }
+    public void MoveJourneyTracker() throws UnsupportedOperationException {
+        shipBoard.MoveJourneyTracker();
+    }
+    public void SpawnAliens(){
+        shipBoard.SpawnAliens(rollDiceLambda);
+    }
+    public boolean PlayerIsAlive(){
+        return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
+    }
+    //Getters -> Game
+    public String GetCurrentJourneyPart(){
+        return shipBoard.GetCurrentJourneyPart();
     }
 }
