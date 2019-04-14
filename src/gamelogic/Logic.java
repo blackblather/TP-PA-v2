@@ -1,15 +1,16 @@
 package gamelogic;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 import gamelogic.states.game.IGameState;
+import gamelogic.states.game.JourneyPhase;
 import gamelogic.states.gameSetup.IGameSetupState;
 import gamelogic.states.gameSetup.NewGame;
 
 public class Logic {
     //Private vars
-    private EncapsulatedGameData encapsulatedGameData = new EncapsulatedGameData();
+    private GameDataHandler gameDataHandler = new GameDataHandler();
     private IGameState gameState;
-    private IGameSetupState gameSetupState = new NewGame(encapsulatedGameData);
+    private IGameSetupState gameSetupState = new NewGame(gameDataHandler);
 
     //Constructor -> TODO: Inicializer gameState aqui (criar classes filhas de GameStateAdapter)
     public Logic(){}
@@ -21,8 +22,8 @@ public class Logic {
     public IGameState GetGameState(){
         return gameState;
     }
-    public EncapsulatedGameData GetEncapsulatedGameData(){
-        return encapsulatedGameData;
+    public GameDataHandler GetEncapsulatedGameData(){
+        return gameDataHandler;
     }
 
     //Interact with gameSetupState:
@@ -35,5 +36,20 @@ public class Logic {
     }
     public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){
         gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos);
+    }
+
+    //Interact with gameState:
+    public void StartGame(){
+        gameDataHandler.LoadChosenCrewMemberSpecials();
+        gameState = new JourneyPhase(gameDataHandler);
+    }
+    public void JourneyPhase(){
+        gameState = gameState._JourneyPhase();
+    }
+    public void ScanningPhase(){
+        gameState = gameState._ScanningPhase();
+    }
+    public void SpawnAliensPhase(){
+        gameState = gameState._SpawnAliensPhase();
     }
 }
