@@ -3,6 +3,7 @@ package ui.text;
 import gamelogic.Logic;
 import gamelogic.data.CrewMember;
 import gamelogic.states.gameSetup.*;
+import gamelogic.states.game.*;
 
 import java.util.Scanner;
 
@@ -37,7 +38,8 @@ public class TextUI {
         System.out.println("--------------------------------------------------");
     }
 
-    //Functions that read user-input
+    //GameSetup
+    //Functions that read user-input -> GameSetup
     private void WaitInitialMenuInput(){
         int opt = DisplayMenu("Initial menu:\n 1) - New Game;\n 2) - Exit;", 1, 2);
         if(opt == 1)
@@ -75,6 +77,31 @@ public class TextUI {
         logic.SetCrewMemberShipLocation(opt, totalCrewMembersInRooms);
     }
 
+    //Game
+    private void GameLoop(){
+        logic.StartGame();
+        while (!(logic.GetGameState() instanceof GameOver) && !(logic.GetGameState() instanceof Win)){
+            if(logic.GetGameState() instanceof JourneyPhase){
+                logic.JourneyPhase();
+            } else if(logic.GetGameState() instanceof ScanningPhase){
+                logic.ScanningPhase();
+            } else if(logic.GetGameState() instanceof SpawnAliensPhase){
+                logic.SpawnAliensPhase();
+            } else if(logic.GetGameState() instanceof RestPhase){
+
+            } else if(logic.GetGameState() instanceof CrewPhase){
+
+            } else if(logic.GetGameState() instanceof AlienPhase){
+
+            }
+        }
+        if(logic.GetGameState() instanceof GameOver)
+            WaitInitialMenuInput();
+        else if(logic.GetGameState() instanceof Win)
+            WaitJourneyChoice();
+    }
+    //Functions that read user-input -> Game
+
     //Public function to call in the User Interfaces
     public void Start(){
         while (!(logic.GetGameSetupState() instanceof Exit)){
@@ -86,6 +113,8 @@ public class TextUI {
                 WaitToSelectCrewMembers();
             else if(logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
                 WaitToSetCrewMemberShipLocation();
+            else if(logic.GetGameSetupState() instanceof StartGame)
+                GameLoop();
         }
         System.out.println("Exiting Destination Earth...");
     }
