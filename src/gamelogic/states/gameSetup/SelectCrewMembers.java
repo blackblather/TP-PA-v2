@@ -1,19 +1,19 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class SelectCrewMembers extends GameSetupStateAdapter {
-    SelectCrewMembers(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    SelectCrewMembers(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 
     @Override
     public IGameSetupState _SelectCrewMembers(int pos) {
         try {
-            encapsulatedGameData.AddCrewMember(pos);
+            gameDataHandler.AddCrewMember(pos);
             //Só passa para o próximo estado quando o utilizador tiver escolhido 2 crew members válidos
-            if(encapsulatedGameData.GetTotalChosenCrewMembers() == 2)
-                return new SetCrewMemberShipLocation(encapsulatedGameData);        //Já escolheu 2
+            if(gameDataHandler.GetTotalChosenCrewMembers() == 2)
+                return new SetCrewMemberShipLocation(gameDataHandler);        //Já escolheu 2
             else
                 return this;                                                            //Ainda não escolheu 2
         } catch (Exception ex) {

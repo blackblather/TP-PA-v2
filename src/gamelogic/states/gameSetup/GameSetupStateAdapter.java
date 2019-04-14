@@ -1,11 +1,11 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public abstract class GameSetupStateAdapter implements IGameSetupState{
-    EncapsulatedGameData encapsulatedGameData;
-    GameSetupStateAdapter(EncapsulatedGameData encapsulatedGameData){
-        this.encapsulatedGameData = encapsulatedGameData;
+    GameDataHandler gameDataHandler;
+    GameSetupStateAdapter(GameDataHandler gameDataHandler){
+        this.gameDataHandler = gameDataHandler;
     }
 
     //Estes métodos estão aqui para caso se use um objecto de uma classe filha para chamar um método que não se deva, o estado nao mudar

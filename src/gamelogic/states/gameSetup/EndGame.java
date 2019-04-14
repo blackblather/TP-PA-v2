@@ -1,10 +1,10 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class EndGame extends GameSetupStateAdapter {
-    public EndGame(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    public EndGame(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 
 }

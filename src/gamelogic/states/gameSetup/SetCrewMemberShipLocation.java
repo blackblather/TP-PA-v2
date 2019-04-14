@@ -1,20 +1,20 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class SetCrewMemberShipLocation extends GameSetupStateAdapter {
-    SetCrewMemberShipLocation(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    SetCrewMemberShipLocation(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 
     @Override
     public IGameSetupState _SetCrewMemberShipLocation(int roomPos, int crewMemberPos) {
         try{
-            encapsulatedGameData.MoveCrewMemberToRoom(roomPos, crewMemberPos);
-            if(encapsulatedGameData.GetTotalCrewMembersInRooms() < 2)
+            gameDataHandler.MoveCrewMemberToRoom(roomPos, crewMemberPos);
+            if(gameDataHandler.GetTotalCrewMembersInRooms() < 2)
                 return this;
             else
-                return new StartGame(encapsulatedGameData);
+                return new StartGame(gameDataHandler);
         } catch (Exception ex){
             return this;
         }

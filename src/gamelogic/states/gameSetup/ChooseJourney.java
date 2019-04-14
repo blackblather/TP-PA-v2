@@ -1,22 +1,22 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class ChooseJourney extends GameSetupStateAdapter {
-    ChooseJourney(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    ChooseJourney(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 
     @Override
     public IGameSetupState _ChooseJourney() {
-        return new SelectCrewMembers(encapsulatedGameData);
+        return new SelectCrewMembers(gameDataHandler);
     }
 
     @Override
     public IGameSetupState _ChooseJourney(String[] customJourney) {
         try{
-            encapsulatedGameData.CreateCustomJourney(customJourney);
-            return new SelectCrewMembers(encapsulatedGameData);
+            gameDataHandler.CreateCustomJourney(customJourney);
+            return new SelectCrewMembers(gameDataHandler);
         } catch (ArrayStoreException ex){
             return this;
         }

@@ -1,18 +1,18 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class NewGame extends GameSetupStateAdapter {
-    public NewGame(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    public NewGame(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 
     @Override
     public IGameSetupState _NewGame() {
-        return new ChooseJourney(encapsulatedGameData);
+        return new ChooseJourney(gameDataHandler);
     }
     @Override
     public IGameSetupState _Exit() {
-        return new Exit(encapsulatedGameData);
+        return new Exit(gameDataHandler);
     }
 }

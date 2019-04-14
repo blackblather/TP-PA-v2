@@ -1,9 +1,9 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class Exit extends GameSetupStateAdapter {
-    public Exit(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    public Exit(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
 }

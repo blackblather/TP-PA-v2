@@ -1,10 +1,10 @@
 package gamelogic.states.gameSetup;
 
-import gamelogic.data.EncapsulatedGameData;
+import gamelogic.data.GameDataHandler;
 
 public class StartGame extends GameSetupStateAdapter {
-    public StartGame(EncapsulatedGameData encapsulatedGameData) {
-        super(encapsulatedGameData);
+    public StartGame(GameDataHandler gameDataHandler) {
+        super(gameDataHandler);
     }
     @Override
     public IGameSetupState _StartGame() {
