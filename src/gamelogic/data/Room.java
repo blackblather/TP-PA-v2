@@ -4,15 +4,17 @@ import java.util.ArrayList;
 
 class Room {
     //Private vars
-    private int id, alienCounter;
+    private int id, alienCounter = 0, organicDetonatorCounter = 0;
     private String name;
     private boolean sealed = false;
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
+
     //Constructor
     Room(Integer id, String name){
         this.id = id;
         this.name = name;
     }
+
     //Package-Protected functions
     private boolean IsSealed(){
         return sealed;
@@ -39,6 +41,15 @@ class Room {
         if(alienCounter-1>=0)
             alienCounter--;
     }
+    void DecrementOrganicDetonatorCounter(){
+        if(organicDetonatorCounter > 0)
+            organicDetonatorCounter--;
+    }
+    void IncrementOrganicDetonatorCounter(){
+        if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
+            organicDetonatorCounter++;
+    }
+
     //Getters
     Integer GetId(){
         return id;
