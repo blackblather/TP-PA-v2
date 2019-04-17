@@ -1,5 +1,6 @@
 package gamelogic.data;
 
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.ToIntFunction;
 
@@ -10,6 +11,7 @@ public class GameDataHandler {
     private PlayerBoard playerBoard;
     private ShipBoard shipBoard;
     private Deck deck;
+    private Upgrades upgrades;
 
     //Private Lambdas
     //Roll rangre = [NrOfDice, (NrOfDice*6)+1]
@@ -20,9 +22,19 @@ public class GameDataHandler {
         shipBoard = new ShipBoard();
         playerBoard = new PlayerBoard();
         deck = new Deck();
+        upgrades = new Upgrades(this);
     }
 
-    //Public functions -> GameSetup
+    //Package-private functions
+    PlayerBoard GetPlayerBoard(){
+        return playerBoard;
+    }
+    ShipBoard GetShipBoard(){
+        return shipBoard;
+    }
+
+    //------------------------GameSetup-----------------------------
+    //Public functions
     public void CreateCustomJourney(String[] customJourney) throws ArrayStoreException{
         shipBoard.ChangeJourney(customJourney);
     }
@@ -32,7 +44,7 @@ public class GameDataHandler {
     public void MoveCrewMemberToRoom(int roomPos, int crewMemberPos) throws IndexOutOfBoundsException, UnsupportedOperationException {
         shipBoard.MoveCrewMemberToRoom(roomPos, playerBoard.GetCrewMemberAt(crewMemberPos));
     }
-    //Getters -> GameSetup
+    //Getters
     public int GetTotalDeckCards(){
         return deck.GetCards().size();
     }
@@ -53,10 +65,10 @@ public class GameDataHandler {
         return deck;
     }
 
-    //Public functions -> Game
-    public void LoadChosenCrewMemberSpecials(){
-        //TODO: Alterar as infos no shipBoard e no playerBoard aqui (com base nas cartas escolhidas)
-    }
+
+    //---------------------------Game-------------------------------
+    //Public functions
+    public void LoadChosenCrewMemberSpecials(){}        //TODO: Alterar (com base nas cartas escolhidas) as infos do shipBoard e do playerBoard AQUI
     public void MoveJourneyTracker() throws UnsupportedOperationException {
         shipBoard.MoveJourneyTracker();
     }
@@ -66,9 +78,27 @@ public class GameDataHandler {
     }
     public boolean PlayerIsAlive(){
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
+}                 //TODO: Use function in Alien Phase
+    public boolean UpgradeNeedsAditionalInput(int opt){
+        return (upgrades.UpgradeNeedsAditionalInputAt(opt));
     }
-    //Getters -> Game
+    public void ExecuteUpgradeAt(int pos){
+        upgrades.ExecuteUpgradeAt(pos);
+    }
+    public void ExecuteUpgradeAt(int pos, int value){
+        upgrades.ExecuteUpgradeAt(pos, value);
+    }
+    //Getters
     public String GetCurrentJourneyPart(){
         return shipBoard.GetCurrentJourneyPart();
+    }
+    public int GetInsirationPoints(){
+        return playerBoard.GetIspirationPoints();
+    }
+    public ArrayList<String> GetUpgradesDesciption() {
+        return upgrades.GetUpgradesDesciption();
+    }
+    public int GetTotalUpgrades(){
+        return upgrades.GetUpgradesDesciption().size();
     }
 }
