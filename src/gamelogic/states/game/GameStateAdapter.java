@@ -30,6 +30,16 @@ public abstract class GameStateAdapter implements IGameState {
     }
 
     @Override
+    public IGameState _RestPhase(int opt) {
+        return this;
+    }
+
+    @Override
+    public IGameState _RestPhase(int opt, int value) {
+        return this;
+    }
+
+    @Override
     public IGameState _CrewPhase() {
         return this;
     }
