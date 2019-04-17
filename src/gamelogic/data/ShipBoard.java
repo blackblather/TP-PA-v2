@@ -81,14 +81,9 @@ class ShipBoard {
     }
 
     //Package-Protected functions
-    ArrayList<Room> GetRooms(){
-        return rooms;
-    }
     void MoveCrewMemberToRoom(int roomPos, CrewMember crewMember) throws IndexOutOfBoundsException, UnsupportedOperationException {
         rooms.get(roomPos).MoveCrewMemberHere(crewMember);
     }
-
-    int GetHull(){ return hull; }
     void DamageHullBy(int value){
         if(hull-value >= 0)
             hull -= value;
@@ -101,9 +96,6 @@ class ShipBoard {
         else
             hull = 12;
     }
-    String GetCurrentJourneyPart(){
-        return currentJourneyPart;
-    }
     void MoveJourneyTracker() throws UnsupportedOperationException{
         if(!ReachedEarth())
             currentJourneyPart = journeyTracker.next();
@@ -111,6 +103,19 @@ class ShipBoard {
             throw new UnsupportedOperationException("Reached the end of the journey");
         }
     }
+    void SpawnAliens(ToIntFunction<Integer> RollDice, int nrOfAliensToSpawn){
+        int roll;
+        for(int i = 0; i < nrOfAliensToSpawn; i++){
+            roll = RollDice.applyAsInt(2);
+            rooms.get(roll).SpawnAlien();
+        }
+    }
+
+    //Getters
+    String GetCurrentJourneyPart(){
+        return currentJourneyPart;
+    }
+    int GetHull(){ return hull; }
     int GetNrOfAliensToSpawnOnCurrentJourneyPart(){
         String[] journeyPartParts = currentJourneyPart.split("A");
         int nrOfAliensToSpawn;
@@ -135,11 +140,7 @@ class ShipBoard {
         }
         return nrOfAliensToSpawn;
     }
-    void SpawnAliens(ToIntFunction<Integer> RollDice, int nrOfAliensToSpawn){
-        int roll;
-        for(int i = 0; i < nrOfAliensToSpawn; i++){
-            roll = RollDice.applyAsInt(2);
-            rooms.get(roll).SpawnAlien();
-        }
+    ArrayList<Room> GetRooms(){
+        return rooms;
     }
 }
