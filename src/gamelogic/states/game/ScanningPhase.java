@@ -9,7 +9,7 @@ public class ScanningPhase extends GameStateAdapter {
 
     @Override
     public IGameState _ScanningPhase() {
-        if(gameDataHandler.GetCurrentJourneyPart().equals("R"))
+        if(gameDataHandler.GetCurrentJourneyPart().toLowerCase().equals("r"))
             return new RestPhase(gameDataHandler);
         else
             return new SpawnAliensPhase(gameDataHandler);
