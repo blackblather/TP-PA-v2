@@ -2,7 +2,7 @@ package gamelogic.data;
 
 import java.util.ArrayList;
 
-class PlayerBoard extends Board {
+class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
     private int inspirationPoints = 0,
