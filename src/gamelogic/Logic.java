@@ -12,7 +12,7 @@ public class Logic {
     private IGameState gameState;
     private IGameSetupState gameSetupState = new NewGame(gameDataHandler);
 
-    //Constructor -> TODO: Inicializer gameState aqui (criar classes filhas de GameStateAdapter)
+    //Constructor
     public Logic(){}
 
     //Getters
@@ -25,7 +25,7 @@ public class Logic {
     public GameDataHandler GetGameDataHandler(){
         return gameDataHandler;
     }
-//GetEncapsulatedGameData
+
     //Interact with gameSetupState:
     public void NewGame(){ gameSetupState = gameSetupState._NewGame(); }
     public void ExitGame() {gameSetupState = gameSetupState._Exit();}
@@ -51,5 +51,14 @@ public class Logic {
     }
     public void SpawnAliensPhase(){
         gameState = gameState._SpawnAliensPhase();
+    }
+    public void RestPhase(){
+        gameState = gameState._RestPhase();
+    }
+    public void RestPhase(int opt){
+        gameState = gameState._RestPhase(opt);
+    }
+    public void RestPhase(int opt, int value){
+        gameState = gameState._RestPhase(opt, value);
     }
 }
