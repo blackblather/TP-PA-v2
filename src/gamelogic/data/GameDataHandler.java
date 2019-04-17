@@ -80,7 +80,7 @@ public class GameDataHandler {
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
     public boolean UpgradeNeedsAditionalInput(int opt){
-        return (upgrades.UpgradeNeedsAditionalInputAt(opt));
+        return (upgrades.GetUpgradeAt(opt).NeedsAditionalInput());
     }
     public void ExecuteUpgradeAt(int pos){
         upgrades.ExecuteUpgradeAt(pos);
@@ -96,9 +96,15 @@ public class GameDataHandler {
         return playerBoard.GetIspirationPoints();
     }
     public ArrayList<String> GetUpgradesDesciption() {
-        return upgrades.GetUpgradesDesciption();
+        ArrayList<String> upgradesDesciption = new ArrayList<>();
+        for(Effect e : upgrades.GetUpgrades())
+            upgradesDesciption.add(e.toString());
+        return upgradesDesciption;
     }
+
+
     public int GetTotalUpgrades(){
-        return upgrades.GetUpgradesDesciption().size();
+        return upgrades.GetUpgrades().size();
     }
+    public String GetUpgradeAffetedElementAt(int opt){ return upgrades.GetUpgradeAt(opt).GetAffectedElement(); }
 }

@@ -9,7 +9,7 @@ class Upgrades {
     private ArrayList<Effect> upgrade = new ArrayList<>(Arrays.asList(
             new Effect(1, "Add on to Health", (gdh)->gdh.GetPlayerBoard().HealHealthBy(1)),
             new Effect(1, "Repair one Hull", (gdh)->gdh.GetShipBoard().HealHullBy(1)),
-            new Effect(2, "Build one Organic Detonator", (gdh, val)->{
+            new Effect(2, "Room","Build one Organic Detonator", (gdh, val)->{
                     Room room = gdh.GetShipBoard().GetRooms().get(val);
                     gdh.GetPlayerBoard().DecrementOrganicDetonatorCounter();
                     room.IncrementOrganicDetonatorCounter();
@@ -25,14 +25,6 @@ class Upgrades {
         this.gameDataHandler = gameDataHandler;
     }
 
-    //Package-protected functions
-    /*void ExecuteEffectAt(int pos) throws IndexOutOfBoundsException {
-        switch (upgrade.get(pos).GetEffectType()){
-            case SHIPBOARD: upgrade.get(pos).ExecuteEffect(shipBoard); break;
-            case PLAYERBOARD: upgrade.get(pos).ExecuteEffect(playerBoard); break;
-            case BOTH: upgrade.get(pos).ExecuteEffect(shipBoard, playerBoard); break;
-        }
-    }*/
     void ExecuteUpgradeAt(int pos) throws IndexOutOfBoundsException{
         upgrade.get(pos).ExecuteEffect(gameDataHandler);
     }
@@ -44,13 +36,10 @@ class Upgrades {
     }
 
     //Getters
-    ArrayList<String> GetUpgradesDesciption(){
-        ArrayList<String> upgradesDesciption = new ArrayList<>();
-        for(Effect e : upgrade)
-            upgradesDesciption.add(e.toString());
-        return upgradesDesciption;
+    Effect GetUpgradeAt(int pos){
+        return upgrade.get(pos);
     }
-    boolean UpgradeNeedsAditionalInputAt(int pos){
-        return upgrade.get(pos).NeedsAditionalInput();
+    ArrayList<Effect> GetUpgrades(){
+        return upgrade;
     }
 }
