@@ -1,11 +1,12 @@
 package gamelogic.data;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private int inspirationPoints = 0,
+    private int inspirationPoints = 5,      //TODO: DEFAULT VALUE = 0 (5 is for tests)
             health = 8,
             maxActionPoints = 5,
             actionPoints,
@@ -26,9 +27,6 @@ class PlayerBoard {
     ArrayList<CrewMember> GetCrewMembers(){
         return crewMembers;
     }
-    CrewMember GetCrewMemberAt(int pos){
-        return crewMembers.get(pos);
-    }
     int GetHealth(){
         return health;
     }
@@ -37,6 +35,12 @@ class PlayerBoard {
     }
 
     //Setters
+    void SetInspirationPoints(int val) throws InvalidParameterException {
+        if(val>=0 && val<=Constants.MAX_INSPIRATION_POINTS )
+            inspirationPoints = val;
+        else
+            throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
+    }
     int DecreaseAlienCounterBy(int ammount){
         if(alienCounter-ammount >= 0)
             alienCounter -= ammount;
@@ -53,9 +57,11 @@ class PlayerBoard {
             health = Constants.MAX_HEALTH;
         }
     }
-    void DecrementOrganicDetonatorCounter(){
+    void DecrementOrganicDetonatorCounter() throws IllegalStateException{
         if(organicDetonatorCounter > 0)
             organicDetonatorCounter--;
+        else
+            throw new IllegalStateException("Cant decrement \"Organic Detonator Counter\" below 0");
     }
     void IncrementOrganicDetonatorCounter(){
         if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
