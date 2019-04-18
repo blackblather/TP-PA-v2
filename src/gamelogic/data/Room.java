@@ -48,6 +48,8 @@ class Room {
     void IncrementOrganicDetonatorCounter(){
         if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
             organicDetonatorCounter++;
+        else
+            throw new IllegalStateException("Cant increment \"Organic Detonator Counter\" above " + Constants.MAX_ORGANIC_DETONATORS);
     }
 
     //Getters
