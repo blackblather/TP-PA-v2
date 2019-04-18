@@ -39,14 +39,18 @@ public class GameDataHandler {
         shipBoard.ChangeJourney(customJourney);
     }
     public void AddCrewMember(int pos) throws IndexOutOfBoundsException, IllegalAccessException {
-        playerBoard.AddCrewMember(deck, pos);
+        playerBoard.AddCrewMember(deck, pos-1);
     }
     public void MoveCrewMemberToRoom(int roomPos, int crewMemberPos) throws IndexOutOfBoundsException, UnsupportedOperationException {
-        shipBoard.MoveCrewMemberToRoom(roomPos, playerBoard.GetCrewMemberAt(crewMemberPos));
+        shipBoard.MoveCrewMemberToRoom(roomPos-1, playerBoard.GetCrewMemberAt(crewMemberPos));
     }
+
     //Getters
     public int GetTotalDeckCards(){
         return deck.GetCards().size();
+    }
+    public int GetTotalRooms(){
+        return shipBoard.GetRooms().size();
     }
     public int GetTotalChosenCrewMembers(){
         return playerBoard.GetCrewMembers().size();
@@ -80,14 +84,15 @@ public class GameDataHandler {
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
     public boolean UpgradeNeedsAditionalInput(int opt){
-        return (upgrades.GetUpgradeAt(opt).NeedsAditionalInput());
+        return (upgrades.GetUpgradeAt(opt-1).NeedsAditionalInput());
     }
     public void ExecuteUpgradeAt(int pos){
-        upgrades.ExecuteUpgradeAt(pos);
+        upgrades.ExecuteUpgradeAt(pos-1);
     }
     public void ExecuteUpgradeAt(int pos, int value){
-        upgrades.ExecuteUpgradeAt(pos, value);
+        upgrades.ExecuteUpgradeAt(pos-1, value);
     }
+
     //Getters
     public String GetCurrentJourneyPart(){
         return shipBoard.GetCurrentJourneyPart();
@@ -95,16 +100,20 @@ public class GameDataHandler {
     public int GetInsirationPoints(){
         return playerBoard.GetIspirationPoints();
     }
+    public boolean CanPayForUpgrade(int opt){
+        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) > 0);
+    }
+    public void PayUpgrade(int opt){
+        playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
+    }
     public ArrayList<String> GetUpgradesDesciption() {
         ArrayList<String> upgradesDesciption = new ArrayList<>();
         for(Effect e : upgrades.GetUpgrades())
             upgradesDesciption.add(e.toString());
         return upgradesDesciption;
     }
-
-
     public int GetTotalUpgrades(){
         return upgrades.GetUpgrades().size();
     }
-    public String GetUpgradeAffetedElementAt(int opt){ return upgrades.GetUpgradeAt(opt).GetAffectedElement(); }
+    public String GetUpgradeAffetedElementAt(int opt){ return upgrades.GetUpgradeAt(opt-1).GetAffectedElement(); }
 }

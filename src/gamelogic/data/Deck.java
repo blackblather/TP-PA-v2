@@ -12,7 +12,7 @@ public class Deck {
         return cards;
     }
     CrewMember ChooseCardAt(int pos) throws IndexOutOfBoundsException, IllegalAccessException {
-        CrewMember crewMember = cards.get(pos-1);
+        CrewMember crewMember = cards.get(pos);
         if(crewMember.Choose())
             return crewMember;
         else
