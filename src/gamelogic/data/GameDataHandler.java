@@ -1,5 +1,6 @@
 package gamelogic.data;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.ToIntFunction;
@@ -42,7 +43,7 @@ public class GameDataHandler {
         playerBoard.AddCrewMember(deck, pos-1);
     }
     public void MoveCrewMemberToRoom(int roomPos, int crewMemberPos) throws IndexOutOfBoundsException, UnsupportedOperationException {
-        shipBoard.MoveCrewMemberToRoom(roomPos-1, playerBoard.GetCrewMemberAt(crewMemberPos));
+        shipBoard.MoveCrewMemberToRoom(roomPos-1, playerBoard.GetCrewMembers().get(crewMemberPos));
     }
 
     //Getters
@@ -90,7 +91,7 @@ public class GameDataHandler {
         upgrades.ExecuteUpgradeAt(pos-1);
     }
     public void ExecuteUpgradeAt(int pos, int value){
-        upgrades.ExecuteUpgradeAt(pos-1, value);
+        upgrades.ExecuteUpgradeAt(pos-1, value-1);
     }
 
     //Getters
@@ -103,7 +104,7 @@ public class GameDataHandler {
     public boolean CanPayForUpgrade(int opt){
         return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) > 0);
     }
-    public void PayUpgrade(int opt){
+    public void PayUpgrade(int opt) throws InvalidParameterException {
         playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
     }
     public ArrayList<String> GetUpgradesDesciption() {
