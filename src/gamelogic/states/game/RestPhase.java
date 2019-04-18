@@ -21,13 +21,23 @@ public class RestPhase extends GameStateAdapter{
 
     @Override
     public IGameState _RestPhase(int opt) {
-        gameDataHandler.ExecuteUpgradeAt(opt);
+        if(gameDataHandler.CanPayForUpgrade(opt)){
+            gameDataHandler.ExecuteUpgradeAt(opt);
+            gameDataHandler.PayUpgrade(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
+        }
         return UpdatedState();
     }
 
     @Override
     public IGameState _RestPhase(int opt, int value) {
-        gameDataHandler.ExecuteUpgradeAt(opt, value);
-        return UpdatedState();
+        try{
+            if(gameDataHandler.CanPayForUpgrade(opt)){
+                gameDataHandler.ExecuteUpgradeAt(opt, value);
+                gameDataHandler.PayUpgrade(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
+            }
+            return UpdatedState();
+        } catch (IndexOutOfBoundsException ex){
+            return this;
+        }
     }
 }
