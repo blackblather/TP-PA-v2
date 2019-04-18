@@ -12,6 +12,7 @@ class ShipBoard {
     //Private vars
     private int hull = 8;
     private LinkedList<String> journey = new LinkedList<>(Arrays.asList("2A","3A","4A","5A*","R","4A","5A","6A*","R","6A","7A*","R","8A"));
+    //private LinkedList<String> journey = new LinkedList<>(Arrays.asList("r","r","r","r","r","r","r","r","r","r","r","r","r"));
     private Iterator<String> journeyTracker = journey.iterator();
     private String currentJourneyPart;
     private boolean removeAliensFlag = false;
@@ -72,6 +73,7 @@ class ShipBoard {
                 }
             //Copies custom journey (garbage collector removes old one)
             journey = new LinkedList<>(Arrays.asList(customJourney));
+            journeyTracker = journey.iterator();
         }
         else
             throw new ArrayStoreException("customJourney array must have 13 elements.");
