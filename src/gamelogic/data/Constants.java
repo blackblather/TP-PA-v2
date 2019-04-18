@@ -9,7 +9,9 @@ public class Constants {
 
     public static final int MAX_HEALTH = 12;
     public static final int MAX_JOURNEY_PARTS = 13;
-    public static final int MAX_HULL = 13;
+    public static final int MAX_HULL = 12;
+    public static final int MAX_CREWMEMBER_MOVEMENT = 3;
+    public static final int MAX_CREWMEMBER_ATTACK = 3;
     public static final int MAX_INSPIRATION_POINTS = 12;
     public static final int MAX_ORGANIC_DETONATORS = 4;
     public static final int MAX_PARTICLE_DISPERSERS = 2;
