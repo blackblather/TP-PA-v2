@@ -5,6 +5,7 @@ import gamelogic.data.CrewMember;
 import gamelogic.states.gameSetup.*;
 import gamelogic.states.game.*;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextUI {
@@ -19,8 +20,7 @@ public class TextUI {
         do{
             System.out.print("Option: ");
             opt = s.nextInt();
-            //a func. "nextInt()" não consome o \n do final, esta chamada é só para limpar o buffer de entrada.
-
+            //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
             s.nextLine();
         }while(opt < optMin || opt > optMax);
         return opt;
@@ -33,6 +33,14 @@ public class TextUI {
                 System.out.println("Crew Member " + i + ":\n" + c.toString()+"\n.........................");
             i++;
         }
+    }
+    private String ListUpgrades(){
+        ArrayList<String> upgradesDesciption = logic.GetGameDataHandler().GetUpgradesDesciption();
+        int i = 1;
+        StringBuilder retVal = new StringBuilder();
+        for(String s : upgradesDesciption)
+            retVal.append("Upgrade ").append(i++).append(":\n").append(s).append("\n.........................\n");
+        return retVal.toString();
     }
     private void HorizontalLine() {
         System.out.println("--------------------------------------------------");
@@ -72,12 +80,30 @@ public class TextUI {
         HorizontalLine();
         int totalCrewMembersInRooms = logic.GetGameDataHandler().GetTotalCrewMembersInRooms();
         String chosenCrewMember = logic.GetGameDataHandler().GetChosenCrewMemberToStringAt(totalCrewMembersInRooms);
-        int opt = DisplayMenu("Select room (1 - 12) to spawn crew member #" + (totalCrewMembersInRooms+1) + ":\n" + chosenCrewMember,1,12);
-        //Posso usar "totalCrewMembersInRooms" para referenciar o crewMember a seleccionar
+        int opt = DisplayMenu("Select room (1 - "+logic.GetGameDataHandler().GetTotalRooms()+") to spawn crew member #" + (totalCrewMembersInRooms+1) + ":\n" + chosenCrewMember,1,logic.GetGameDataHandler().GetTotalRooms());
+        //"totalCrewMembersInRooms" varia entre [0 - "nrMaxDeCrewMembersNoPlayerBoard - 1"], e aumenta à medida que se vai posicionando crew members no shipboard
         logic.SetCrewMemberShipLocation(opt, totalCrewMembersInRooms);
     }
 
     //Game
+    //Functions that read user-input -> Game
+    private void WaitToChooseUpgrades() {
+        HorizontalLine();
+        int opt = DisplayMenu("Available Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints()+"\n.........................\n" + ListUpgrades()+"0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
+        if(opt == 0)
+            logic.RestPhase();
+        else{
+            if(logic.GetGameDataHandler().UpgradeNeedsAditionalInput(opt)) {
+                int aditionalInput;
+                System.out.print("Choose the " + logic.GetGameDataHandler().GetUpgradeAffetedElementAt(opt) + " to apply the upgrade to:\nOption: ");
+                aditionalInput = s.nextInt();
+                s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
+                logic.RestPhase(opt, aditionalInput);
+            }
+            else
+                logic.RestPhase(opt);
+        }
+    }
     private void GameLoop(){
         logic.StartGame();
         while (!(logic.GetGameState() instanceof GameOver) && !(logic.GetGameState() instanceof Win)){
@@ -91,7 +117,7 @@ public class TextUI {
                 //TODO: Add text
                 logic.SpawnAliensPhase();
             } else if(logic.GetGameState() instanceof RestPhase){
-
+                WaitToChooseUpgrades();
             } else if(logic.GetGameState() instanceof CrewPhase){
 
             } else if(logic.GetGameState() instanceof AlienPhase){
@@ -103,7 +129,6 @@ public class TextUI {
         else if(logic.GetGameState() instanceof Win)
             WaitJourneyChoice();
     }
-    //Functions that read user-input -> Game
 
     //Public function to call in the User Interfaces
     public void Start(){
