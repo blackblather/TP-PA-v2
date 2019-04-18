@@ -1,5 +1,7 @@
 package gamelogic.data;
 
+import java.security.InvalidParameterException;
+
 public class CrewMember {
     //Private vars
     private String name;
@@ -8,12 +10,12 @@ public class CrewMember {
     private boolean isAvailable = true;
 
     //Private functions
-    private boolean IsValidMovementValue(Integer movement){
+    private boolean IsValidMovementValue(int movement){
         //0 means teleport
-        return (movement >= 0 && movement <= 3);
+        return (movement >= 0 && movement <= Constants.MAX_CREWMEMBER_MOVEMENT);
     }
-    private boolean IsValidAttackValue(Integer attack){
-        return (attack >= 1 && attack <= 3);
+    private boolean IsValidAttackValue(int attack){
+        return (attack >= 1 && attack <= Constants.MAX_CREWMEMBER_ATTACK);
     }
 
     //Constrcutor
@@ -65,6 +67,12 @@ public class CrewMember {
     //Setters
     void SetRoom(Room room){
         currentRoom = room;
+    }
+    void SetMovement(int val){
+        if(IsValidMovementValue(val))
+            movement = val;
+        else
+            throw new InvalidParameterException("Movement must have a value between 0 and " + Constants.MAX_CREWMEMBER_MOVEMENT);
     }
 
     //Overrides
