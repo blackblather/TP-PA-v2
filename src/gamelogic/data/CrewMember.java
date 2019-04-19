@@ -74,6 +74,12 @@ public class CrewMember {
         else
             throw new InvalidParameterException("Movement must have a value between 0 and " + Constants.MAX_CREWMEMBER_MOVEMENT);
     }
+    void SetAttack(int val){
+        if(IsValidAttackValue(val))
+            attack = val;
+        else
+            throw new InvalidParameterException("Attack must have a value between 0 and " + Constants.MAX_CREWMEMBER_ATTACK);
+    }
 
     //Overrides
     @Override
