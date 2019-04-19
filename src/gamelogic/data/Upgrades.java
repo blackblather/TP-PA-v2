@@ -17,8 +17,12 @@ class Upgrades {
             new Effect(4, "crew member", "Add one to Movement", (gdh, val)->{
                 CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
                 crewMember.SetMovement(crewMember.GetMovement()+1);
+            }),
+            new Effect(5, "room", "Build one particle Desperser", (gdh, val)->{
+                    Room room = gdh.GetShipBoard().GetRooms().get(val);         //Throws exception if it tries to get an invalid position
+                    gdh.GetPlayerBoard().DecrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
+                    room.IncrementParticleDisperserCounter();                   //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
             })/*,
-            new Effect(5, "Build one particle Desperser"),
             new Effect(5, "Gain one Sealed Room Token"),
             new Effect(6, "Gain one extra Attack Die"),
             new Effect(6, "Add 1 to the result of an Attack Dice")*/));
