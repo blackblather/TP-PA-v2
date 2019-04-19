@@ -23,11 +23,12 @@ class Upgrades {
                     gdh.GetPlayerBoard().DecrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
                     room.IncrementParticleDisperserCounter();                   //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
             }),
-            new Effect(5, "Gain one Sealed Room Token", (gdh)->{
-                gdh.GetPlayerBoard().SetSealedRoomTokens(gdh.GetPlayerBoard().GetSealedRoomTokens()+1);
+            new Effect(5, "Gain one Sealed Room Token", (gdh)->gdh.GetPlayerBoard().SetSealedRoomTokens(gdh.GetPlayerBoard().GetSealedRoomTokens()+1)),
+            new Effect(6, "crew member", "Gain one extra Attack Die", (gdh, val)->{
+                    CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
+                    crewMember.SetAttack(crewMember.GetAttack()+1);
             })
-            /*new Effect(6, "Gain one extra Attack Die"),
-            new Effect(6, "Add 1 to the result of an Attack Dice")*/));
+            /*new Effect(6, "Add 1 to the result of an Attack Dice")*/));
 
     //Package-protected constructor
     Upgrades(GameDataHandler gameDataHandler){
