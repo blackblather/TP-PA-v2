@@ -5,7 +5,7 @@ import java.security.InvalidParameterException;
 public class CrewMember {
     //Private vars
     private String name;
-    private Integer movement, attack, minimumAttackRoll = 5;    //1 of attack -> means 1 D6 die
+    private int movement, attack, minimumAttackRoll = 5, attackRollBonus = 0;    //1 of attack -> means 1 D6 die
     private Room currentRoom;
     private boolean isAvailable = true;
 
@@ -63,6 +63,9 @@ public class CrewMember {
     Room GetRoom(){
         return currentRoom;
     }
+    int GetAttackRollBonus(){
+        return attackRollBonus;
+    }
 
     //Setters
     void SetRoom(Room room){
@@ -79,6 +82,12 @@ public class CrewMember {
             attack = val;
         else
             throw new InvalidParameterException("Attack must have a value between 0 and " + Constants.MAX_CREWMEMBER_ATTACK);
+    }
+    void SetAttackRollBonus(int val){
+        if(val > 0)
+            attackRollBonus = val;
+        else
+            throw new InvalidParameterException("Attack Roll Bonus must have a value greater than 0");
     }
 
     //Overrides
