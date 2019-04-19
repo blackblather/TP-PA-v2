@@ -6,7 +6,7 @@ import java.util.ArrayList;
 class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private int inspirationPoints = 5,      //TODO: DEFAULT VALUE = 0 (5 is for tests)
+    private int inspirationPoints = 10 ,      //TODO: DEFAULT VALUE = 0
             health = 8,
             maxActionPoints = 5,
             actionPoints,
