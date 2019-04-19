@@ -22,9 +22,11 @@ class Upgrades {
                     Room room = gdh.GetShipBoard().GetRooms().get(val);         //Throws exception if it tries to get an invalid position
                     gdh.GetPlayerBoard().DecrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
                     room.IncrementParticleDisperserCounter();                   //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
-            })/*,
-            new Effect(5, "Gain one Sealed Room Token"),
-            new Effect(6, "Gain one extra Attack Die"),
+            }),
+            new Effect(5, "Gain one Sealed Room Token", (gdh)->{
+                gdh.GetPlayerBoard().SetSealedRoomTokens(gdh.GetPlayerBoard().GetSealedRoomTokens()+1);
+            })
+            /*new Effect(6, "Gain one extra Attack Die"),
             new Effect(6, "Add 1 to the result of an Attack Dice")*/));
 
     //Package-protected constructor
