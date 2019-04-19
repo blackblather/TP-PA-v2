@@ -12,7 +12,8 @@ class PlayerBoard {
             actionPoints,
             alienCounter = Constants.MAX_ALIENS,
             organicDetonatorCounter = Constants.MAX_ORGANIC_DETONATORS,
-            particleDisperserCounter = Constants.MAX_PARTICLE_DISPERSERS;
+            particleDisperserCounter = Constants.MAX_PARTICLE_DISPERSERS,
+            sealedRoomTokens = 0;
 
     //Package-Private functions
     String CrewMemberToStringAt(int pos) throws IndexOutOfBoundsException{
@@ -34,6 +35,9 @@ class PlayerBoard {
     int GetIspirationPoints(){
         return inspirationPoints;
     }
+    int GetSealedRoomTokens(){
+        return sealedRoomTokens;
+    }
 
     //Setters
     void SetInspirationPoints(int val) throws InvalidParameterException {
@@ -41,6 +45,12 @@ class PlayerBoard {
             inspirationPoints = val;
         else
             throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
+    }
+    void SetSealedRoomTokens(int val){
+        if(val>=0 && val<=Constants.MAX_SEALED_ROOMS )
+            sealedRoomTokens = val;
+        else
+            throw new InvalidParameterException("The number of sealed room tokens must be between 0 and " + Constants.MAX_SEALED_ROOMS);
     }
     int DecreaseAlienCounterBy(int ammount){
         if(alienCounter-ammount >= 0)
