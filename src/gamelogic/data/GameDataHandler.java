@@ -102,7 +102,7 @@ public class GameDataHandler {
         return playerBoard.GetIspirationPoints();
     }
     public boolean CanPayForUpgrade(int opt){
-        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) > 0);
+        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) >= 0);
     }
     public void PayUpgrade(int opt) throws InvalidParameterException {
         playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
