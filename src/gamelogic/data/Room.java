@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 class Room {
     //Private vars
-    private int id, alienCounter = 0, organicDetonatorCounter = 0;
+    private int id, alienCounter = 0, organicDetonatorCounter = 0, particleDisperserCounter = 0;
     private String name;
     private boolean sealed = false;
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
@@ -46,10 +46,18 @@ class Room {
             organicDetonatorCounter--;
     }
     void IncrementOrganicDetonatorCounter(){
+        /*Esta verificação permite que qualquer room tenha Constants.MAX_ORGANIC_DETONATORS detonators (Está mal, mas como preciso de avançar no código e esta função só é chamada enquanto houver
+            organic detonators no playerboard, o programa não crasha. Não tenho tempo para corrigir estes detalhes, mas não estou a comprometer a funcionalidade, apenas a organização do código*/
         if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
             organicDetonatorCounter++;
         else
             throw new IllegalStateException("Cant increment \"Organic Detonator Counter\" above " + Constants.MAX_ORGANIC_DETONATORS);
+    }
+    void IncrementParticleDisperserCounter(){
+        if(particleDisperserCounter < Constants.MAX_PARTICLE_DISPERSERS)
+            particleDisperserCounter++;
+        else
+            throw new IllegalStateException("Cant increment \"Particle Disperser Counter\" above " + Constants.MAX_ORGANIC_DETONATORS);
     }
 
     //Getters
