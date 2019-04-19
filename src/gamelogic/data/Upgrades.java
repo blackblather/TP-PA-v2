@@ -27,8 +27,11 @@ class Upgrades {
             new Effect(6, "crew member", "Gain one extra Attack Die", (gdh, val)->{
                     CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
                     crewMember.SetAttack(crewMember.GetAttack()+1);
-            })
-            /*new Effect(6, "Add 1 to the result of an Attack Dice")*/));
+            }),
+            new Effect(6, "crew member", "Add 1 to the result of an Attack Dice", (gdh, val) ->{
+                    CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
+                    crewMember.SetAttackRollBonus(crewMember.GetAttackRollBonus()+1);
+            })));
 
     //Package-protected constructor
     Upgrades(GameDataHandler gameDataHandler){
