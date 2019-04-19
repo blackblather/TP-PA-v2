@@ -11,7 +11,8 @@ class PlayerBoard {
             maxActionPoints = 5,
             actionPoints,
             alienCounter = Constants.MAX_ALIENS,
-            organicDetonatorCounter = Constants.MAX_ORGANIC_DETONATORS;
+            organicDetonatorCounter = Constants.MAX_ORGANIC_DETONATORS,
+            particleDisperserCounter = Constants.MAX_PARTICLE_DISPERSERS;
 
     //Package-Private functions
     String CrewMemberToStringAt(int pos) throws IndexOutOfBoundsException{
@@ -61,10 +62,20 @@ class PlayerBoard {
         if(organicDetonatorCounter > 0)
             organicDetonatorCounter--;
         else
-            throw new IllegalStateException("Cant decrement \"Organic Detonator Counter\" below 0");
+            throw new IllegalStateException("Cant decrement Organic Detonator Counter below 0");
     }
     void IncrementOrganicDetonatorCounter(){
         if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
             organicDetonatorCounter++;
+    }
+    void DecrementParticleDisperserCounter() throws IllegalStateException{
+        if(particleDisperserCounter > 0)
+            particleDisperserCounter--;
+        else
+            throw new IllegalStateException("Cant decrement Particle Disperser Counter below 0");
+    }
+    void IncrementParticleDisperserCounter(){
+        if(particleDisperserCounter < Constants.MAX_PARTICLE_DISPERSERS)
+            particleDisperserCounter++;
     }
 }
