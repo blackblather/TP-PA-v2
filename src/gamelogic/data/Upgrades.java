@@ -44,7 +44,7 @@ class Upgrades {
     void ExecuteUpgradeAt(int pos, int value) throws IndexOutOfBoundsException{
         upgrade.get(pos).ExecuteEffect(gameDataHandler, value);
     }
-    void ReplaceEffectAt(int pos, Effect newEffect) throws IndexOutOfBoundsException {
+    void ReplaceUpgradeAt(int pos, Effect newEffect) throws IndexOutOfBoundsException {
         upgrade.set(pos, newEffect);
     }
 
