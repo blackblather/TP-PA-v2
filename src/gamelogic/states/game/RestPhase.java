@@ -29,10 +29,10 @@ public class RestPhase extends GameStateAdapter{
     }
 
     @Override
-    public IGameState _RestPhase(int opt, int value) {
+    public IGameState _RestPhase(int opt, int[] additionalInputs) {
         try{
             if(gameDataHandler.CanPayForUpgrade(opt)){
-                gameDataHandler.ExecuteUpgradeAt(opt, value);
+                gameDataHandler.ExecuteUpgradeAt(opt, additionalInputs);
                 gameDataHandler.PayUpgrade(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
             }
             return UpdatedState();

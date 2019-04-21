@@ -1,32 +1,33 @@
 package gamelogic.data;
 
 import java.security.InvalidParameterException;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.InputMismatchException;
 
 class Effect{
     //Private vars
     private int cost;
-    private String description, affectedElement;
-    private Consumer<GameDataHandler> simpleEffect = null;
-    private BiConsumer<GameDataHandler, Integer> effectWithValue = null;
+    private String description;
+    private ISimpleEffect simpleEffect = null;
+    private IEffect effect = null;
+    private ArrayList<String> affectedElements;
 
     //Constructor
-    Effect(int cost, String description, Consumer<GameDataHandler> simpleEffect) throws InvalidParameterException {
+    Effect(int cost, String description, IEffect effect, String ... affectedElements) throws InvalidParameterException {
+        if(effect == null)
+            throw new InvalidParameterException("Effect cannot be null.");
+        this.cost = cost;
+        this.description = description;
+        this.effect = effect;
+        this.affectedElements = new ArrayList<>(Arrays.asList(affectedElements));
+    }
+    Effect(int cost, String description, ISimpleEffect simpleEffect) throws InvalidParameterException {
         if(simpleEffect == null)
             throw new InvalidParameterException("Effect cannot be null.");
         this.cost = cost;
         this.description = description;
         this.simpleEffect = simpleEffect;
-    }
-
-    Effect(int cost, String affectedElement, String description, BiConsumer<GameDataHandler, Integer> effectWithValue) throws InvalidParameterException {
-        if(effectWithValue == null)
-            throw new InvalidParameterException("Effect cannot be null.");
-        this.affectedElement = affectedElement;
-        this.cost = cost;
-        this.description = description;
-        this.effectWithValue = effectWithValue;
     }
 
     //Getters
@@ -36,19 +37,29 @@ class Effect{
     String GetDescription(){
         return description;
     }
-    String GetAffectedElement(){
-        return affectedElement;
+    ArrayList<String> GetAffectedElements(){
+        return affectedElements;
     }
 
-    //Package-protected functions
-    void ExecuteEffect(GameDataHandler gameDataHandler){
-        simpleEffect.accept(gameDataHandler);
+    //Package-Private functions
+    void ExecuteEffect(int ... additionalInputs){
+        if(effect != null){
+            if(additionalInputs.length == affectedElements.size())
+                effect.execute(additionalInputs);
+            else
+                throw new InputMismatchException("Effect needs " + affectedElements.size() + "user-inputs to execute properly");
+        } else
+            throw new IllegalStateException("Effect is not defined");
+
     }
-    void ExecuteEffect(GameDataHandler gameDataHandler, Integer value) throws IndexOutOfBoundsException{
-        effectWithValue.accept(gameDataHandler,value);
+    void ExecuteEffect(){
+        if(simpleEffect != null)
+            simpleEffect.execute();
+        else
+            throw new IllegalStateException("Simple Effect is not defined");
     }
-    boolean NeedsAditionalInput(){
-        return (effectWithValue != null);
+    boolean NeedsAdditionalInputs(){
+        return (effect != null);
     }
 
     //Overrides -> Used mainly in the TextUI

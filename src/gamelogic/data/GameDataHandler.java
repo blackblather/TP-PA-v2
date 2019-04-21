@@ -26,13 +26,14 @@ public class GameDataHandler {
         upgrades = new Upgrades(this);
     }
 
-    //Package-private functions
+    //Package-private functions (used ONLY in upgrades/actions classes, that's why it's package-private and not public)
     PlayerBoard GetPlayerBoard(){
         return playerBoard;
     }
     ShipBoard GetShipBoard(){
         return shipBoard;
     }
+
 
     //------------------------GameSetup-----------------------------
     //Public functions
@@ -85,13 +86,15 @@ public class GameDataHandler {
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
     public boolean UpgradeNeedsAditionalInput(int opt){
-        return (upgrades.GetUpgradeAt(opt-1).NeedsAditionalInput());
+        return (upgrades.GetUpgradeAt(opt-1).NeedsAdditionalInputs());
     }
     public void ExecuteUpgradeAt(int pos){
         upgrades.ExecuteUpgradeAt(pos-1);
     }
-    public void ExecuteUpgradeAt(int pos, int value){
-        upgrades.ExecuteUpgradeAt(pos-1, value-1);
+    public void ExecuteUpgradeAt(int pos, int[] additionalInputs){
+        for(int i = 0; i < additionalInputs.length; i++)
+            additionalInputs[i]--;
+        upgrades.ExecuteUpgradeAt(pos-1, additionalInputs);
     }
 
     //Getters
@@ -116,5 +119,5 @@ public class GameDataHandler {
     public int GetTotalUpgrades(){
         return upgrades.GetUpgrades().size();
     }
-    public String GetUpgradeAffetedElementAt(int opt){ return upgrades.GetUpgradeAt(opt-1).GetAffectedElement(); }
+    public ArrayList<String> GetUpgradeAffetedElementsAt(int opt){ return upgrades.GetUpgradeAt(opt-1).GetAffectedElements(); }
 }

@@ -7,31 +7,31 @@ class Upgrades {
     //Private vars
     private GameDataHandler gameDataHandler;
     private ArrayList<Effect> upgrade = new ArrayList<>(Arrays.asList(
-            new Effect(1, "Add one to Health", (gdh)->gdh.GetPlayerBoard().HealHealthBy(1)),
-            new Effect(1, "Repair one Hull", (gdh)->gdh.GetShipBoard().HealHullBy(1)),
-            new Effect(2, "room", "Build one Organic Detonator", (gdh, val)->{
-                    Room room = gdh.GetShipBoard().GetRooms().get(val);         //Throws exception if it tries to get an invalid position
-                    gdh.GetPlayerBoard().DecrementOrganicDetonatorCounter();    //Throws exception when trying to decrement below 0
-                    room.IncrementOrganicDetonatorCounter();                    //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
-            }),
-            new Effect(4, "crew member", "Add one to Movement", (gdh, val)->{
-                CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
+            new Effect(1, "Add one to Health", ()->gameDataHandler.GetPlayerBoard().HealHealthBy(1)),
+            new Effect(1, "Repair one Hull", ()->gameDataHandler.GetShipBoard().HealHullBy(1)),
+            new Effect(2, "Build one Organic Detonator", (addInputs)->{
+                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs[0]);//Throws exception if it tries to get an invalid position
+                gameDataHandler.GetPlayerBoard().DecrementOrganicDetonatorCounter();    //Throws exception when trying to decrement below 0
+                room.IncrementOrganicDetonatorCounter();                                //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
+            }, "room"),
+            new Effect(4, "Add one to Movement", (addInputs)->{
+                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
                 crewMember.SetMovement(crewMember.GetMovement()+1);
-            }),
-            new Effect(5, "room", "Build one particle Desperser", (gdh, val)->{
-                    Room room = gdh.GetShipBoard().GetRooms().get(val);         //Throws exception if it tries to get an invalid position
-                    gdh.GetPlayerBoard().DecrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
-                    room.IncrementParticleDisperserCounter();                   //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
-            }),
-            new Effect(5, "Gain one Sealed Room Token", (gdh)->gdh.GetPlayerBoard().SetSealedRoomTokens(gdh.GetPlayerBoard().GetSealedRoomTokens()+1)),
-            new Effect(6, "crew member", "Gain one extra Attack Die", (gdh, val)->{
-                    CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
+            }, "crew member"),
+            new Effect(5, "Build one particle Desperser", (addInputs)->{
+                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs[0]);//Throws exception if it tries to get an invalid position
+                gameDataHandler.GetPlayerBoard().DecrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
+                room.IncrementParticleDisperserCounter();                               //Throws exception when trying to increment above Constants.MAX_ORGANIC_DETONATORS (never going to happen on this scenario)
+            }, "room"),
+            new Effect(5, "Gain one Sealed Room Token", ()->gameDataHandler.GetPlayerBoard().SetSealedRoomTokens(gameDataHandler.GetPlayerBoard().GetSealedRoomTokens()+1)),
+            new Effect(6, "Gain one extra Attack Die", (addInputs)->{
+                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
                     crewMember.SetAttack(crewMember.GetAttack()+1);
-            }),
-            new Effect(6, "crew member", "Add 1 to the result of an Attack Dice", (gdh, val) ->{
-                    CrewMember crewMember = gdh.GetPlayerBoard().GetCrewMembers().get(val);
+            }, "crew member"),
+            new Effect(6, "Add 1 to the result of an Attack Dice", (addInputs) ->{
+                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
                     crewMember.SetAttackRollBonus(crewMember.GetAttackRollBonus()+1);
-            })));
+            }, "crew member")));
 
     //Package-protected constructor
     Upgrades(GameDataHandler gameDataHandler){
@@ -39,10 +39,10 @@ class Upgrades {
     }
 
     void ExecuteUpgradeAt(int pos) throws IndexOutOfBoundsException{
-        upgrade.get(pos).ExecuteEffect(gameDataHandler);
+        upgrade.get(pos).ExecuteEffect();
     }
-    void ExecuteUpgradeAt(int pos, int value) throws IndexOutOfBoundsException{
-        upgrade.get(pos).ExecuteEffect(gameDataHandler, value);
+    void ExecuteUpgradeAt(int pos, int[] additionalInputs) throws IndexOutOfBoundsException{
+        upgrade.get(pos).ExecuteEffect(additionalInputs);
     }
     void ReplaceUpgradeAt(int pos, Effect newEffect) throws IndexOutOfBoundsException {
         upgrade.set(pos, newEffect);
