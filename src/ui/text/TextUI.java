@@ -87,39 +87,57 @@ public class TextUI {
 
     //Game
     //Functions that read user-input -> Game
+    private void PrintJourneyPhaseInfos(){
+        HorizontalLine();
+        System.out.println("Journey Phase:");
+        logic.JourneyPhase();
+        System.out.println("Current journey part: " + logic.GetGameDataHandler().GetCurrentJourneyPart());
+    }
+    private void PrintScanningPhaseInfos(){
+        HorizontalLine();
+        System.out.println("Scanning Phase:\nScanning journey part...");
+        logic.ScanningPhase();
+    }
+    private void PrintSpawningPhaseInfos(){
+        HorizontalLine();
+        System.out.println("Spawning Phase:\nSpawning Aliens");
+        logic.SpawnAliensPhase();
+    }
     private void WaitToChooseUpgrades() {
         HorizontalLine();
-        int opt = DisplayMenu("Available Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints()+"\n.........................\n" + ListUpgrades()+"0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
+        int opt = DisplayMenu("Resting Phase:\nAvailable Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints()+"\n.........................\n" + ListUpgrades()+"0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
         if(opt == 0)
             logic.RestPhase();
         else{
             if(logic.GetGameDataHandler().UpgradeNeedsAditionalInput(opt)) {
-                int aditionalInput;
-                System.out.print("Choose the " + logic.GetGameDataHandler().GetUpgradeAffetedElementAt(opt) + " to apply the upgrade to:\nOption: ");
-                aditionalInput = s.nextInt();
-                s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
-                logic.RestPhase(opt, aditionalInput);
+                ArrayList<String> affectedElements = logic.GetGameDataHandler().GetUpgradeAffetedElementsAt(opt);
+                int[] additionalInputs = new int[affectedElements.size()];
+                for(int i = 0; i < affectedElements.size(); i++){
+                    System.out.print("Choose the " + affectedElements.get(i) + " to apply the upgrade to:\nOption: ");
+                    additionalInputs[i] = s.nextInt();
+                    s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
+                }
+                logic.RestPhase(opt, additionalInputs);
             }
             else
                 logic.RestPhase(opt);
         }
     }
+    private void WaitToChooseActions() {
+    }
     private void GameLoop(){
         logic.StartGame();
         while (!(logic.GetGameState() instanceof GameOver) && !(logic.GetGameState() instanceof Win)){
-            if(logic.GetGameState() instanceof JourneyPhase){
-                //TODO: Add text
-                logic.JourneyPhase();
-            } else if(logic.GetGameState() instanceof ScanningPhase){
-                //TODO: Add text
-                logic.ScanningPhase();
-            } else if(logic.GetGameState() instanceof SpawnAliensPhase){
-                //TODO: Add text
-                logic.SpawnAliensPhase();
-            } else if(logic.GetGameState() instanceof RestPhase){
+            if(logic.GetGameState() instanceof JourneyPhase)
+                PrintJourneyPhaseInfos();
+            else if(logic.GetGameState() instanceof ScanningPhase)
+                PrintScanningPhaseInfos();
+            else if(logic.GetGameState() instanceof SpawnAliensPhase)
+                PrintSpawningPhaseInfos();
+            else if(logic.GetGameState() instanceof RestPhase){
                 WaitToChooseUpgrades();
             } else if(logic.GetGameState() instanceof CrewPhase){
-
+                WaitToChooseActions();
             } else if(logic.GetGameState() instanceof AlienPhase){
 
             }
