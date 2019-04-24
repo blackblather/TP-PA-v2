@@ -13,8 +13,8 @@ public class Constants {
     public static final int MAX_CREWMEMBER_MOVEMENT = 3;
     public static final int MAX_CREWMEMBER_ATTACK = 3;
     public static final int MAX_INSPIRATION_POINTS = 12;
-    public static final int MAX_ORGANIC_DETONATORS = 4;
-    public static final int MAX_PARTICLE_DISPERSERS = 2;
+    public static final int INITIAL_ORGANIC_DETONATORS = 4;
+    public static final int INITIAL_PARTICLE_DISPERSERS = 2;
     public static final int MAX_ALIENS = 15;
     public static final int MAX_SEALED_ROOMS = 6;
 }
