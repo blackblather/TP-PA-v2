@@ -9,10 +9,10 @@ class PlayerBoard {
     private int inspirationPoints = 10 ,      //TODO: DEFAULT VALUE = 0
             health = 8,
             maxActionPoints = 5,
-            actionPoints,
+            actionPoints = maxActionPoints,
             alienCounter = Constants.MAX_ALIENS,
-            organicDetonatorCounter = Constants.MAX_ORGANIC_DETONATORS,
-            particleDisperserCounter = Constants.MAX_PARTICLE_DISPERSERS,
+            organicDetonatorCounter = Constants.INITIAL_ORGANIC_DETONATORS,
+            particleDisperserCounter = Constants.INITIAL_ORGANIC_DETONATORS,
             sealedRoomTokens = 0;
 
     //Package-Private functions
@@ -38,12 +38,15 @@ class PlayerBoard {
     int GetSealedRoomTokens(){
         return sealedRoomTokens;
     }
+    int GetActionPoints(){
+        return actionPoints;
+    }
 
     //Setters
     void SetInspirationPoints(int val) throws InvalidParameterException {
         if(val>=0 && val<=Constants.MAX_INSPIRATION_POINTS )
             inspirationPoints = val;
-        else
+        else if(val < 0)
             throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
     }
     void SetSealedRoomTokens(int val){
@@ -75,8 +78,7 @@ class PlayerBoard {
             throw new IllegalStateException("Cant decrement Organic Detonator Counter below 0");
     }
     void IncrementOrganicDetonatorCounter(){
-        if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
-            organicDetonatorCounter++;
+        organicDetonatorCounter++;
     }
     void DecrementParticleDisperserCounter() throws IllegalStateException{
         if(particleDisperserCounter > 0)
@@ -85,7 +87,6 @@ class PlayerBoard {
             throw new IllegalStateException("Cant decrement Particle Disperser Counter below 0");
     }
     void IncrementParticleDisperserCounter(){
-        if(particleDisperserCounter < Constants.MAX_PARTICLE_DISPERSERS)
-            particleDisperserCounter++;
+        particleDisperserCounter++;
     }
 }
