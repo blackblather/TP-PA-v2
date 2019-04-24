@@ -8,6 +8,12 @@ class Room {
     private String name;
     private boolean sealed = false;
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
+    private ArrayList<Room> nextRooms = null;
+
+    //Private functions
+    private boolean IsSealed(){
+        return sealed;
+    }
 
     //Constructor
     Room(Integer id, String name){
@@ -16,9 +22,6 @@ class Room {
     }
 
     //Package-Protected functions
-    private boolean IsSealed(){
-        return sealed;
-    }
     void SealRoom() throws IllegalStateException {
         if(!IsSealed())
             sealed = true;
@@ -30,16 +33,18 @@ class Room {
     }
     void MoveCrewMemberHere(CrewMember crewMember) throws UnsupportedOperationException{
         //Assume que só se pode escolher dos dois crewmembers escolhidos no "SelectCrewMembers" state.
-        //Por causa disso não é preciso escolehr
         if(crewMember.GetRoom() == null || crewMember.GetRoom().GetId() != this.id){
             crewMembers.add(crewMember);
             crewMember.SetRoom(this);
         } else
             throw new UnsupportedOperationException("Can't move a crew member to the same room");
     }
-    void KillAlien(){
-        if(alienCounter-1>=0)
+    boolean KillAlien(){
+        if(alienCounter-1>=0){
             alienCounter--;
+            return true;
+        }
+        return false;
     }
     void DecrementOrganicDetonatorCounter(){
         if(organicDetonatorCounter > 0)
@@ -47,17 +52,18 @@ class Room {
     }
     void IncrementOrganicDetonatorCounter(){
         /*Esta verificação permite que qualquer room tenha Constants.MAX_ORGANIC_DETONATORS detonators (Está mal, mas como preciso de avançar no código e esta função só é chamada enquanto houver
-            organic detonators no playerboard, o programa não crasha. Não tenho tempo para corrigir estes detalhes, mas não estou a comprometer a funcionalidade, apenas a organização do código*/
-        if(organicDetonatorCounter < Constants.MAX_ORGANIC_DETONATORS)
-            organicDetonatorCounter++;
+          organic detonators no playerboard, o programa não crasha. Não tenho tempo para corrigir estes detalhes, mas não estou a comprometer o bom funcionamento do programa (da maneira que o programei),
+          apenas a organização do código*/
+        organicDetonatorCounter++;
+    }
+    void DecrementParticleDisperserCounter() throws IllegalStateException{
+        if(particleDisperserCounter > 0)
+            particleDisperserCounter--;
         else
-            throw new IllegalStateException("Cant increment \"Organic Detonator Counter\" above " + Constants.MAX_ORGANIC_DETONATORS);
+            throw new IllegalStateException("Can't decrement Particle Disperser Counter below 0");
     }
     void IncrementParticleDisperserCounter(){
-        if(particleDisperserCounter < Constants.MAX_PARTICLE_DISPERSERS)
-            particleDisperserCounter++;
-        else
-            throw new IllegalStateException("Cant increment \"Particle Disperser Counter\" above " + Constants.MAX_ORGANIC_DETONATORS);
+        particleDisperserCounter++;
     }
 
     //Getters
@@ -69,5 +75,18 @@ class Room {
     }
     int GetTotalCrewMembers(){
         return crewMembers.size();
+    }
+    int GetAlienCounter(){
+        return alienCounter;
+    }
+    ArrayList<Room> GetNextRooms(){
+        return nextRooms;
+    }
+
+    //Setters
+    void SetNextRooms(ArrayList<Room> nextRooms){
+        //não pode fazer parte do construtor, porque os rooms sao criados quando o ShipBoard é criado, e só depois dos rooms criados e alocados em memória é que posso fazer referencia a eles.
+        if(this.nextRooms == null)
+            this.nextRooms = nextRooms;
     }
 }
