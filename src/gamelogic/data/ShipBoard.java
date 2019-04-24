@@ -1,9 +1,6 @@
 package gamelogic.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,20 +13,7 @@ class ShipBoard {
     private Iterator<String> journeyTracker = journey.iterator();
     private String currentJourneyPart;
     private boolean removeAliensFlag = false;
-    private ArrayList<Room> rooms = new ArrayList<>(Arrays.asList(
-            new Room(1, "Bridge"),
-            new Room(2, "Sick Bay"),
-            new Room(3, "Brig"),
-            new Room(4, "Crew Quarters"),
-            new Room(5, "Conference Room"),
-            new Room(6, "Shuttle Bay"),
-            new Room(7, "Weapons Bay"),
-            new Room(8, "Mess Hall"),
-            new Room(9, "Engineering"),
-            new Room(10, "Astrometrics"),
-            new Room(11, "Holodeck"),
-            new Room(12, "Hydroponics")
-    ));
+    private ArrayList<Room> rooms;
 
     //Private functions
     private boolean IsValidJourneyPart(String part){
@@ -81,6 +65,70 @@ class ShipBoard {
     private boolean ReachedEarth(){
         return !journeyTracker.hasNext();
     }
+    private ArrayList<Room> GetRoomsFromRECURSIVE(Room currentRoom, int movement, int iteration){
+        /* Faço:
+                ArrayList<Room> availableRooms = new ArrayList<>(currentRoom.GetNextRooms());
+           em vez de:
+                ArrayList<Room> availableRooms = currentRoom.GetNextRooms();
+           para alocar espaço para a lista onde vou trabalhar de forma recursiva.
+
+           Se não fizesse isto, estava a alterar directamente a lista de "nextRooms", enquanto iterava sobre ela, e isso
+           causa a excepçao "Concurrent Modification Exception" ao chamar a função "iterator.next()" no ciclo foreach.
+        */
+        ArrayList<Room> availableRooms = new ArrayList<>(currentRoom.GetNextRooms());
+        if(iteration+1<movement)
+            for (Room r : currentRoom.GetNextRooms())
+                availableRooms.addAll(GetRoomsFromRECURSIVE(r, movement,iteration+1));
+        return availableRooms;
+    }
+
+    //Constructor
+    ShipBoard(){
+        rooms = new ArrayList<>(Arrays.asList(
+                new Room(1, "Bridge"),
+                new Room(2, "Sick Bay"),
+                new Room(3, "Brig"),
+                new Room(4, "Crew Quarters"),
+                new Room(5, "Conference Room"),
+                new Room(6, "Shuttle Bay"),
+                new Room(7, "Weapons Bay"),
+                new Room(8, "Mess Hall"),
+                new Room(9, "Engineering"),
+                new Room(10, "Astrometrics"),
+                new Room(11, "Holodeck"),
+                new Room(12, "Hydroponics")
+        ));
+        rooms.get(0).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(4),
+                                                                rooms.get(7))));
+        rooms.get(1).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(7),
+                                                                rooms.get(6),
+                                                                rooms.get(5))));
+        rooms.get(2).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(8),
+                                                                rooms.get(4))));
+        rooms.get(3).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(7),
+                                                                rooms.get(10))));
+        rooms.get(4).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(2),
+                                                                rooms.get(9),
+                                                                rooms.get(7),
+                                                                rooms.get(0))));
+        rooms.get(5).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(9),
+                                                                rooms.get(1))));
+        rooms.get(6).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(1),
+                                                                rooms.get(10))));
+        rooms.get(7).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(0),
+                                                                rooms.get(4),
+                                                                rooms.get(1),
+                                                                rooms.get(3))));
+        rooms.get(8).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(2),
+                                                                rooms.get(11))));
+        rooms.get(9).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(4),
+                                                                rooms.get(11),
+                                                                rooms.get(5))));
+        rooms.get(10).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(3),
+                                                                rooms.get(6))));
+        rooms.get(11).SetNextRooms(new ArrayList<>(Arrays.asList(rooms.get(8),
+                                                                rooms.get(9))));
+    }
 
     //Package-Protected functions
     void MoveCrewMemberToRoom(int roomPos, CrewMember crewMember) throws IndexOutOfBoundsException, UnsupportedOperationException {
@@ -105,10 +153,10 @@ class ShipBoard {
             throw new UnsupportedOperationException("Reached the end of the journey");
         }
     }
-    void SpawnAliens(ToIntFunction<Integer> RollDice, int nrOfAliensToSpawn){
+    void SpawnAliens(ToIntFunction<Integer> rollDice, int nrOfAliensToSpawn){
         int roll;
         for(int i = 0; i < nrOfAliensToSpawn; i++){
-            roll = RollDice.applyAsInt(2);
+            roll = rollDice.applyAsInt(2);
             rooms.get(roll).SpawnAlien();
         }
     }
@@ -145,4 +193,24 @@ class ShipBoard {
     ArrayList<Room> GetRooms(){
         return rooms;
     }
+    ArrayList<Room> GetRoomsFrom(Room currentRoom, int movement){
+        if(movement == 0)
+            return rooms;
+        else {
+            ArrayList<Room> availableRooms = GetRoomsFromRECURSIVE(currentRoom, movement, 0);
+            Set<Room> setWithoutDuplicates = new LinkedHashSet<>(availableRooms);
+
+            // Clear the list
+            availableRooms.clear();
+
+            // add the elements of set
+            // with no duplicates to the list
+            availableRooms.addAll(setWithoutDuplicates);
+
+            //Elimina o room onde o crewmember seleccionado está (não se pode mover para o mesmo lugar)
+            availableRooms.remove(currentRoom);
+            return availableRooms;
+        }
+    }
+    //GetRoomsFrom(room1, 2, 0)
 }
