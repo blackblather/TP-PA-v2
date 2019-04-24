@@ -58,7 +58,16 @@ public class Logic {
     public void RestPhase(int opt){
         gameState = gameState._RestPhase(opt);
     }
-    public void RestPhase(int opt, int value){
-        gameState = gameState._RestPhase(opt, value);
+    public void RestPhase(int opt, int[] additionalInputs){
+        gameState = gameState._RestPhase(opt, additionalInputs);
+    }
+    public void CrewPhase(){
+        gameState = gameState._CrewPhase();
+    }
+    public void CrewPhase(int opt){
+        gameState = gameState._CrewPhase(opt);
+    }
+    public void CrewPhase(int opt, int[] additionalInputs){
+        gameState = gameState._CrewPhase(opt, additionalInputs);
     }
 }
