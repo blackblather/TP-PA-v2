@@ -38,6 +38,8 @@ public class RestPhase extends GameStateAdapter{
             return UpdatedState();
         } catch (IndexOutOfBoundsException ex){
             return this;
+        } catch (IllegalStateException ex){
+            return this;
         }
     }
 }
