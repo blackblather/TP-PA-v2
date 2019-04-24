@@ -42,7 +42,7 @@ class Effect{
     }
 
     //Package-Private functions
-    void ExecuteEffect(int ... additionalInputs){
+    void ExecuteEffect(int[] additionalInputs){
         if(effect != null){
             if(additionalInputs.length == affectedElements.size())
                 effect.execute(additionalInputs);
