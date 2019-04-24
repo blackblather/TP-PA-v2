@@ -13,6 +13,7 @@ public class GameDataHandler {
     private ShipBoard shipBoard;
     private Deck deck;
     private Upgrades upgrades;
+    private Actions actions;
 
     //Private Lambdas
     //Roll rangre = [NrOfDice, (NrOfDice*6)+1]
@@ -24,6 +25,7 @@ public class GameDataHandler {
         playerBoard = new PlayerBoard();
         deck = new Deck();
         upgrades = new Upgrades(this);
+        actions = new Actions(this, rollDiceLambda);
     }
 
     //Package-private functions (used ONLY in upgrades/actions classes, that's why it's package-private and not public)
@@ -85,6 +87,10 @@ public class GameDataHandler {
     public boolean PlayerIsAlive(){
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
+    //Upgrades
+    public boolean CanPayForUpgrade(int opt){
+        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) >= 0);
+    }
     public boolean UpgradeNeedsAditionalInput(int opt){
         return (upgrades.GetUpgradeAt(opt-1).NeedsAdditionalInputs());
     }
@@ -92,23 +98,40 @@ public class GameDataHandler {
         upgrades.ExecuteUpgradeAt(pos-1);
     }
     public void ExecuteUpgradeAt(int pos, int[] additionalInputs){
-        for(int i = 0; i < additionalInputs.length; i++)
+        for(int i = 0; i < additionalInputs.length; i++)    //Decrements additionalInputs, because arrays are zero-based, but user options are one-based
             additionalInputs[i]--;
         upgrades.ExecuteUpgradeAt(pos-1, additionalInputs);
     }
+    public void PayUpgrade(int opt) throws InvalidParameterException {
+        playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
+    }
+    //Actions
+    public boolean CanPayForAction(int opt){
+        return ((playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost()) >= 0);
+    }
+    public boolean ActionNeedsAditionalInput(int opt){
+        return (actions.GetActionAt(opt-1).NeedsAdditionalInputs());
+    }
+    public void ExecuteActionAt(int pos){
+        actions.ExecuteActionAt(pos-1);
+    }
+    public void ExecuteActionAt(int pos, int[] additionalInputs){
+        for(int i = 0; i < additionalInputs.length; i++)    //Decrements additionalInputs, because arrays are zero-based, but user options are one-based
+            additionalInputs[i]--;
+        actions.ExecuteActionAt(pos-1, additionalInputs);
+    }
+    public void PayAction(int opt) throws InvalidParameterException {
+        playerBoard.SetInspirationPoints(playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost());
+    }
+
 
     //Getters
     public String GetCurrentJourneyPart(){
         return shipBoard.GetCurrentJourneyPart();
     }
+    //Upgrades
     public int GetInsirationPoints(){
         return playerBoard.GetIspirationPoints();
-    }
-    public boolean CanPayForUpgrade(int opt){
-        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) >= 0);
-    }
-    public void PayUpgrade(int opt) throws InvalidParameterException {
-        playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
     }
     public ArrayList<String> GetUpgradesDesciption() {
         ArrayList<String> upgradesDesciption = new ArrayList<>();
@@ -120,4 +143,18 @@ public class GameDataHandler {
         return upgrades.GetUpgrades().size();
     }
     public ArrayList<String> GetUpgradeAffetedElementsAt(int opt){ return upgrades.GetUpgradeAt(opt-1).GetAffectedElements(); }
+    //Actions
+    public int GetActionPoints(){
+        return playerBoard.GetActionPoints();
+    }
+    public ArrayList<String> GetActionsDesciption() {
+        ArrayList<String> actionsDesciption = new ArrayList<>();
+        for(Effect e : actions.GetActions())
+            actionsDesciption.add(e.toString());
+        return actionsDesciption;
+    }
+    public int GetTotalActions(){
+        return actions.GetActions().size();
+    }
+    public ArrayList<String> GetActionAffetedElementsAt(int opt){ return actions.GetActionAt(opt-1).GetAffectedElements(); }
 }
