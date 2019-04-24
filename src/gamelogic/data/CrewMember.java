@@ -48,10 +48,10 @@ public class CrewMember {
     public String GetName(){
         return name;
     }
-    public Integer GetMovement(){
+    public int GetMovement(){
         return movement;
     }
-    public Integer GetAttack(){
+    public int GetAttack(){
         return attack;
     }
     public Integer GetMinimumAttackRoll(){
