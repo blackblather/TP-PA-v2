@@ -42,6 +42,15 @@ public class TextUI {
             retVal.append("Upgrade ").append(i++).append(":\n").append(s).append("\n.........................\n");
         return retVal.toString();
     }
+    private String ListActions(){
+        ArrayList<String> actionsDesciption = logic.GetGameDataHandler().GetActionsDesciption();
+        int i = 1;
+        StringBuilder retVal = new StringBuilder();
+        for(String s : actionsDesciption)
+            retVal.append("Action ").append(i++).append(":\n").append(s).append("\n.........................\n");
+        return retVal.toString();
+    }
+
     private void HorizontalLine() {
         System.out.println("--------------------------------------------------");
     }
@@ -105,25 +114,41 @@ public class TextUI {
     }
     private void WaitToChooseUpgrades() {
         HorizontalLine();
-        int opt = DisplayMenu("Resting Phase:\nAvailable Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints()+"\n.........................\n" + ListUpgrades()+"0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
-        if(opt == 0)
+        int opt = DisplayMenu("Resting Phase:\nAvailable Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints() + "\n.........................\n" + ListUpgrades() + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
+        if (opt == 0)
             logic.RestPhase();
-        else{
-            if(logic.GetGameDataHandler().UpgradeNeedsAditionalInput(opt)) {
+        else {
+            if (logic.GetGameDataHandler().UpgradeNeedsAditionalInput(opt)) {
                 ArrayList<String> affectedElements = logic.GetGameDataHandler().GetUpgradeAffetedElementsAt(opt);
                 int[] additionalInputs = new int[affectedElements.size()];
-                for(int i = 0; i < affectedElements.size(); i++){
-                    System.out.print("Choose the " + affectedElements.get(i) + " to apply the upgrade to:\nOption: ");
+                for (int i = 0; i < affectedElements.size(); i++) {
+                    System.out.print("Choose the " + affectedElements.get(i) + ":\nOption: ");
                     additionalInputs[i] = s.nextInt();
                     s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
                 }
                 logic.RestPhase(opt, additionalInputs);
-            }
-            else
+            } else
                 logic.RestPhase(opt);
         }
     }
     private void WaitToChooseActions() {
+        HorizontalLine();
+        int opt = DisplayMenu("Crew Phase:\nAvailable Action Points: " + logic.GetGameDataHandler().GetActionPoints() + "\n.........................\n" + ListActions() + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalActions());
+        if (opt == 0)
+            logic.CrewPhase();
+        else {
+            if (logic.GetGameDataHandler().ActionNeedsAditionalInput(opt)) {
+                ArrayList<String> affectedElements = logic.GetGameDataHandler().GetActionAffetedElementsAt(opt);
+                int[] additionalInputs = new int[affectedElements.size()];
+                for (int i = 0; i < affectedElements.size(); i++) {
+                    System.out.print("Choose the " + affectedElements.get(i) + ":\nOption: ");
+                    additionalInputs[i] = s.nextInt();
+                    s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
+                }
+                logic.CrewPhase(opt, additionalInputs);
+            } else
+                logic.CrewPhase(opt);
+        }
     }
     private void GameLoop(){
         logic.StartGame();
