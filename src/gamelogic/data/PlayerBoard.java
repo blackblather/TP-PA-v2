@@ -6,7 +6,7 @@ import java.util.ArrayList;
 class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private int inspirationPoints = 10 ,      //TODO: DEFAULT VALUE = 0
+    private int inspirationPoints = 0,
             health = 8,
             maxActionPoints = 5,
             actionPoints = maxActionPoints,
@@ -46,6 +46,12 @@ class PlayerBoard {
     void SetInspirationPoints(int val) throws InvalidParameterException {
         if(val>=0 && val<=Constants.MAX_INSPIRATION_POINTS )
             inspirationPoints = val;
+        else if(val < 0)
+            throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
+    }
+    void SetActionPoints(int val) throws InvalidParameterException {
+        if(val>=0 && val<=maxActionPoints)
+            actionPoints = val;
         else if(val < 0)
             throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
     }
