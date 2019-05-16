@@ -212,5 +212,4 @@ class ShipBoard {
             return availableRooms;
         }
     }
-    //GetRoomsFrom(room1, 2, 0)
 }

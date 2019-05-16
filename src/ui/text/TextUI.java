@@ -1,7 +1,6 @@
 package ui.text;
 
 import gamelogic.Logic;
-import gamelogic.data.CrewMember;
 import gamelogic.states.gameSetup.*;
 import gamelogic.states.game.*;
 
@@ -25,14 +24,11 @@ public class TextUI {
         }while(opt < optMin || opt > optMax);
         return opt;
     }
-    private void PrintDeck(){
-        int i = 1;
+    private void ListDeck(){
+        ArrayList<String> availableCrewMembers = logic.GetGameDataHandler().GetListDeckAvailableCrewMembers();
         System.out.println("Available Crew Members:");
-        for (CrewMember c : logic.GetGameDataHandler().GetDeck().GetCards()) {
-            if(c.IsAvailable())
-                System.out.println("Crew Member " + i + ":\n" + c.toString()+"\n.........................");
-            i++;
-        }
+        for(String s : availableCrewMembers)
+            System.out.println(s);
     }
     private String ListUpgrades(){
         ArrayList<String> upgradesDesciption = logic.GetGameDataHandler().GetUpgradesDesciption();
@@ -81,7 +77,7 @@ public class TextUI {
         int ChosenCrewMembersPos = logic.GetGameDataHandler().GetTotalChosenCrewMembers() + 1;
         String FirstOrSecond = ChosenCrewMembersPos + (ChosenCrewMembersPos == 1?"st":"nd");
 
-        PrintDeck();
+        ListDeck();
         int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, logic.GetGameDataHandler().GetTotalDeckCards());
         logic.SelectCrewMembers(opt);
     }
@@ -168,9 +164,10 @@ public class TextUI {
             }
         }
         if(logic.GetGameState() instanceof GameOver)
-            WaitInitialMenuInput();
+            System.out.println("Game over...");
         else if(logic.GetGameState() instanceof Win)
-            WaitJourneyChoice();
+            System.out.println("Congratulations, you've reached Earth!");
+        logic.EndGame();
     }
 
     //Public function to call in the User Interfaces

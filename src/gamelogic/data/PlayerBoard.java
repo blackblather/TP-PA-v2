@@ -6,14 +6,14 @@ import java.util.ArrayList;
 class PlayerBoard {
     //Private vars
     private ArrayList<CrewMember> crewMembers = new ArrayList<>();
-    private int inspirationPoints = 0,
-            health = 8,
-            maxActionPoints = 5,
+    private int inspirationPoints = Constants.INITIAL_INSPIRATION_POINTS,
+            health = Constants.INITIAL_HEALTH,
+            maxActionPoints = Constants.INITIAL_MAX_ACTION_POINTS,
             actionPoints = maxActionPoints,
             alienCounter = Constants.MAX_ALIENS,
             organicDetonatorCounter = Constants.INITIAL_ORGANIC_DETONATORS,
-            particleDisperserCounter = Constants.INITIAL_ORGANIC_DETONATORS,
-            sealedRoomTokens = 0;
+            particleDisperserCounter = Constants.INITIAL_PARTICLE_DISPERSERS,
+            sealedRoomTokens = Constants.INITIAL_SEALED_ROOMS;
 
     //Package-Private functions
     String CrewMemberToStringAt(int pos) throws IndexOutOfBoundsException{
@@ -56,10 +56,10 @@ class PlayerBoard {
             throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
     }
     void SetSealedRoomTokens(int val){
-        if(val>=0 && val<=Constants.MAX_SEALED_ROOMS )
+        if(val>=0)
             sealedRoomTokens = val;
         else
-            throw new InvalidParameterException("The number of sealed room tokens must be between 0 and " + Constants.MAX_SEALED_ROOMS);
+            throw new InvalidParameterException("The number of sealed room tokens must be greater then 0");
     }
     int DecreaseAlienCounterBy(int ammount){
         if(alienCounter-ammount >= 0)

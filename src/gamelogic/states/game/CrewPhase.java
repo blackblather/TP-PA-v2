@@ -1,6 +1,7 @@
 package gamelogic.states.game;
 
 import gamelogic.data.GameDataHandler;
+import gamelogic.data.TrapKilledMemberException;
 
 public class CrewPhase extends GameStateAdapter {
     CrewPhase(GameDataHandler gameDataHandler) {
@@ -38,6 +39,10 @@ public class CrewPhase extends GameStateAdapter {
             return UpdatedState();
         } catch (IndexOutOfBoundsException ex){
             return this;
+        } catch (IllegalStateException ex){
+            return this;
+        } catch (TrapKilledMemberException ex){
+            return new GameOver(gameDataHandler);
         }
     }
 }

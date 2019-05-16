@@ -2,13 +2,13 @@ package gamelogic.data;
 
 import java.util.ArrayList;
 
-public class Deck {
+class Deck {
     private ArrayList<CrewMember> cards = new ArrayList<>(12);
     Deck(){
-        cards.add(new CrewMember("Captain",1, 1, 3));
-        cards.add(new CrewMember("Transporter Chief",0, 1));
+        cards.add(new CrewMember(1,"Captain",1, 1, 3));
+        cards.add(new CrewMember(2,"Transporter Chief",0, 1));
     }
-    public ArrayList<CrewMember> GetCards(){
+    ArrayList<CrewMember> GetCards(){
         return cards;
     }
     CrewMember ChooseCardAt(int pos) throws IndexOutOfBoundsException, IllegalAccessException {

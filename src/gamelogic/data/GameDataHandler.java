@@ -65,12 +65,15 @@ public class GameDataHandler {
             total += r.GetTotalCrewMembers();
         return total;
     }
+    public ArrayList<String> GetListDeckAvailableCrewMembers(){
+        ArrayList<String> info = new ArrayList<>();
+        for (CrewMember c : deck.GetCards())
+            if(c.IsAvailable())
+                info.add("Crew Member " + c.GetId() + ":\n" + c.toString()+"\n.........................");
+        return info;
+    }
     public String GetChosenCrewMemberToStringAt(int pos){
         return playerBoard.CrewMemberToStringAt(pos);
-    }
-    public Deck GetDeck()
-    {
-        return deck;
     }
 
 
@@ -87,6 +90,7 @@ public class GameDataHandler {
     public boolean PlayerIsAlive(){
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
+
     //Upgrades
     public boolean CanPayForUpgrade(int opt){
         return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) >= 0);
@@ -121,7 +125,7 @@ public class GameDataHandler {
         actions.ExecuteActionAt(pos-1, additionalInputs);
     }
     public void PayAction(int opt) throws InvalidParameterException {
-        playerBoard.SetInspirationPoints(playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost());
+        playerBoard.SetActionPoints(playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost());
     }
 
 

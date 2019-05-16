@@ -8,6 +8,8 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
         this.gameDataHandler = gameDataHandler;
     }
 
+    //TODO: As classes da maquina de estados devem chamar os métodos com o nome dos estados seguintes
+
     //Estes métodos estão aqui para caso se use um objecto de uma classe filha para chamar um método que não se deva, o estado nao mudar
     @Override
     public IGameSetupState _NewGame() {

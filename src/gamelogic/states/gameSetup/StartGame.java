@@ -10,4 +10,9 @@ public class StartGame extends GameSetupStateAdapter {
     public IGameSetupState _StartGame() {
         return this;
     }
+    @Override
+    public IGameSetupState _EndGame() {
+        gameDataHandler = new GameDataHandler();
+        return new NewGame(gameDataHandler);
+    }
 }

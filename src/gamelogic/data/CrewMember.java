@@ -2,10 +2,10 @@ package gamelogic.data;
 
 import java.security.InvalidParameterException;
 
-public class CrewMember {
+class CrewMember {
     //Private vars
     private String name;
-    private int movement, attack, minimumAttackRoll = 5, attackRollBonus = 0;    //1 of attack -> means 1 D6 die
+    private int id, movement, attack, minimumAttackRoll = 5, attackRollBonus = 0;    //1 of attack -> means 1 D6 die
     private Room currentRoom;
     private boolean isAvailable = true;
 
@@ -19,15 +19,17 @@ public class CrewMember {
     }
 
     //Constrcutor
-    CrewMember(String name, Integer movement, Integer attack){
+    CrewMember(int id, String name, Integer movement, Integer attack){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
+            this.id = id;
             this.name = name;
             this.movement = movement;
             this.attack = attack;
         }
     }
-    CrewMember(String name, Integer movement, Integer attack, Integer minimumAttackRoll){
+    CrewMember(int id, String name, Integer movement, Integer attack, Integer minimumAttackRoll){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
+            this.id = id;
             this.name = name;
             this.movement = movement;
             this.attack = attack;
@@ -45,19 +47,22 @@ public class CrewMember {
     }
 
     //Getters
-    public String GetName(){
+    int GetId(){
+        return id;
+    }
+    String GetName(){
         return name;
     }
-    public int GetMovement(){
+    int GetMovement(){
         return movement;
     }
-    public int GetAttack(){
+    int GetAttack(){
         return attack;
     }
-    public Integer GetMinimumAttackRoll(){
+    Integer GetMinimumAttackRoll(){
         return minimumAttackRoll;
     }
-    public boolean IsAvailable(){
+    boolean IsAvailable(){
         return isAvailable;
     }
     Room GetRoom(){

@@ -37,8 +37,13 @@ class Room {
             crewMembers.add(crewMember);
             crewMember.SetRoom(this);
         } else
-            throw new UnsupportedOperationException("Can't move a crew member to the same room");
+            throw new UnsupportedOperationException("Can't move a crew member " + crewMember.GetName() + " to the same room");
     }
+    void RemoveCrewMemberFromHere(CrewMember crewMember) throws UnsupportedOperationException{
+        if(!crewMembers.remove(crewMember))
+            throw new UnsupportedOperationException("Can't remove a crew member " + crewMember.GetName() + " from room #" + this.id);
+    }
+
     boolean KillAlien(){
         if(alienCounter-1>=0){
             alienCounter--;
@@ -49,18 +54,17 @@ class Room {
     void DecrementOrganicDetonatorCounter(){
         if(organicDetonatorCounter > 0)
             organicDetonatorCounter--;
+        else
+            throw new IllegalStateException("Room has no organic detonators.");
     }
     void IncrementOrganicDetonatorCounter(){
-        /*Esta verificação permite que qualquer room tenha Constants.MAX_ORGANIC_DETONATORS detonators (Está mal, mas como preciso de avançar no código e esta função só é chamada enquanto houver
-          organic detonators no playerboard, o programa não crasha. Não tenho tempo para corrigir estes detalhes, mas não estou a comprometer o bom funcionamento do programa (da maneira que o programei),
-          apenas a organização do código*/
         organicDetonatorCounter++;
     }
     void DecrementParticleDisperserCounter() throws IllegalStateException{
         if(particleDisperserCounter > 0)
             particleDisperserCounter--;
         else
-            throw new IllegalStateException("Can't decrement Particle Disperser Counter below 0");
+            throw new IllegalStateException("Room has no particle dispersers.");
     }
     void IncrementParticleDisperserCounter(){
         particleDisperserCounter++;
