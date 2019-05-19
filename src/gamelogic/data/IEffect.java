@@ -1,6 +1,8 @@
 package gamelogic.data;
 
+import java.util.List;
+
 @FunctionalInterface
 interface IEffect {
-    void execute(int[] inputs);
+    void execute(List<Integer> inputs);
 }

@@ -13,6 +13,6 @@ public class StartGame extends GameSetupStateAdapter {
     @Override
     public IGameSetupState _EndGame() {
         gameDataHandler = new GameDataHandler();
-        return new NewGame(gameDataHandler);
+        return new InitialMenu(gameDataHandler);
     }
 }

@@ -1,20 +1,27 @@
 package gamelogic.data;
 
+import gamelogic.states.game.IGameState;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.ToIntFunction;
 
-/*TODO: Maybe só inicializar o playerBoard e o shipBoard no inicio do jogo, para evitar andar a criar vars e a mudar os saus
-        seus parametros depois de inicializadas. Por essa razão é que se costuma fazer override aos construtores default.*/
 public class GameDataHandler {
+    //Private classes
+    private class EffectBuffer{
+        public Effect effect; //Preencher esta variavel com o estado que está a ser manipulado
+        public int type;
+    }
+
     //Private vars
     private PlayerBoard playerBoard;
     private ShipBoard shipBoard;
     private Deck deck;
     private Upgrades upgrades;
     private Actions actions;
-
+    private EffectBuffer effectBuffer = new EffectBuffer();
     //Private Lambdas
     //Roll rangre = [NrOfDice, (NrOfDice*6)+1]
     private final ToIntFunction<Integer> rollDiceLambda = (NrOfDice) -> (ThreadLocalRandom.current().nextInt(NrOfDice, (NrOfDice*6)+1))-1;
@@ -91,74 +98,89 @@ public class GameDataHandler {
         return (shipBoard.GetHull() >= 1 && playerBoard.GetHealth() >= 1);
 }                 //TODO: Use function in Alien Phase
 
-    //Upgrades
-    public boolean CanPayForUpgrade(int opt){
-        return ((playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost()) >= 0);
+    //Effect Buffer
+    public void SetEffectBuffer(int type, int opt){
+        effectBuffer.type = type;
+        switch (effectBuffer.type){
+            case 0: effectBuffer.effect = upgrades.GetUpgradeAt(opt); break;
+            case 1: effectBuffer.effect = actions.GetActionAt(opt); break;
+            default: effectBuffer = null; break;
+        }
     }
-    public boolean UpgradeNeedsAditionalInput(int opt){
-        return (upgrades.GetUpgradeAt(opt-1).NeedsAdditionalInputs());
+    public void AddInputToEffectBuffer(int opt){
+        effectBuffer.effect.AddInputToBuffer(opt);
     }
-    public void ExecuteUpgradeAt(int pos){
-        upgrades.ExecuteUpgradeAt(pos-1);
+    public boolean CanPayForEffectBuffer(){
+        switch (effectBuffer.type) {
+            case 0: return (playerBoard.GetIspirationPoints() - effectBuffer.effect.GetCost()) >= 0;
+            case 1: return (playerBoard.GetActionPoints() - effectBuffer.effect.GetCost()) >= 0;
+            default: return false;
+        }
     }
-    public void ExecuteUpgradeAt(int pos, int[] additionalInputs){
-        for(int i = 0; i < additionalInputs.length; i++)    //Decrements additionalInputs, because arrays are zero-based, but user options are one-based
-            additionalInputs[i]--;
-        upgrades.ExecuteUpgradeAt(pos-1, additionalInputs);
+    public boolean EffectBufferNeedsAdditionalInput(){
+        return effectBuffer.effect.NeedsAdditionalInputs();
     }
-    public void PayUpgrade(int opt) throws InvalidParameterException {
-        playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - upgrades.GetUpgradeAt(opt-1).GetCost());
+    public boolean EffectBufferNeedsCrewMemberInput(){
+        return effectBuffer.effect.NeedsCrewMemberInputs();
     }
-    //Actions
-    public boolean CanPayForAction(int opt){
-        return ((playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost()) >= 0);
+    public boolean EffectBufferNeedsRoomInput(){
+        return effectBuffer.effect.NeedsRoomInputs();
     }
-    public boolean ActionNeedsAditionalInput(int opt){
-        return (actions.GetActionAt(opt-1).NeedsAdditionalInputs());
+    public boolean EffectBufferNeedsTrapInput(){
+        return effectBuffer.effect.NeedsTrapInputs();
     }
-    public void ExecuteActionAt(int pos){
-        actions.ExecuteActionAt(pos-1);
+    public void ExecuteEffectBuffer(){
+        effectBuffer.effect.ExecuteEffect();
     }
-    public void ExecuteActionAt(int pos, int[] additionalInputs){
-        for(int i = 0; i < additionalInputs.length; i++)    //Decrements additionalInputs, because arrays are zero-based, but user options are one-based
-            additionalInputs[i]--;
-        actions.ExecuteActionAt(pos-1, additionalInputs);
+    public void PayEffectBuffer() throws InvalidParameterException {
+        switch (effectBuffer.type){
+            case 0: playerBoard.SetInspirationPoints(playerBoard.GetIspirationPoints() - effectBuffer.effect.GetCost()); break;
+            case 1: playerBoard.SetActionPoints(playerBoard.GetActionPoints() - effectBuffer.effect.GetCost()); break;
+        }
     }
-    public void PayAction(int opt) throws InvalidParameterException {
-        playerBoard.SetActionPoints(playerBoard.GetActionPoints() - actions.GetActionAt(opt-1).GetCost());
-    }
-
 
     //Getters
     public String GetCurrentJourneyPart(){
         return shipBoard.GetCurrentJourneyPart();
     }
+    public ArrayList<String> GetDesciptionArray(String type) {
+        ArrayList<String> desciption = new ArrayList<>();
+        switch (type){
+            case "Crew member": {
+                for(CrewMember c : playerBoard.GetCrewMembers())
+                    desciption.add(c.toString());
+            }break;
+            case "Room": {
+                for(Room r : shipBoard.GetRooms())
+                    desciption.add(r.GetName());
+            }break;
+            case "Upgrade": {
+                for(Effect e : upgrades.GetUpgrades())
+                    desciption.add(e.toString());
+            }break;
+            case "Action": {
+                for(Effect e : actions.GetActions())
+                    desciption.add(e.toString());
+            }break;
+            case "Trap": desciption = new ArrayList<>(Arrays.asList("Particle Disperser", "Organic Detonator")); break;
+        }
+        return desciption;
+    }
+    public int GetEffectBufferType(){
+        return effectBuffer.type;
+    }
     //Upgrades
     public int GetInsirationPoints(){
         return playerBoard.GetIspirationPoints();
     }
-    public ArrayList<String> GetUpgradesDesciption() {
-        ArrayList<String> upgradesDesciption = new ArrayList<>();
-        for(Effect e : upgrades.GetUpgrades())
-            upgradesDesciption.add(e.toString());
-        return upgradesDesciption;
-    }
     public int GetTotalUpgrades(){
         return upgrades.GetUpgrades().size();
     }
-    public ArrayList<String> GetUpgradeAffetedElementsAt(int opt){ return upgrades.GetUpgradeAt(opt-1).GetAffectedElements(); }
     //Actions
     public int GetActionPoints(){
         return playerBoard.GetActionPoints();
     }
-    public ArrayList<String> GetActionsDesciption() {
-        ArrayList<String> actionsDesciption = new ArrayList<>();
-        for(Effect e : actions.GetActions())
-            actionsDesciption.add(e.toString());
-        return actionsDesciption;
-    }
     public int GetTotalActions(){
         return actions.GetActions().size();
     }
-    public ArrayList<String> GetActionAffetedElementsAt(int opt){ return actions.GetActionAt(opt-1).GetAffectedElements(); }
 }

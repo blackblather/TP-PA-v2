@@ -16,35 +16,25 @@ class Upgrades {
                 gameDataHandler.GetPlayerBoard().IncrementOrganicDetonatorCounter();
             }),
             new Effect(4, "Add one to Movement", (addInputs)->{
-                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
+                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs.get(0));
                 crewMember.SetMovement(crewMember.GetMovement()+1);
-            }, "crew member"),
+            }, 1, 0,0),
             new Effect(5, "Build one particle Desperser", ()->{
                 gameDataHandler.GetPlayerBoard().IncrementParticleDisperserCounter();   //Throws exception when trying to decrement below 0
             }),
             new Effect(5, "Gain one Sealed Room Token", ()->gameDataHandler.GetPlayerBoard().SetSealedRoomTokens(gameDataHandler.GetPlayerBoard().GetSealedRoomTokens()+1)),
             new Effect(6, "Gain one extra Attack Die", (addInputs)->{
-                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
+                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs.get(0));
                     crewMember.SetAttack(crewMember.GetAttack()+1);
-            }, "crew member"),
+            }, 1, 0,0),
             new Effect(6, "Add 1 to the result of an Attack Dice", (addInputs) ->{
-                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
+                    CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs.get(0));
                     crewMember.SetAttackRollBonus(crewMember.GetAttackRollBonus()+1);
-            }, "crew member")));
+            }, 1, 0,0)));
 
     //Package-protected constructor
     Upgrades(GameDataHandler gameDataHandler){
         this.gameDataHandler = gameDataHandler;
-    }
-
-    void ExecuteUpgradeAt(int pos) throws IndexOutOfBoundsException{
-        upgrade.get(pos).ExecuteEffect();
-    }
-    void ExecuteUpgradeAt(int pos, int[] additionalInputs) throws IndexOutOfBoundsException{
-        upgrade.get(pos).ExecuteEffect(additionalInputs);
-    }
-    void ReplaceUpgradeAt(int pos, Effect newEffect) throws IndexOutOfBoundsException {
-        upgrade.set(pos, newEffect);
     }
 
     //Getters

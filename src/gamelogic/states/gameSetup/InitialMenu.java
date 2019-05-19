@@ -2,13 +2,13 @@ package gamelogic.states.gameSetup;
 
 import gamelogic.data.GameDataHandler;
 
-public class NewGame extends GameSetupStateAdapter {
-    public NewGame(GameDataHandler gameDataHandler) {
+public class InitialMenu extends GameSetupStateAdapter {
+    public InitialMenu(GameDataHandler gameDataHandler) {
         super(gameDataHandler);
     }
 
     @Override
-    public IGameSetupState _NewGame() {
+    public IGameSetupState NewGame() {
         return new ChooseJourney(gameDataHandler);
     }
     @Override

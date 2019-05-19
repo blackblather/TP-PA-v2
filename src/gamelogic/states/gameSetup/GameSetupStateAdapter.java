@@ -12,7 +12,7 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
 
     //Estes métodos estão aqui para caso se use um objecto de uma classe filha para chamar um método que não se deva, o estado nao mudar
     @Override
-    public IGameSetupState _NewGame() {
+    public IGameSetupState NewGame() {
         return this;
     }
 

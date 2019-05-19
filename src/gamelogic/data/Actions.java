@@ -10,18 +10,18 @@ class Actions {
     private ToIntFunction<Integer> rollDice;
     private ArrayList<Effect> action = new ArrayList<>(Arrays.asList(
             new Effect(1, "Move", (addInputs)->{
-                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
+                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs.get(0));
                 ArrayList<Room> availableRooms = gameDataHandler.GetShipBoard().GetRoomsFrom(crewMember.GetRoom(), crewMember.GetMovement());
-                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs[1]);
+                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs.get(1));
                 int index;
                 if((index = availableRooms.indexOf(room)) >= 0){
                     crewMember.GetRoom().RemoveCrewMemberFromHere(crewMember);
                     availableRooms.get(index).MoveCrewMemberHere(crewMember);
                 }
-            }, "crew member", "room"),
+            }, 1, 1,0),
             new Effect(1, "Attack", (addInputs)->{
                 //Só executa o efeito se houver >=1 alien no room
-                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs[0]);
+                CrewMember crewMember = gameDataHandler.GetPlayerBoard().GetCrewMembers().get(addInputs.get(0));
                 Room room = crewMember.GetRoom();
                 PlayerBoard playerBoard = gameDataHandler.GetPlayerBoard();
                 int attack = crewMember.GetAttack(),
@@ -37,11 +37,11 @@ class Actions {
                         }
                 } else
                     throw new IllegalStateException("Room has no aliens");
-            }, "crew member"),
+            }, 1,0,0),
             new Effect(1, "Set Trap",  (addInputs)->{
                 PlayerBoard playerBoard = gameDataHandler.GetPlayerBoard();
-                Room room = playerBoard.GetCrewMembers().get(addInputs[0]).GetRoom();
-                switch (addInputs[1]){
+                Room room = playerBoard.GetCrewMembers().get(addInputs.get(0)).GetRoom();
+                switch (addInputs.get(1)){
                     case 0:{
                         playerBoard.DecrementParticleDisperserCounter();    //Throws exception when trying to decrement below 0
                         room.IncrementParticleDisperserCounter();           //Doesn't throw any exception, but execution only reaches here if no exception was thrown before
@@ -53,12 +53,12 @@ class Actions {
                     default: throw new IllegalArgumentException("Must choose a valid trap.");
                 }
 
-            }, "crew member", "trap ('1' -> particle disperser / '2' -> organic detonator)"),
+            }, 1,0,1),
             new Effect(1, "Detonate Particle Disperser", (addInputs)->{
                 //Não interessa se existe aliens no room. Pode detonar à mesma e será cobrado os action points
                 /*Não diz explicitamente no rulebook, mas porque os organic detonators vão para o playerboard
                 depois de "rebentarem", assumo que acontece o mesmo com os particle dispersers*/
-                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs[0]);
+                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs.get(0));
                 if(room.GetTotalCrewMembers() == 0) {
                     PlayerBoard playerBoard = gameDataHandler.GetPlayerBoard();
                     room.DecrementParticleDisperserCounter();
@@ -66,9 +66,9 @@ class Actions {
                     room.KillAlien();
                 } else
                     throw new TrapKilledMemberException("The particle disperser killed a crew member.");
-            }, "room"),
+            }, 0,1,0),
             new Effect(1, "Seal Room", (addInputs)->{
-                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs[0]);
+                Room room = gameDataHandler.GetShipBoard().GetRooms().get(addInputs.get(0));
                 if(room.GetAlienCounter() == 0 && room.GetTotalCrewMembers() == 0){
                     if(room.GetId() == 3 || room.GetId() == 9 || room.GetId() == 12 ||
                        room.GetId() == 4 || room.GetId() == 11 || room.GetId() == 7) {
@@ -85,20 +85,13 @@ class Actions {
                 }
                 else
                     throw new IllegalStateException("Room must be empty of crew members and aliens");
-            }, "room")
+            }, 0,1,0)
     ));
 
     //Package-protected constructor
     Actions(GameDataHandler gameDataHandler, ToIntFunction<Integer> rollDice){
         this.gameDataHandler = gameDataHandler;
         this.rollDice = rollDice;
-    }
-
-    void ExecuteActionAt(int pos) throws IndexOutOfBoundsException{
-        action.get(pos).ExecuteEffect();
-    }
-    void ExecuteActionAt(int pos, int[] additionalInputs) throws IndexOutOfBoundsException{
-        action.get(pos).ExecuteEffect(additionalInputs);
     }
     void AddAction(Effect newEffect) throws IndexOutOfBoundsException {
         action.add(newEffect);

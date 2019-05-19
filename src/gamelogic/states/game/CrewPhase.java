@@ -8,41 +8,17 @@ public class CrewPhase extends GameStateAdapter {
         super(gameDataHandler);
     }
 
-    private IGameState UpdatedState(){
-        if(gameDataHandler.GetActionPoints() > 0)
-            return this;
-        else
-            return new AlienPhase(gameDataHandler);
+    @Override
+    public IGameState Skip() {
+        return new AlienPhase(gameDataHandler);
     }
 
     @Override
-    public IGameState _CrewPhase() {
-        return this;
-    }
-
-    @Override
-    public IGameState _CrewPhase(int opt) {
-        if(gameDataHandler.CanPayForAction(opt)){
-            gameDataHandler.ExecuteActionAt(opt);
-            gameDataHandler.PayAction(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
-        }
-        return UpdatedState();
-    }
-
-    @Override
-    public IGameState _CrewPhase(int opt, int[] additionalInputs) {
-        try{
-            if(gameDataHandler.CanPayForAction(opt)){
-                gameDataHandler.ExecuteActionAt(opt, additionalInputs);
-                gameDataHandler.PayAction(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
-            }
-            return UpdatedState();
+    public IGameState EvaluateChosenAction(int opt) {
+        try {
+            return EffectBufferInitialRoute(1, opt);
         } catch (IndexOutOfBoundsException ex){
-            return this;
-        } catch (IllegalStateException ex){
-            return this;
-        } catch (TrapKilledMemberException ex){
-            return new GameOver(gameDataHandler);
+            return this;    //Escolheu um efeito inválido
         }
     }
 }

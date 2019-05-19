@@ -1,5 +1,6 @@
 package gamelogic.states.gameSetup;
 
+import gamelogic.data.Constants;
 import gamelogic.data.GameDataHandler;
 
 public class SelectCrewMembers extends GameSetupStateAdapter {
@@ -12,7 +13,7 @@ public class SelectCrewMembers extends GameSetupStateAdapter {
         try {
             gameDataHandler.AddCrewMember(pos);
             //Só passa para o próximo estado quando o utilizador tiver escolhido 2 crew members válidos
-            if(gameDataHandler.GetTotalChosenCrewMembers() == 2)
+            if(gameDataHandler.GetTotalChosenCrewMembers() == Constants.MAX_SELECTED_CREWMEMBERS)
                 return new SetCrewMemberShipLocation(gameDataHandler);        //Já escolheu 2
             else
                 return this;                                                            //Ainda não escolheu 2

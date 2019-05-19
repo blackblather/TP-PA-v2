@@ -7,39 +7,17 @@ public class RestPhase extends GameStateAdapter{
         super(gameDataHandler);
     }
 
-    private IGameState UpdatedState(){
-        if(gameDataHandler.GetInsirationPoints() > 0)
-            return this;
-        else
-            return new JourneyPhase(gameDataHandler);
+    @Override
+    public IGameState Skip() {
+        return new RoundPhase(gameDataHandler);
     }
 
     @Override
-    public IGameState _RestPhase() {
-        return new JourneyPhase(gameDataHandler);
-    }
-
-    @Override
-    public IGameState _RestPhase(int opt) {
-        if(gameDataHandler.CanPayForUpgrade(opt)){
-            gameDataHandler.ExecuteUpgradeAt(opt);
-            gameDataHandler.PayUpgrade(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
-        }
-        return UpdatedState();
-    }
-
-    @Override
-    public IGameState _RestPhase(int opt, int[] additionalInputs) {
-        try{
-            if(gameDataHandler.CanPayForUpgrade(opt)){
-                gameDataHandler.ExecuteUpgradeAt(opt, additionalInputs);
-                gameDataHandler.PayUpgrade(opt);    //Se chega aqui, nenhum excepção ocorreu na instrução anterior (aka, o efeito foi bem executado)
-            }
-            return UpdatedState();
+    public IGameState EvaluateChosenUpgrade(int opt) {
+        try {
+            return EffectBufferInitialRoute(0,opt);
         } catch (IndexOutOfBoundsException ex){
-            return this;
-        } catch (IllegalStateException ex){
-            return this;
+            return this;    //Escolheu um efeito inválido
         }
     }
 }

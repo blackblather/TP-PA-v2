@@ -5,6 +5,7 @@ import gamelogic.states.gameSetup.*;
 import gamelogic.states.game.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class TextUI {
@@ -30,23 +31,16 @@ public class TextUI {
         for(String s : availableCrewMembers)
             System.out.println(s);
     }
-    private String ListUpgrades(){
-        ArrayList<String> upgradesDesciption = logic.GetGameDataHandler().GetUpgradesDesciption();
+    private String ListInfo(String type){
         int i = 1;
         StringBuilder retVal = new StringBuilder();
-        for(String s : upgradesDesciption)
-            retVal.append("Upgrade ").append(i++).append(":\n").append(s).append("\n.........................\n");
-        return retVal.toString();
-    }
-    private String ListActions(){
-        ArrayList<String> actionsDesciption = logic.GetGameDataHandler().GetActionsDesciption();
-        int i = 1;
-        StringBuilder retVal = new StringBuilder();
-        for(String s : actionsDesciption)
-            retVal.append("Action ").append(i++).append(":\n").append(s).append("\n.........................\n");
-        return retVal.toString();
-    }
+        ArrayList<String> descriptionArr = logic.GetGameDataHandler().GetDesciptionArray(type);
 
+        for(String s : descriptionArr)
+            retVal.append(type).append(" ").append(i++).append(":\n").append(s).append("\n.........................\n");
+
+        return retVal.toString();
+    }
     private void HorizontalLine() {
         System.out.println("--------------------------------------------------");
     }
@@ -92,74 +86,58 @@ public class TextUI {
 
     //Game
     //Functions that read user-input -> Game
-    private void PrintJourneyPhaseInfos(){
+    private void PrintRoundPhaseInfos(){
         HorizontalLine();
-        System.out.println("Journey Phase:");
-        logic.JourneyPhase();
+        System.out.println("Round Phase:");
+        logic.EvaluateRound();
         System.out.println("Current journey part: " + logic.GetGameDataHandler().GetCurrentJourneyPart());
-    }
-    private void PrintScanningPhaseInfos(){
-        HorizontalLine();
-        System.out.println("Scanning Phase:\nScanning journey part...");
-        logic.ScanningPhase();
-    }
-    private void PrintSpawningPhaseInfos(){
-        HorizontalLine();
-        System.out.println("Spawning Phase:\nSpawning Aliens");
-        logic.SpawnAliensPhase();
     }
     private void WaitToChooseUpgrades() {
         HorizontalLine();
-        int opt = DisplayMenu("Resting Phase:\nAvailable Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints() + "\n.........................\n" + ListUpgrades() + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
+        int opt = DisplayMenu("Resting Phase:\nAvailable Inspiration Points: " + logic.GetGameDataHandler().GetInsirationPoints() + "\n.........................\n" + ListInfo("Upgrade") + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalUpgrades());
         if (opt == 0)
-            logic.RestPhase();
-        else {
-            if (logic.GetGameDataHandler().UpgradeNeedsAditionalInput(opt)) {
-                ArrayList<String> affectedElements = logic.GetGameDataHandler().GetUpgradeAffetedElementsAt(opt);
-                int[] additionalInputs = new int[affectedElements.size()];
-                for (int i = 0; i < affectedElements.size(); i++) {
-                    System.out.print("Choose the " + affectedElements.get(i) + ":\nOption: ");
-                    additionalInputs[i] = s.nextInt();
-                    s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
-                }
-                logic.RestPhase(opt, additionalInputs);
-            } else
-                logic.RestPhase(opt);
-        }
+            logic.Skip();
+        else
+            logic.EvaluateChosenUpgrade(opt);
     }
     private void WaitToChooseActions() {
         HorizontalLine();
-        int opt = DisplayMenu("Crew Phase:\nAvailable Action Points: " + logic.GetGameDataHandler().GetActionPoints() + "\n.........................\n" + ListActions() + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalActions());
+        int opt = DisplayMenu("Crew Phase:\nAvailable Action Points: " + logic.GetGameDataHandler().GetActionPoints() + "\n.........................\n" + ListInfo("Action") + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalActions());
         if (opt == 0)
             logic.CrewPhase();
-        else {
-            if (logic.GetGameDataHandler().ActionNeedsAditionalInput(opt)) {
-                ArrayList<String> affectedElements = logic.GetGameDataHandler().GetActionAffetedElementsAt(opt);
-                int[] additionalInputs = new int[affectedElements.size()];
-                for (int i = 0; i < affectedElements.size(); i++) {
-                    System.out.print("Choose the " + affectedElements.get(i) + ":\nOption: ");
-                    additionalInputs[i] = s.nextInt();
-                    s.nextLine(); //a func. "nextInt()" não consome o '\n' do final, esta chamada é só para limpar o buffer de entrada.
-                }
-                logic.CrewPhase(opt, additionalInputs);
-            } else
-                logic.CrewPhase(opt);
-        }
+        else
+            logic.EvaluateChosenAction(opt);
+    }
+    private void WaitToChooseEffectCrewMembers(){
+        int opt = DisplayMenu("Choose a crew member:\n" + ListInfo("Crew member"), 1, logic.GetGameDataHandler().GetTotalChosenCrewMembers());
+        logic.EvaluateChosenCrewMember(opt);
+    }
+    private void WaitToChooseEffectTrap(){
+        int opt = DisplayMenu("Choose a trap:\n" + ListInfo("Trap"), 1, 2);
+        logic.EvaluateChosenTrap(opt);
+    }
+    private void WaitToChooseEffectRoom(){
+        int opt = DisplayMenu("Choose a room:\n" + ListInfo("Room"), 1, logic.GetGameDataHandler().GetTotalRooms());
+        logic.EvaluateChosenRoom(opt);
     }
     private void GameLoop(){
         logic.StartGame();
         while (!(logic.GetGameState() instanceof GameOver) && !(logic.GetGameState() instanceof Win)){
-            if(logic.GetGameState() instanceof JourneyPhase)
-                PrintJourneyPhaseInfos();
-            else if(logic.GetGameState() instanceof ScanningPhase)
-                PrintScanningPhaseInfos();
-            else if(logic.GetGameState() instanceof SpawnAliensPhase)
-                PrintSpawningPhaseInfos();
-            else if(logic.GetGameState() instanceof RestPhase){
+            if(logic.GetGameState() instanceof RoundPhase)
+                PrintRoundPhaseInfos();
+            else if(logic.GetGameState() instanceof RestPhase)
                 WaitToChooseUpgrades();
-            } else if(logic.GetGameState() instanceof CrewPhase){
+            else if(logic.GetGameState() instanceof CrewPhase)
                 WaitToChooseActions();
-            } else if(logic.GetGameState() instanceof AlienPhase){
+            else if(logic.GetGameState() instanceof SelectCrewMember)
+                WaitToChooseEffectCrewMembers();
+            else if(logic.GetGameState() instanceof SelectTrap)
+                WaitToChooseEffectTrap();
+            else if(logic.GetGameState() instanceof SelectRoom)
+                WaitToChooseEffectRoom();
+            else if(logic.GetGameState() instanceof ExecuteEffect)
+                logic.EvaluateAndExecuteEffect();
+            else if(logic.GetGameState() instanceof AlienPhase){
 
             }
         }
@@ -173,7 +151,7 @@ public class TextUI {
     //Public function to call in the User Interfaces
     public void Start(){
         while (!(logic.GetGameSetupState() instanceof Exit)){
-            if(logic.GetGameSetupState() instanceof NewGame)
+            if(logic.GetGameSetupState() instanceof InitialMenu)
                 WaitInitialMenuInput();
             else if(logic.GetGameSetupState() instanceof ChooseJourney)
                 WaitJourneyChoice();
