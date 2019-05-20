@@ -20,7 +20,6 @@ public class Constants {
     public static final int MAX_SELECTED_CREWMEMBERS = 2;
     public static final int MAX_CREWMEMBER_MOVEMENT = 3;
     public static final int MAX_CREWMEMBER_ATTACK = 3;
-    public static final int MAX_INSPIRATION_POINTS = 12;
     public static final int MAX_ALIENS = 15;
 
 }

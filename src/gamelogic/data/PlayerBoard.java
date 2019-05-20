@@ -44,16 +44,16 @@ class PlayerBoard {
 
     //Setters
     void SetInspirationPoints(int val) throws InvalidParameterException {
-        if(val>=0 && val<=Constants.MAX_INSPIRATION_POINTS )
+        if(val>=0)
             inspirationPoints = val;
-        else if(val < 0)
-            throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
+        else
+            throw new InvalidParameterException("Inspiration points must have a value greater or equal to 0");
     }
     void SetActionPoints(int val) throws InvalidParameterException {
         if(val>=0 && val<=maxActionPoints)
             actionPoints = val;
         else if(val < 0)
-            throw new InvalidParameterException("Inspiration points me have a value between 0 and " + Constants.MAX_INSPIRATION_POINTS);
+            throw new InvalidParameterException("Action points must have a value between 0 and " + maxActionPoints);
     }
     void SetSealedRoomTokens(int val){
         if(val>=0)
