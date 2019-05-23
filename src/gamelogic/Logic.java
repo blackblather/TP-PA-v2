@@ -6,15 +6,23 @@ import gamelogic.states.game.RoundPhase;
 import gamelogic.states.gameSetup.IGameSetupState;
 import gamelogic.states.gameSetup.InitialMenu;
 
+import java.util.Observer;
+
 public class Logic {
     //TODO: Decrementar os user-inputs aqui em vez do gamedatahandler
     //Private vars
     private GameDataHandler gameDataHandler = new GameDataHandler();
     private IGameState gameState;
-    private IGameSetupState gameSetupState = new InitialMenu(gameDataHandler);
+    private IGameSetupState gameSetupState;
+    private Observer o;
 
     //Constructor
-    public Logic(){}
+    public Logic(Observer o){
+        this.o = o;
+    }
+    public Logic(){
+        gameSetupState = new InitialMenu(gameDataHandler);
+    }
 
     //Getters
     public IGameSetupState GetGameSetupState(){ return gameSetupState; }
@@ -22,13 +30,14 @@ public class Logic {
     public GameDataHandler GetGameDataHandler(){ return gameDataHandler; }
 
     //Interact with gameSetupState:
-    public void NewGame(){ gameSetupState = gameSetupState.NewGame(); }
-    public void ExitGame() { gameSetupState = gameSetupState._Exit(); }
-    public void ChooseJourney(){ gameSetupState = gameSetupState._ChooseJourney(); }
-    public void ChooseJourney(String[] customJourneyStr){ gameSetupState = gameSetupState._ChooseJourney(customJourneyStr); }
-    public void SelectCrewMembers(int deckPos){ gameSetupState = gameSetupState._SelectCrewMembers(deckPos); }
-    public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){ gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos); }
-    public void EndGame(){ gameSetupState = gameSetupState._EndGame(); }
+    public void InitialMenu(){ gameSetupState = new InitialMenu(gameDataHandler, o); gameSetupState.notifyObservers(); }
+    public void NewGame(){ gameSetupState = gameSetupState.NewGame(); gameSetupState.notifyObservers();}
+    public void ExitGame() { gameSetupState = gameSetupState._Exit(); gameSetupState.notifyObservers();}
+    public void SelectDefaultJourney(){ gameSetupState = gameSetupState.SelectDefaultJourney(); gameSetupState.notifyObservers();}
+    public void SelectCustomJourney(String[] customJourneyStr){ gameSetupState = gameSetupState.SelectCustomJourney(customJourneyStr); gameSetupState.notifyObservers();}
+    public void SelectCrewMember(int deckPos){ gameSetupState = gameSetupState.SelectCrewMemberIn(deckPos); gameSetupState.notifyObservers();}
+    public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){ gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos); gameSetupState.notifyObservers();}
+    public void EndGame(){ gameSetupState = gameSetupState._EndGame(); gameSetupState.notifyObservers();}
 
     //Interact with gameState:
     public void StartGame(){
@@ -43,7 +52,6 @@ public class Logic {
     public void EvaluateChosenTrap(int opt){ gameState = gameState.EvaluateChosenTrap(opt-1); }
     public void EvaluateChosenRoom(int opt){ gameState = gameState.EvaluateChosenRoom(opt-1); }
     public void EvaluateAndExecuteEffect(){ gameState = gameState.EvaluateAndExecuteEffect(); }
-    public void CrewPhase(){ gameState = gameState._CrewPhase(); }
-    public void CrewPhase(int opt){ gameState = gameState._CrewPhase(opt); }
-    public void CrewPhase(int opt, int[] additionalInputs){ gameState = gameState._CrewPhase(opt, additionalInputs); }
 }
+
+
