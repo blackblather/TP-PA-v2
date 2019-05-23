@@ -5,7 +5,6 @@ import gamelogic.states.gameSetup.*;
 import gamelogic.states.game.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class TextUI {
@@ -58,11 +57,11 @@ public class TextUI {
         HorizontalLine();
         int opt = DisplayMenu("Chose a journey:\n 1) - Default Journey;\n 2) - Custom Journey;", 1, 2);
         if(opt == 1)
-            logic.ChooseJourney();
+            logic.SelectDefaultJourney();
         else {
             System.out.println("Available elements are 'nA', 'nA*' and 'R'\nEnter 13 custom journey elements separated by a space: ");
             String customJourney = s.nextLine();
-            logic.ChooseJourney(customJourney.split(" "));
+            logic.SelectCustomJourney(customJourney.split(" "));
         }
     }
     private void WaitToSelectCrewMembers(){
@@ -73,7 +72,7 @@ public class TextUI {
 
         ListDeck();
         int opt = DisplayMenu("Choose the " + FirstOrSecond + " crew member:", 1, logic.GetGameDataHandler().GetTotalDeckCards());
-        logic.SelectCrewMembers(opt);
+        logic.SelectCrewMember(opt);
     }
     private void WaitToSetCrewMemberShipLocation(){
         HorizontalLine();
@@ -104,7 +103,7 @@ public class TextUI {
         HorizontalLine();
         int opt = DisplayMenu("Crew Phase:\nAvailable Action Points: " + logic.GetGameDataHandler().GetActionPoints() + "\n.........................\n" + ListInfo("Action") + "0 -> Skip\n.........................", 0, logic.GetGameDataHandler().GetTotalActions());
         if (opt == 0)
-            logic.CrewPhase();
+            logic.Skip();
         else
             logic.EvaluateChosenAction(opt);
     }
@@ -155,7 +154,7 @@ public class TextUI {
                 WaitInitialMenuInput();
             else if(logic.GetGameSetupState() instanceof ChooseJourney)
                 WaitJourneyChoice();
-            else if(logic.GetGameSetupState() instanceof SelectCrewMembers)
+            else if(logic.GetGameSetupState() instanceof ChooseCrewMembers)
                 WaitToSelectCrewMembers();
             else if(logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
                 WaitToSetCrewMemberShipLocation();
