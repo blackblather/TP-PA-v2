@@ -67,34 +67,4 @@ public abstract class GameStateAdapter implements IGameState {
     public IGameState EvaluateChosenAction(int opt) {
         return this;
     }
-
-    @Override
-    public IGameState _CrewPhase() {
-        return this;
-    }
-
-    @Override
-    public IGameState _CrewPhase(int opt) {
-        return this;
-    }
-
-    @Override
-    public IGameState _CrewPhase(int opt, int[] additionalInputs) {
-        return this;
-    }
-
-    @Override
-    public IGameState _AlienPhase() {
-        return this;
-    }
-
-    @Override
-    public IGameState _GameOver() {
-        return this;
-    }
-
-    @Override
-    public IGameState _Win() {
-        return this;
-    }
 }
