@@ -69,6 +69,19 @@ public class GraphicalUI extends Application implements Observer {
         centerFlowPane.setColumnHalignment(HPos.CENTER);    //align buttons on the center of vertical column
         return centerFlowPane;
     }
+    private Group AddCard(ArrayList<ImageView> ivArrChecked, Image image){
+        Group group = new Group();
+        ImageView ivCard = new ImageView(image);
+        ivCard.setCursor(Cursor.HAND);
+        ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
+            if(!CardIsChecked(group))
+                CheckCard(ivArrChecked, ivCard, group);
+            else
+                UncheckCard(ivArrChecked, group);
+        }));
+        group.getChildren().add(ivCard);
+        return group;
+    }
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ImageView cardImageView, Group group){
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
@@ -83,17 +96,17 @@ public class GraphicalUI extends Application implements Observer {
     private boolean CardIsChecked(Group group){
         return group.getChildren().size() == 2;
     }
-
     private void UncheckCard(ArrayList<ImageView> ivArrChecked, Group group){
         for (ImageView ivChecked : ivArrChecked) {
-            if(group.getChildren().get(1) == ivChecked){
+            if(group.getChildren().get(1) == ivChecked){    //"checked image view" is always at the index 1
                 group.getChildren().remove(ivChecked);
                 ivChecked.setVisible(false);
                 break;
             }
         }
     }
-    //Interfaces for each state
+
+    //User interfaces for each state
     private Scene GetInitialMenuScene(){
         //Empty GridPane layout
         GridPane layout = GetGrid(25, 50, 25, 25, 50, 25);
@@ -177,7 +190,14 @@ public class GraphicalUI extends Application implements Observer {
         //Create centerFlowPane
         FlowPane centerFlowPane = GetVerticalCenterFlowPane();
 
-        //Create "check" image view array
+        //Create label
+        Label title = new Label("Choose 2 crew members");
+        title.setStyle("-fx-font-weight: bold");
+
+        //Add label to centerFlowPane
+        centerFlowPane.getChildren().add(title);
+
+        //Create "check" image view array (maybe there's better ways of doing this "checked image" thing)
         ArrayList<ImageView> ivArrChecked = new ArrayList<>();
         for(int i = 0; i < Constants.MAX_SELECTED_CREWMEMBERS; i++){
             ivArrChecked.add(new ImageView(new Image("file:cards/checked.png")));
@@ -185,37 +205,19 @@ public class GraphicalUI extends Application implements Observer {
             ivArrChecked.get(i).setVisible(false);
         }
 
-    //TransporterChief////////////////////////////////////////////////
-        Group gTransporterChief = new Group();
-        ImageView ivTransporterChief = new ImageView(new Image("file:cards/TransporterChief.png"));
-        ivTransporterChief.setCursor(Cursor.HAND);
-        ivTransporterChief.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
-            if(!CardIsChecked(gTransporterChief))
-                CheckCard(ivArrChecked, ivTransporterChief, gTransporterChief);
-            else
-                UncheckCard(ivArrChecked, gTransporterChief);
-        }));
-        gTransporterChief.getChildren().add(ivTransporterChief);
-    //////////////////////////////////////////////////
+        //Create crew members
+        Group gTransporterChief = AddCard(ivArrChecked, new Image("file:cards/TransporterChief.png"));
+        Group gCaptain = AddCard(ivArrChecked, new Image("file:cards/Captain.png"));
 
-    //Captain////////////////////////////////////////////////
-        /*ImageView ivCaptain = new ImageView(new Image("file:cards/Captain.png"));
-        ivCaptain.setCursor(Cursor.HAND);
+        //Create resources for "row 1" of cards
+        Group gRow1 = new Group();
+        HBox row1 = new HBox(5);
+        row1.getChildren().addAll(gTransporterChief, gCaptain);
+        gRow1.getChildren().add(row1);
 
-        Group gCaptain = new Group();
-        gCaptain.getChildren().addAll(ivCaptain, ivChecked);*/
-    //////////////////////////////////////////////////
+        //Add rows of cards to centerFlowPane
+        centerFlowPane.getChildren().addAll(gRow1);
 
-        Group root = new Group();
-        HBox box = new HBox(5);
-        box.getChildren().addAll(gTransporterChief);
-        root.getChildren().add(box);
-
-        //Create label
-        Label title = new Label("Choose 2 crew members");
-        title.setStyle("-fx-font-weight: bold");
-
-        centerFlowPane.getChildren().addAll(title, root);
         return new Scene(centerFlowPane, 800,400);
     }
 
