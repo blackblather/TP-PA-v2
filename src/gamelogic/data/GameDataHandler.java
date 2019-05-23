@@ -22,6 +22,7 @@ public class GameDataHandler {
     private Upgrades upgrades;
     private Actions actions;
     private EffectBuffer effectBuffer = new EffectBuffer();
+    private String errorMessage = null;
     //Private Lambdas
     //Roll rangre = [NrOfDice, (NrOfDice*6)+1]
     private final ToIntFunction<Integer> rollDiceLambda = (NrOfDice) -> (ThreadLocalRandom.current().nextInt(NrOfDice, (NrOfDice*6)+1))-1;
@@ -182,5 +183,16 @@ public class GameDataHandler {
     }
     public int GetTotalActions(){
         return actions.GetActions().size();
+    }
+
+    //---------------------------Generic-------------------------------
+    public String GetErrorMessage(){
+        return errorMessage;
+    }
+    public void SetErrorMessage(String text){
+        errorMessage = text;
+    }
+    public void ResetErrorMessage(){
+        errorMessage = null;
     }
 }
