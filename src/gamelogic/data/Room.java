@@ -32,7 +32,7 @@ class Room {
         alienCounter++;
     }
     void MoveCrewMemberHere(CrewMember crewMember) throws UnsupportedOperationException{
-        //Assume que só se pode escolher dos dois crewmembers escolhidos no "SelectCrewMembers" state.
+        //Assume que só se pode escolher dos dois crewmembers escolhidos no "ChooseCrewMembers" state.
         if(crewMember.GetRoom() == null || crewMember.GetRoom().GetId() != this.id){
             crewMembers.add(crewMember);
             crewMember.SetRoom(this);
