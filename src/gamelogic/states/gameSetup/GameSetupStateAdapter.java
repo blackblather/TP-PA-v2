@@ -2,10 +2,24 @@ package gamelogic.states.gameSetup;
 
 import gamelogic.data.GameDataHandler;
 
-public abstract class GameSetupStateAdapter implements IGameSetupState{
+import java.util.Observable;
+import java.util.Observer;
+
+public abstract class GameSetupStateAdapter extends Observable implements IGameSetupState{
     GameDataHandler gameDataHandler;
+
+    GameSetupStateAdapter(GameDataHandler gameDataHandler, Observer o){
+        this.gameDataHandler = gameDataHandler;
+        this.addObserver(o);
+
+    }
     GameSetupStateAdapter(GameDataHandler gameDataHandler){
         this.gameDataHandler = gameDataHandler;
+    }
+
+    @Override
+    public void notifyObservers(){
+        super.notifyObservers(gameDataHandler.GetErrorMessage());
     }
 
     //TODO: As classes da maquina de estados devem chamar os métodos com o nome dos estados seguintes
@@ -17,17 +31,17 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
     }
 
     @Override
-    public IGameSetupState _ChooseJourney() {
+    public IGameSetupState SelectDefaultJourney() {
         return this;
     }
 
     @Override
-    public IGameSetupState _ChooseJourney(String[] customJourney) {
+    public IGameSetupState SelectCustomJourney(String[] customJourney) {
         return this;
     }
 
     @Override
-    public IGameSetupState _SelectCrewMembers(int pos) {
+    public IGameSetupState SelectCrewMemberIn(int pos) {
         return this;
     }
 
