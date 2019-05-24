@@ -95,15 +95,20 @@ public class GraphicalUI extends Application implements Observer {
             }
         }
     }
-    private Group AddCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Image image){
+    private Group AddCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex, Image image){
         Group group = new Group();
         ImageView ivCard = new ImageView(image);
         ivCard.setCursor(Cursor.HAND);
         ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
-            if(!CardIsChecked(group))
+            if(!CardIsChecked(group)) {
                 CheckCard(ivArrChecked, inputArray, deckIndex, ivCard, group);
-            else
+                if(inputArray.size() == 2)
+                    btnNext.setDisable(false);
+            }
+            else {
                 UncheckCard(ivArrChecked, inputArray, deckIndex, group);
+                btnNext.setDisable(true);
+            }
         }));
         group.getChildren().add(ivCard);
         return group;
@@ -189,19 +194,24 @@ public class GraphicalUI extends Application implements Observer {
         //Returns scene with layout in it
         return new Scene(centerFlowPane, 400,150);
     }
-    private Scene GetChooseCrewMembers(){
-        //
+    private Scene GetChooseCrewMembersScene(){
+        //Create inputArray
         ArrayList<Integer> inputArray = new ArrayList<>();
 
-        //Create centerFlowPane
-        FlowPane centerFlowPane = GetVerticalCenterFlowPane();
+        //Create mainFlowPane
+        FlowPane mainFlowPane = GetVerticalCenterFlowPane();
 
         //Create label
         Label title = new Label("Choose 2 crew members");
         title.setStyle("-fx-font-weight: bold");
 
         //Add label to centerFlowPane
-        centerFlowPane.getChildren().add(title);
+        mainFlowPane.getChildren().add(title);
+
+        //Create centerFlowPane
+        FlowPane scrollFlowPane = new FlowPane();
+        scrollFlowPane.setAlignment(Pos.TOP_CENTER);
+        scrollFlowPane.prefWidth(800);
 
         //Create "check" image view array (maybe there's better ways of doing this "checked image" thing)
         ArrayList<ImageView> ivArrChecked = new ArrayList<>();
@@ -211,31 +221,51 @@ public class GraphicalUI extends Application implements Observer {
             ivArrChecked.get(i).setVisible(false);
         }
 
-        //Create crew members
-        Group gCaptain = AddCard(ivArrChecked, inputArray, 0, new Image("file:cards/Captain.png"));
-        Group gTransporterChief = AddCard(ivArrChecked, inputArray, 1, new Image("file:cards/TransporterChief.png"));
-
-        //Create resources for "row 1" of cards
-        Group gRow1 = new Group();
-        HBox row1 = new HBox(5);
-        row1.getChildren().addAll(gCaptain, gTransporterChief);
-        gRow1.getChildren().add(row1);
-
-        //Add rows of cards to centerFlowPane
-        centerFlowPane.getChildren().addAll(gRow1);
-
         //Button "Next"
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
         btnNext.setOnAction(e -> {
-            //logic.SelectCustomJourney(txtCustomJourney.getText().split(" "));
+            logic.SelectCrewMembers(inputArray);
         });
+        btnNext.setDisable(true);
+
+        //Create crew members (podia criar um array de "Group", e cada objecto de crew members tinha a sua "Image". Assim também funciona, pode é não ser a melhor maneira)
+        Group gDoctor = AddCard(ivArrChecked, btnNext, inputArray, 1, new Image("file:cards/Doctor.png"));
+        Group gCommsOfficer = AddCard(ivArrChecked, btnNext, inputArray, 2, new Image("file:cards/CommsOfficer.png"));
+        Group gRedShirt = AddCard(ivArrChecked, btnNext, inputArray, 3, new Image("file:cards/RedShirt.png"));
+        Group gScienceOfficer = AddCard(ivArrChecked, btnNext, inputArray, 4, new Image("file:cards/ScienceOfficer.png"));
+        Group gEngineer = AddCard(ivArrChecked, btnNext, inputArray, 5, new Image("file:cards/Engineer.png"));
+        Group gCaptain = AddCard(ivArrChecked, btnNext, inputArray, 6, new Image("file:cards/Captain.png"));
+        Group gCommander = AddCard(ivArrChecked, btnNext, inputArray, 7, new Image("file:cards/Commander.png"));
+        Group gTransporterChief = AddCard(ivArrChecked, btnNext, inputArray, 8, new Image("file:cards/TransporterChief.png"));
+        Group gMoralOfficer = AddCard(ivArrChecked, btnNext, inputArray, 9, new Image("file:cards/MoralOfficer.png"));
+        Group gSecurityOfficer = AddCard(ivArrChecked, btnNext, inputArray, 10, new Image("file:cards/SecurityOfficer.png"));
+        Group gNavigationOfficer = AddCard(ivArrChecked, btnNext, inputArray, 11, new Image("file:cards/NavigationOfficer.png"));
+        Group gShuttlePilot = AddCard(ivArrChecked, btnNext, inputArray, 12, new Image("file:cards/ShuttlePilot.png"));
+
+        //Add crew members to scrollFlowPane
+        scrollFlowPane.getChildren().addAll(gDoctor, gCommsOfficer, gRedShirt, gScienceOfficer, gEngineer, gCaptain, gCommander, gTransporterChief, gMoralOfficer, gSecurityOfficer, gNavigationOfficer, gShuttlePilot);
+
+        //Create scroll pane with  scrollFlowPane
+        ScrollPane s1 = new ScrollPane();
+        s1.setPrefSize(800, 700);
+        s1.setFitToWidth(true);
+        s1.setContent(scrollFlowPane);
+
+        //Add s1 to mainFlowPane
+        mainFlowPane.getChildren().add(s1);
 
         //Add button "Next" to centerFlowPane
-        centerFlowPane.getChildren().add(btnNext);
+        mainFlowPane.getChildren().add(btnNext);
 
-        return new Scene(centerFlowPane, 800,400);
+        //Returns scene with layout in it
+        return new Scene(mainFlowPane, 800,800);
+    }
+    private Scene GetChooseCrewMemberShipLocationScene(){
+        //Returns scene with layout in it
+        //return new Scene(centerFlowPane, 800,400);
+        return null;
     }
 
     @Override
@@ -273,10 +303,10 @@ public class GraphicalUI extends Application implements Observer {
                 else if (logic.GetGameSetupState() instanceof ChooseJourney)
                     stage.setScene(GetChooseJourneyScene()); //Set scene to "Choose journey"
                 else if (logic.GetGameSetupState() instanceof ChooseCrewMembers)
-                    stage.setScene(GetChooseCrewMembers());
-                else if (logic.GetGameSetupState() instanceof SetCrewMemberShipLocation) {
-
-                } else if (logic.GetGameSetupState() instanceof StartGame) {
+                    stage.setScene(GetChooseCrewMembersScene());
+                else if (logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
+                    stage.setScene(GetChooseCrewMemberShipLocationScene());
+                else if (logic.GetGameSetupState() instanceof StartGame) {
 
                 }
                 this.stage.show();
