@@ -5,21 +5,11 @@ import gamelogic.data.GameDataHandler;
 import java.util.Observable;
 import java.util.Observer;
 
-public abstract class GameSetupStateAdapter extends Observable implements IGameSetupState{
+public abstract class GameSetupStateAdapter implements IGameSetupState{
     GameDataHandler gameDataHandler;
 
-    GameSetupStateAdapter(GameDataHandler gameDataHandler, Observer o){
-        this.gameDataHandler = gameDataHandler;
-        this.addObserver(o);
-
-    }
     GameSetupStateAdapter(GameDataHandler gameDataHandler){
         this.gameDataHandler = gameDataHandler;
-    }
-
-    @Override
-    public void notifyObservers(){
-        super.notifyObservers(gameDataHandler.GetErrorMessage());
     }
 
     //TODO: As classes da maquina de estados devem chamar os métodos com o nome dos estados seguintes

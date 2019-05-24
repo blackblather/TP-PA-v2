@@ -6,23 +6,24 @@ import gamelogic.states.game.RoundPhase;
 import gamelogic.states.gameSetup.IGameSetupState;
 import gamelogic.states.gameSetup.InitialMenu;
 
+import java.util.Observable;
 import java.util.Observer;
 
-public class Logic {
+public class Logic extends Observable {
     //TODO: Decrementar os user-inputs aqui em vez do gamedatahandler
     //Private vars
     private GameDataHandler gameDataHandler = new GameDataHandler();
     private IGameState gameState;
     private IGameSetupState gameSetupState;
-    private Observer o;
 
     //Constructor
     public Logic(Observer o){
-        this.o = o;
+        addObserver(o);
     }
     public Logic(){
         gameSetupState = new InitialMenu(gameDataHandler);
     }
+
 
     //Getters
     public IGameSetupState GetGameSetupState(){ return gameSetupState; }
@@ -30,14 +31,14 @@ public class Logic {
     public GameDataHandler GetGameDataHandler(){ return gameDataHandler; }
 
     //Interact with gameSetupState:
-    public void InitialMenu(){ gameSetupState = new InitialMenu(gameDataHandler, o); gameSetupState.notifyObservers(); }
-    public void NewGame(){ gameSetupState = gameSetupState.NewGame(); gameSetupState.notifyObservers();}
-    public void ExitGame() { gameSetupState = gameSetupState._Exit(); gameSetupState.notifyObservers();}
-    public void SelectDefaultJourney(){ gameSetupState = gameSetupState.SelectDefaultJourney(); gameSetupState.notifyObservers();}
-    public void SelectCustomJourney(String[] customJourneyStr){ gameSetupState = gameSetupState.SelectCustomJourney(customJourneyStr); gameSetupState.notifyObservers();}
-    public void SelectCrewMember(int deckPos){ gameSetupState = gameSetupState.SelectCrewMemberIn(deckPos); gameSetupState.notifyObservers();}
-    public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){ gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos); gameSetupState.notifyObservers();}
-    public void EndGame(){ gameSetupState = gameSetupState._EndGame(); gameSetupState.notifyObservers();}
+    public void InitialMenu(){ gameSetupState = new InitialMenu(gameDataHandler); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage()); }
+    public void NewGame(){ gameSetupState = gameSetupState.NewGame(); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void ExitGame() { gameSetupState = gameSetupState._Exit(); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void SelectDefaultJourney(){ gameSetupState = gameSetupState.SelectDefaultJourney(); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void SelectCustomJourney(String[] customJourneyStr){ gameSetupState = gameSetupState.SelectCustomJourney(customJourneyStr); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void SelectCrewMember(int deckPos){ gameSetupState = gameSetupState.SelectCrewMemberIn(deckPos); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){ gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
+    public void EndGame(){ gameSetupState = gameSetupState._EndGame(); setChanged(); notifyObservers(gameDataHandler.GetErrorMessage());}
 
     //Interact with gameState:
     public void StartGame(){
