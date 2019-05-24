@@ -2,6 +2,7 @@ package gamelogic.states.gameSetup;
 
 import gamelogic.data.GameDataHandler;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -32,6 +33,11 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
 
     @Override
     public IGameSetupState SelectCrewMemberIn(int pos) {
+        return this;
+    }
+
+    @Override
+    public IGameSetupState SelectCrewMembers(ArrayList<Integer> pos){
         return this;
     }
 
