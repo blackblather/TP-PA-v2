@@ -25,6 +25,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -69,41 +70,43 @@ public class GraphicalUI extends Application implements Observer {
         centerFlowPane.setColumnHalignment(HPos.CENTER);    //align buttons on the center of vertical column
         return centerFlowPane;
     }
-    private Group AddCard(ArrayList<ImageView> ivArrChecked, Image image){
-        Group group = new Group();
-        ImageView ivCard = new ImageView(image);
-        ivCard.setCursor(Cursor.HAND);
-        ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
-            if(!CardIsChecked(group))
-                CheckCard(ivArrChecked, ivCard, group);
-            else
-                UncheckCard(ivArrChecked, group);
-        }));
-        group.getChildren().add(ivCard);
-        return group;
-    }
-    private void CheckCard(ArrayList<ImageView> ivArrChecked, ImageView cardImageView, Group group){
+    private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
-                iv.setX(cardImageView.getX() + (cardImageView.getImage().getWidth() / 2) - iv.getImage().getWidth() / 2);
-                iv.setY(cardImageView.getY() + (cardImageView.getImage().getHeight() / 2) - iv.getImage().getHeight() / 2);
-                iv.setVisible(true);
-                group.getChildren().add(iv);
-                break;
+                inputArray.add(deckIndex);      //Adds input to inputArray
+                iv.setX(cardImageView.getX() + (cardImageView.getImage().getWidth() / 2) - iv.getImage().getWidth() / 2);   //Set X
+                iv.setY(cardImageView.getY() + (cardImageView.getImage().getHeight() / 2) - iv.getImage().getHeight() / 2); //Set Y
+                iv.setVisible(true);            //Makes ivCheck visible
+                group.getChildren().add(iv);    //Adds ivCheck to group
+                break;                          //break out of the loop
             }
         }
     }
     private boolean CardIsChecked(Group group){
         return group.getChildren().size() == 2;
     }
-    private void UncheckCard(ArrayList<ImageView> ivArrChecked, Group group){
-        for (ImageView ivChecked : ivArrChecked) {
-            if(group.getChildren().get(1) == ivChecked){    //"checked image view" is always at the index 1
-                group.getChildren().remove(ivChecked);
-                ivChecked.setVisible(false);
-                break;
+    private void UncheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Group group){
+        for (ImageView iv : ivArrChecked) {
+            if(group.getChildren().get(1) == iv){                   //NOTE: "checked image view" is always at the index 1
+                inputArray.removeAll(Arrays.asList(deckIndex));     //Remove from inputArray
+                group.getChildren().remove(iv);                     //Remove ivCheck from group
+                iv.setVisible(false);                               //Make ivCheck invisible again
+                break;                                              //break out of the loop
             }
         }
+    }
+    private Group AddCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Image image){
+        Group group = new Group();
+        ImageView ivCard = new ImageView(image);
+        ivCard.setCursor(Cursor.HAND);
+        ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
+            if(!CardIsChecked(group))
+                CheckCard(ivArrChecked, inputArray, deckIndex, ivCard, group);
+            else
+                UncheckCard(ivArrChecked, inputArray, deckIndex, group);
+        }));
+        group.getChildren().add(ivCard);
+        return group;
     }
 
     //User interfaces for each state
@@ -187,6 +190,9 @@ public class GraphicalUI extends Application implements Observer {
         return new Scene(centerFlowPane, 400,150);
     }
     private Scene GetChooseCrewMembers(){
+        //
+        ArrayList<Integer> inputArray = new ArrayList<>();
+
         //Create centerFlowPane
         FlowPane centerFlowPane = GetVerticalCenterFlowPane();
 
@@ -206,17 +212,28 @@ public class GraphicalUI extends Application implements Observer {
         }
 
         //Create crew members
-        Group gTransporterChief = AddCard(ivArrChecked, new Image("file:cards/TransporterChief.png"));
-        Group gCaptain = AddCard(ivArrChecked, new Image("file:cards/Captain.png"));
+        Group gCaptain = AddCard(ivArrChecked, inputArray, 0, new Image("file:cards/Captain.png"));
+        Group gTransporterChief = AddCard(ivArrChecked, inputArray, 1, new Image("file:cards/TransporterChief.png"));
 
         //Create resources for "row 1" of cards
         Group gRow1 = new Group();
         HBox row1 = new HBox(5);
-        row1.getChildren().addAll(gTransporterChief, gCaptain);
+        row1.getChildren().addAll(gCaptain, gTransporterChief);
         gRow1.getChildren().add(row1);
 
         //Add rows of cards to centerFlowPane
         centerFlowPane.getChildren().addAll(gRow1);
+
+        //Button "Next"
+        Button btnNext = new Button("Next");
+        btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
+        btnNext.setCursor(Cursor.HAND);
+        btnNext.setOnAction(e -> {
+            //logic.SelectCustomJourney(txtCustomJourney.getText().split(" "));
+        });
+
+        //Add button "Next" to centerFlowPane
+        centerFlowPane.getChildren().add(btnNext);
 
         return new Scene(centerFlowPane, 800,400);
     }
