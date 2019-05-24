@@ -1,7 +1,6 @@
 package gamelogic.states.gameSetup;
 
 public interface IGameSetupState {
-    void notifyObservers();
     IGameSetupState NewGame();
     IGameSetupState SelectDefaultJourney();                           //Default Journey
     IGameSetupState SelectCustomJourney(String[] customJourney);     //Custom Journey
