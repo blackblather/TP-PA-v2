@@ -14,14 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -215,7 +211,7 @@ public class GraphicalUI extends Application implements Observer {
 
         //Create "check" image view array (maybe there's better ways of doing this "checked image" thing)
         ArrayList<ImageView> ivArrChecked = new ArrayList<>();
-        for(int i = 0; i < Constants.MAX_SELECTED_CREWMEMBERS; i++){
+        for(int i = 0; i < Constants.MAX_CHOSEN_CREWMEMBERS; i++){
             ivArrChecked.add(new ImageView(new Image("file:cards/checked.png")));
             ivArrChecked.get(i).setCursor(Cursor.HAND);
             ivArrChecked.get(i).setVisible(false);

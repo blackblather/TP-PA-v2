@@ -15,7 +15,7 @@ public class ChooseCrewMembers extends GameSetupStateAdapter {
         try {
             gameDataHandler.AddCrewMember(pos);
             //Só passa para o próximo estado quando o utilizador tiver escolhido 2 crew members válidos
-            if(gameDataHandler.GetTotalChosenCrewMembers() == Constants.MAX_SELECTED_CREWMEMBERS)
+            if(gameDataHandler.GetTotalChosenCrewMembers() == Constants.MAX_CHOSEN_CREWMEMBERS)
                 return new SetCrewMemberShipLocation(gameDataHandler);              //Já escolheu 2
             else
                 return this;                                                            //Ainda não escolheu 2
@@ -28,7 +28,7 @@ public class ChooseCrewMembers extends GameSetupStateAdapter {
     @Override
     public IGameSetupState SelectCrewMembers(ArrayList<Integer> pos){
         try {
-            if(pos.size() == Constants.MAX_SELECTED_CREWMEMBERS) {
+            if(pos.size() == Constants.MAX_CHOSEN_CREWMEMBERS) {
                 for (Integer i : pos)
                     gameDataHandler.AddCrewMember(i);
                 return new SetCrewMemberShipLocation(gameDataHandler);

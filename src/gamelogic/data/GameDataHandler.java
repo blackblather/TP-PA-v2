@@ -88,6 +88,9 @@ public class GameDataHandler {
     public String GetDeckCrewMemberImageUrlAt(int pos){
         return deck.GetCards().get(pos).GetImage();
     }
+    public String GetChosenCrewMemberImageUrlAt(int pos){
+        return playerBoard.GetCrewMembers().get(pos).GetImage();
+    }
 
 
     //---------------------------Game-------------------------------

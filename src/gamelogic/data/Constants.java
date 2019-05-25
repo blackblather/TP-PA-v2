@@ -17,7 +17,7 @@ public class Constants {
     public static final int MAX_HEALTH = 12;
     public static final int MAX_JOURNEY_PARTS = 13;
     public static final int MAX_HULL = 12;
-    public static final int MAX_SELECTED_CREWMEMBERS = 2;
+    public static final int MAX_CHOSEN_CREWMEMBERS = 2;
     public static final int MAX_CREWMEMBER_MOVEMENT = 3;
     public static final int MAX_CREWMEMBER_ATTACK = 3;
     public static final int MAX_ALIENS = 15;
