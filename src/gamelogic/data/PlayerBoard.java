@@ -16,9 +16,6 @@ class PlayerBoard {
             sealedRoomTokens = Constants.INITIAL_SEALED_ROOMS;
 
     //Package-Private functions
-    String CrewMemberToStringAt(int pos) throws IndexOutOfBoundsException{
-        return crewMembers.get(pos).toString();
-    }
     void AddCrewMember(Deck deck, int pos) throws IndexOutOfBoundsException, IllegalAccessException {
         CrewMember crewMember = deck.ChooseCardAt(pos);
         if(crewMember != null)

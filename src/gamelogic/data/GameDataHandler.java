@@ -11,8 +11,8 @@ import java.util.function.ToIntFunction;
 public class GameDataHandler {
     //Private classes
     private class EffectBuffer{
-        public Effect effect; //Preencher esta variavel com o estado que está a ser manipulado
-        public int type;
+        Effect effect;
+        int type;
     }
 
     //Private vars
@@ -82,7 +82,7 @@ public class GameDataHandler {
         return info;
     }
     public String GetChosenCrewMemberToStringAt(int pos){
-        return playerBoard.CrewMemberToStringAt(pos);
+        return playerBoard.GetCrewMembers().get(pos).toString();
     }
 
 
