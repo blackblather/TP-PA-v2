@@ -20,7 +20,7 @@ public class ChooseCrewMembers extends GameSetupStateAdapter {
             else
                 return this;                                                            //Ainda não escolheu 2
         } catch (Exception ex) {
-            //TODO: Fazer catch das excepções especificas para mostrar mensagens de erro
+            gameDataHandler.SetErrorMessage("Invalid crew member selected");
             return this;
         }
     }
