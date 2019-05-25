@@ -73,7 +73,7 @@ public class GraphicalUI extends Application implements Observer {
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
-                inputArray.add(deckIndex);      //Adds input to inputArray
+                inputArray.add(deckIndex+1);      //Adds input to inputArray
                 iv.setX(cardImageView.getX() + (cardImageView.getImage().getWidth() / 2) - iv.getImage().getWidth() / 2);   //Set X
                 iv.setY(cardImageView.getY() + (cardImageView.getImage().getHeight() / 2) - iv.getImage().getHeight() / 2); //Set Y
                 iv.setVisible(true);            //Makes ivCheck visible
@@ -97,7 +97,7 @@ public class GraphicalUI extends Application implements Observer {
     }
     private Group NewCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex){
         Group group = new Group();
-        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetDeckCrewMemberImageUrlAt(deckIndex-1)));
+        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetDeckCrewMemberImageUrlAt(deckIndex)));
         ivCard.setCursor(Cursor.HAND);
         ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
             if(!CardIsChecked(group)) {
@@ -230,10 +230,11 @@ public class GraphicalUI extends Application implements Observer {
         });
         btnNext.setDisable(true);
 
+        //Create array of groups of imageviews of crew members
         ArrayList<Group> gCrewMember = new ArrayList<>();
         for(int i = 0; i < logic.GetGameDataHandler().GetTotalDeckCards(); i++) {
             //Add new card at gCrewMember[i]
-            gCrewMember.add(i,NewCard(ivArrChecked, btnNext, inputArray, i+1));
+            gCrewMember.add(i,NewCard(ivArrChecked, btnNext, inputArray, i));
             //Add gCrewMembers[i] to scrollFlowPane
             scrollFlowPane.getChildren().add(gCrewMember.get(i));
         }
