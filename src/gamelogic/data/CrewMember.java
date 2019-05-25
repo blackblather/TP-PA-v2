@@ -83,7 +83,9 @@ class CrewMember {
     String GetImage(){
         return imageUrl;
     }
-
+    Color GetColor(){
+        return color;
+    }
     //Setters
     void SetRoom(Room room){
         currentRoom = room;
