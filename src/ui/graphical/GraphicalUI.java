@@ -63,7 +63,7 @@ public class GraphicalUI extends Application implements Observer {
         layout.getRowConstraints().addAll(row1,row2,row3);
         return layout;
     }
-    private FlowPane GetVerticalCenterFlowPane(){
+    private FlowPane GetVerticalFlowPane(){
         FlowPane centerFlowPane = new FlowPane(Orientation.VERTICAL);
         centerFlowPane.setVgap(5);
         centerFlowPane.setAlignment(Pos.CENTER);            //overall alignment
@@ -95,9 +95,9 @@ public class GraphicalUI extends Application implements Observer {
             }
         }
     }
-    private Group AddCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex, Image image){
+    private Group NewCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex){
         Group group = new Group();
-        ImageView ivCard = new ImageView(image);
+        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetDeckCrewMemberImageUrlAt(deckIndex-1)));
         ivCard.setCursor(Cursor.HAND);
         ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
             if(!CardIsChecked(group)) {
@@ -120,7 +120,7 @@ public class GraphicalUI extends Application implements Observer {
         GridPane layout = GetGrid(25, 50, 25, 25, 50, 25);
 
         //Create centerFlowPane
-        FlowPane centerFlowPane = GetVerticalCenterFlowPane();
+        FlowPane centerFlowPane = GetVerticalFlowPane();
 
         //Position centerFlowPane (col = 1; row = 1)
         GridPane.setConstraints(centerFlowPane, 1, 1);
@@ -153,7 +153,7 @@ public class GraphicalUI extends Application implements Observer {
     }
     private Scene GetChooseJourneyScene(){
         //Create centerFlowPane
-        FlowPane centerFlowPane = GetVerticalCenterFlowPane();
+        FlowPane centerFlowPane = GetVerticalFlowPane();
 
         //Create label
         Label title = new Label("Choose a journey");
@@ -199,7 +199,7 @@ public class GraphicalUI extends Application implements Observer {
         ArrayList<Integer> inputArray = new ArrayList<>();
 
         //Create mainFlowPane
-        FlowPane mainFlowPane = GetVerticalCenterFlowPane();
+        FlowPane mainFlowPane = GetVerticalFlowPane();
 
         //Create label
         Label title = new Label("Choose 2 crew members");
@@ -230,22 +230,13 @@ public class GraphicalUI extends Application implements Observer {
         });
         btnNext.setDisable(true);
 
-        //Create crew members (podia criar um array de "Group", e cada objecto de crew members tinha a sua "Image". Assim também funciona, pode é não ser a melhor maneira)
-        Group gDoctor = AddCard(ivArrChecked, btnNext, inputArray, 1, new Image("file:cards/Doctor.png"));
-        Group gCommsOfficer = AddCard(ivArrChecked, btnNext, inputArray, 2, new Image("file:cards/CommsOfficer.png"));
-        Group gRedShirt = AddCard(ivArrChecked, btnNext, inputArray, 3, new Image("file:cards/RedShirt.png"));
-        Group gScienceOfficer = AddCard(ivArrChecked, btnNext, inputArray, 4, new Image("file:cards/ScienceOfficer.png"));
-        Group gEngineer = AddCard(ivArrChecked, btnNext, inputArray, 5, new Image("file:cards/Engineer.png"));
-        Group gCaptain = AddCard(ivArrChecked, btnNext, inputArray, 6, new Image("file:cards/Captain.png"));
-        Group gCommander = AddCard(ivArrChecked, btnNext, inputArray, 7, new Image("file:cards/Commander.png"));
-        Group gTransporterChief = AddCard(ivArrChecked, btnNext, inputArray, 8, new Image("file:cards/TransporterChief.png"));
-        Group gMoralOfficer = AddCard(ivArrChecked, btnNext, inputArray, 9, new Image("file:cards/MoralOfficer.png"));
-        Group gSecurityOfficer = AddCard(ivArrChecked, btnNext, inputArray, 10, new Image("file:cards/SecurityOfficer.png"));
-        Group gNavigationOfficer = AddCard(ivArrChecked, btnNext, inputArray, 11, new Image("file:cards/NavigationOfficer.png"));
-        Group gShuttlePilot = AddCard(ivArrChecked, btnNext, inputArray, 12, new Image("file:cards/ShuttlePilot.png"));
-
-        //Add crew members to scrollFlowPane
-        scrollFlowPane.getChildren().addAll(gDoctor, gCommsOfficer, gRedShirt, gScienceOfficer, gEngineer, gCaptain, gCommander, gTransporterChief, gMoralOfficer, gSecurityOfficer, gNavigationOfficer, gShuttlePilot);
+        ArrayList<Group> gCrewMember = new ArrayList<>();
+        for(int i = 0; i < logic.GetGameDataHandler().GetTotalDeckCards(); i++) {
+            //Add new card at gCrewMember[i]
+            gCrewMember.add(i,NewCard(ivArrChecked, btnNext, inputArray, i+1));
+            //Add gCrewMembers[i] to scrollFlowPane
+            scrollFlowPane.getChildren().add(gCrewMember.get(i));
+        }
 
         //Create scroll pane with  scrollFlowPane
         ScrollPane s1 = new ScrollPane();
@@ -263,9 +254,32 @@ public class GraphicalUI extends Application implements Observer {
         return new Scene(mainFlowPane, 800,800);
     }
     private Scene GetChooseCrewMemberShipLocationScene(){
+        //Create flowPane
+        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
+        flowPane.setVgap(5);
+        flowPane.setAlignment(Pos.TOP_LEFT);       //Overall alignment
+        flowPane.setRowValignment(VPos.CENTER);    //Align row content vertically
+
+        //Add map image to the left
+        Group gMap = new Group();
+        ImageView ivMap = new ImageView(new Image("file:map.png"));
+        gMap.getChildren().add(ivMap);
+
+        //Add map to flowPane
+        flowPane.getChildren().add(gMap);
+
+        //Create rightFlowPane
+        FlowPane rightFlowPane = GetVerticalFlowPane();
+
+        Group gCrewMember1 = new Group();
+        ImageView ivCrewMember1 = new ImageView(new Image("file:map.png"));
+        gCrewMember1.getChildren().add(ivCrewMember1);
+
+        Group gCrewMember2 = new Group();
+
+
         //Returns scene with layout in it
-        //return new Scene(centerFlowPane, 800,400);
-        return null;
+        return new Scene(flowPane, 1000,520);
     }
 
     @Override
