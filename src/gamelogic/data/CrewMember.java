@@ -1,6 +1,6 @@
 package gamelogic.data;
 
-import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.security.InvalidParameterException;
 
@@ -10,6 +10,8 @@ class CrewMember {
     private int id, movement, attack, minimumAttackRoll = 5, attackRollBonus = 0;    //1 of attack -> means 1 D6 die
     private Room currentRoom;
     private boolean isAvailable = true;
+    private Color color;
+
 
 
     //Private functions
@@ -22,18 +24,20 @@ class CrewMember {
     }
 
     //Constrcutor
-    CrewMember(int id, String imageUrl, String name, Integer movement, Integer attack){
+    CrewMember(int id, Color color, String imageUrl, String name, Integer movement, Integer attack){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
             this.id = id;
+            this.color = color;
             this.imageUrl = imageUrl;
             this.name = name;
             this.movement = movement;
             this.attack = attack;
         }
     }
-    CrewMember(int id, String imageUrl, String name, Integer movement, Integer attack, Integer minimumAttackRoll){
+    CrewMember(int id, Color color, String imageUrl, String name, Integer movement, Integer attack, Integer minimumAttackRoll){
         if(IsValidMovementValue(movement) && IsValidAttackValue(attack)){
             this.id = id;
+            this.color = color;
             this.imageUrl = imageUrl;
             this.name = name;
             this.movement = movement;
