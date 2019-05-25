@@ -91,6 +91,14 @@ public class GameDataHandler {
     public String GetChosenCrewMemberImageUrlAt(int pos){
         return playerBoard.GetCrewMembers().get(pos).GetImage();
     }
+    public ArrayList<Double> GetChosenCrewMemberColorRGBAt(int pos){
+        ArrayList<Double> RGB = new ArrayList<>();
+        CrewMember crewMember = playerBoard.GetCrewMembers().get(pos);
+        RGB.add(crewMember.GetColor().getRed()*255);
+        RGB.add(crewMember.GetColor().getGreen()*255);
+        RGB.add(crewMember.GetColor().getBlue()*255);
+        return RGB;
+    }
 
 
     //---------------------------Game-------------------------------
