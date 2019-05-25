@@ -59,13 +59,18 @@ public class GraphicalUI extends Application implements Observer {
         layout.getRowConstraints().addAll(row1,row2,row3);
         return layout;
     }
-    private FlowPane GetVerticalFlowPane(){
-        FlowPane centerFlowPane = new FlowPane(Orientation.VERTICAL);
+    private FlowPane GetFlowPane(Orientation orientation){
+        FlowPane centerFlowPane = new FlowPane(orientation);
+        centerFlowPane.setHgap(5);
         centerFlowPane.setVgap(5);
         centerFlowPane.setAlignment(Pos.CENTER);            //overall alignment
-        centerFlowPane.setColumnHalignment(HPos.CENTER);    //align buttons on the center of vertical column
+        if(orientation == Orientation.HORIZONTAL)
+            centerFlowPane.setRowValignment(VPos.CENTER);
+        else if(orientation == Orientation.VERTICAL)
+            centerFlowPane.setColumnHalignment(HPos.CENTER);
         return centerFlowPane;
     }
+
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
@@ -84,7 +89,7 @@ public class GraphicalUI extends Application implements Observer {
     private void UncheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Group group){
         for (ImageView iv : ivArrChecked) {
             if(group.getChildren().get(1) == iv){                   //NOTE: "checked image view" is always at the index 1
-                inputArray.removeAll(Arrays.asList(deckIndex));     //Remove from inputArray
+                inputArray.removeAll(Arrays.asList(deckIndex+1));     //Remove from inputArray
                 group.getChildren().remove(iv);                     //Remove ivCheck from group
                 iv.setVisible(false);                               //Make ivCheck invisible again
                 break;                                              //break out of the loop
@@ -109,6 +114,13 @@ public class GraphicalUI extends Application implements Observer {
         group.getChildren().add(ivCard);
         return group;
     }
+    private Group NewCard(Integer deckIndex){
+        Group group = new Group();
+        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetChosenCrewMemberImageUrlAt(deckIndex)));
+        ivCard.setCursor(Cursor.HAND);
+        group.getChildren().add(ivCard);
+        return group;
+    }
 
     //User interfaces for each state
     private Scene GetInitialMenuScene(){
@@ -116,7 +128,7 @@ public class GraphicalUI extends Application implements Observer {
         GridPane layout = GetGrid(25, 50, 25, 25, 50, 25);
 
         //Create centerFlowPane
-        FlowPane centerFlowPane = GetVerticalFlowPane();
+        FlowPane centerFlowPane = GetFlowPane(Orientation.VERTICAL);
 
         //Position centerFlowPane (col = 1; row = 1)
         GridPane.setConstraints(centerFlowPane, 1, 1);
@@ -149,7 +161,7 @@ public class GraphicalUI extends Application implements Observer {
     }
     private Scene GetChooseJourneyScene(){
         //Create centerFlowPane
-        FlowPane centerFlowPane = GetVerticalFlowPane();
+        FlowPane centerFlowPane = GetFlowPane(Orientation.VERTICAL);
 
         //Create label
         Label title = new Label("Choose a journey");
@@ -195,7 +207,7 @@ public class GraphicalUI extends Application implements Observer {
         ArrayList<Integer> inputArray = new ArrayList<>();
 
         //Create mainFlowPane
-        FlowPane mainFlowPane = GetVerticalFlowPane();
+        FlowPane mainFlowPane = GetFlowPane(Orientation.VERTICAL);
 
         //Create label
         Label title = new Label("Choose 2 crew members");
@@ -252,10 +264,7 @@ public class GraphicalUI extends Application implements Observer {
     }
     private Scene GetChooseCrewMemberShipLocationScene(){
         //Create flowPane
-        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
-        flowPane.setVgap(5);
-        flowPane.setAlignment(Pos.TOP_LEFT);       //Overall alignment
-        flowPane.setRowValignment(VPos.CENTER);    //Align row content vertically
+        FlowPane flowPane = GetFlowPane(Orientation.HORIZONTAL);
 
         //Add map image to the left
         Group gMap = new Group();
@@ -266,17 +275,45 @@ public class GraphicalUI extends Application implements Observer {
         flowPane.getChildren().add(gMap);
 
         //Create rightFlowPane
-        FlowPane rightFlowPane = GetVerticalFlowPane();
+        FlowPane rightFlowPane = GetFlowPane(Orientation.VERTICAL);
 
-        Group gCrewMember1 = new Group();
-        ImageView ivCrewMember1 = new ImageView(new Image("file:map.png"));
-        gCrewMember1.getChildren().add(ivCrewMember1);
+        //Create label
+        Label title = new Label("Select a crew member and choose his/her location");
+        title.setStyle("-fx-font-weight: bold");
 
-        Group gCrewMember2 = new Group();
+        //Add lablel to rightFlowPane
+        rightFlowPane.getChildren().add(title);
 
+        //Create crewMembersFlowPane
+        FlowPane crewMembersFlowPane = GetFlowPane(Orientation.HORIZONTAL);
+        crewMembersFlowPane.setPrefWrapLength(600);
+
+        //Create an array of groups of image views of chosen crew members
+        ArrayList<Group> gCrewMember = new ArrayList<>();
+        for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++){
+            gCrewMember.add(i, NewCard(i));
+            crewMembersFlowPane.getChildren().add(gCrewMember.get(i));
+        }
+
+        //Add crewMembersFlowPane to rightFlowPane (after label)
+        rightFlowPane.getChildren().add(crewMembersFlowPane);
+
+        //Button "Next"
+        /*Button btnNext = new Button("Next");
+        btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
+        btnNext.setCursor(Cursor.HAND);
+        btnNext.setOnAction(e -> {
+
+        });
+        btnNext.setDisable(true);
+
+        rightFlowPane.getChildren().add(btnNext);*/
+
+        //Add rightFlowPane to flowPane (after map)
+        flowPane.getChildren().add(rightFlowPane);
 
         //Returns scene with layout in it
-        return new Scene(flowPane, 1000,520);
+        return new Scene(flowPane, 1000,550);
     }
 
     @Override
