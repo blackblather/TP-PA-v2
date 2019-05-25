@@ -1,6 +1,7 @@
 package gamelogic.data;
 
 import gamelogic.states.game.IGameState;
+import javafx.scene.image.Image;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -83,6 +84,9 @@ public class GameDataHandler {
     }
     public String GetChosenCrewMemberToStringAt(int pos){
         return playerBoard.GetCrewMembers().get(pos).toString();
+    }
+    public String GetDeckCrewMemberImageUrlAt(int pos){
+        return deck.GetCards().get(pos).GetImage();
     }
 
 
