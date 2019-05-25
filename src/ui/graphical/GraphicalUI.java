@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class GraphicalUI extends Application implements Observer {
     }
 
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
+        //USED FOR: GetChooseCrewMembersScene()
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
                 inputArray.add(deckIndex+1);      //Adds input to inputArray
@@ -83,8 +85,24 @@ public class GraphicalUI extends Application implements Observer {
             }
         }
     }
+    private void CheckCard(ArrayList<StackPane> stackPanes, Integer index){
+        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        //Removes all styles    (default style is not empty. Is 3px solid white)
+        for (StackPane s : stackPanes)
+            s.setStyle("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: white;");
+
+        //Add style to selected borderStackPane
+        StackPane borderStackPane = stackPanes.get(index);
+        ArrayList<Double> RGB = logic.GetGameDataHandler().GetChosenCrewMemberColorRGBAt(index);
+        borderStackPane.setStyle("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: rgb("+RGB.get(0)+","+RGB.get(1)+","+RGB.get(2)+");");
+    }
     private boolean CardIsChecked(Group group){
+        //USED FOR: GetChooseCrewMembersScene()
         return group.getChildren().size() == 2;
+    }
+    private boolean CardIsChecked(StackPane stackPane){
+        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        return !stackPane.getStyle().equals("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: white;");
     }
     private void UncheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Group group){
         for (ImageView iv : ivArrChecked) {
@@ -97,6 +115,7 @@ public class GraphicalUI extends Application implements Observer {
         }
     }
     private Group NewCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex){
+        //USED FOR: GetChooseCrewMembersScene()
         Group group = new Group();
         ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetDeckCrewMemberImageUrlAt(deckIndex)));
         ivCard.setCursor(Cursor.HAND);
@@ -114,12 +133,30 @@ public class GraphicalUI extends Application implements Observer {
         group.getChildren().add(ivCard);
         return group;
     }
-    private Group NewCard(Integer deckIndex){
-        Group group = new Group();
-        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetChosenCrewMemberImageUrlAt(deckIndex)));
+    private StackPane NewCard(Integer index){
+        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        //Create borderStackPane
+        StackPane borderStackPane = new StackPane();
+
+        //Create image view of crew member image
+        ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetChosenCrewMemberImageUrlAt(index)));
         ivCard.setCursor(Cursor.HAND);
-        group.getChildren().add(ivCard);
-        return group;
+
+        //Add image view to stack pane
+        borderStackPane.getChildren().add(ivCard);
+
+        //Set default border style(default style is not empty. Is 3px solid white)
+        borderStackPane.setStyle("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: white;");
+
+        return borderStackPane;
+    }
+    private void SetIVCardEvent(ArrayList<StackPane> borderStackPanes, Integer index){
+        StackPane borderStackPane = borderStackPanes.get(index);
+        ImageView ivCard = (ImageView) borderStackPane.getChildren().get(0);  //Downcast from Node to ImageView
+        ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
+            if(!CardIsChecked(borderStackPane))
+                CheckCard(borderStackPanes, index);
+        }));
     }
 
     //User interfaces for each state
@@ -263,8 +300,12 @@ public class GraphicalUI extends Application implements Observer {
         return new Scene(mainFlowPane, 800,800);
     }
     private Scene GetChooseCrewMemberShipLocationScene(){
+        //Create inputArray
+        ArrayList<Integer> inputArray = new ArrayList<>();
+
         //Create flowPane
         FlowPane flowPane = GetFlowPane(Orientation.HORIZONTAL);
+        flowPane.setStyle("-fx-background-color: white;");
 
         //Add map image to the left
         Group gMap = new Group();
@@ -289,17 +330,22 @@ public class GraphicalUI extends Application implements Observer {
         crewMembersFlowPane.setPrefWrapLength(600);
 
         //Create an array of groups of image views of chosen crew members
-        ArrayList<Group> gCrewMember = new ArrayList<>();
+        ArrayList<StackPane> borderStackPanes = new ArrayList<>();
         for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++){
-            gCrewMember.add(i, NewCard(i));
-            crewMembersFlowPane.getChildren().add(gCrewMember.get(i));
+            borderStackPanes.add(i, NewCard(i));
+            crewMembersFlowPane.getChildren().add(borderStackPanes.get(i));
         }
+
+        //Add events to each Image View
+        //Events are set in a seperate function, because the whole array of stackPanes is required
+        for (Integer index = 0; index < borderStackPanes.size(); index++)
+            SetIVCardEvent(borderStackPanes, index);
 
         //Add crewMembersFlowPane to rightFlowPane (after label)
         rightFlowPane.getChildren().add(crewMembersFlowPane);
 
         //Button "Next"
-        /*Button btnNext = new Button("Next");
+        Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
         btnNext.setOnAction(e -> {
@@ -307,7 +353,7 @@ public class GraphicalUI extends Application implements Observer {
         });
         btnNext.setDisable(true);
 
-        rightFlowPane.getChildren().add(btnNext);*/
+        rightFlowPane.getChildren().add(btnNext);
 
         //Add rightFlowPane to flowPane (after map)
         flowPane.getChildren().add(rightFlowPane);
