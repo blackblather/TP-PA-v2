@@ -68,7 +68,12 @@ public class Logic extends Observable {
         notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void SetCrewMemberShipLocation(int roomPos, int crewMemberPos){
-        gameSetupState = gameSetupState._SetCrewMemberShipLocation(roomPos, crewMemberPos);
+        gameSetupState = gameSetupState.SetCrewMemberShipLocation(roomPos, crewMemberPos);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
+    }
+    public void SetCrewMembersShipLocation(ArrayList<Integer> rooms){
+        gameSetupState = gameSetupState.SetCrewMembersShipLocation(rooms);
         setChanged();
         notifyObservers(gameDataHandler.GetErrorMessage());
     }
