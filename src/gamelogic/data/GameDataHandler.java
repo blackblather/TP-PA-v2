@@ -1,8 +1,5 @@
 package gamelogic.data;
 
-import gamelogic.states.game.IGameState;
-import javafx.scene.image.Image;
-
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,13 +82,18 @@ public class GameDataHandler {
     public String GetChosenCrewMemberToStringAt(int pos){
         return playerBoard.GetCrewMembers().get(pos).toString();
     }
+    public String GetChosenCrewMemberNameAt(int pos){
+        return playerBoard.GetCrewMembers().get(pos).GetName();
+    }
     public String GetDeckCrewMemberImageUrlAt(int pos){
         return deck.GetCards().get(pos).GetImage();
     }
     public String GetChosenCrewMemberImageUrlAt(int pos){
+        //UNUSED
         return playerBoard.GetCrewMembers().get(pos).GetImage();
     }
     public ArrayList<Double> GetChosenCrewMemberColorRGBAt(int pos){
+        //UNUSED
         ArrayList<Double> RGB = new ArrayList<>();
         CrewMember crewMember = playerBoard.GetCrewMembers().get(pos);
         RGB.add(crewMember.GetColor().getRed()*255);
@@ -99,7 +101,6 @@ public class GameDataHandler {
         RGB.add(crewMember.GetColor().getBlue()*255);
         return RGB;
     }
-
 
     //---------------------------Game-------------------------------
     //Public functions
