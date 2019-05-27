@@ -3,10 +3,10 @@ package ui.graphical;
 import gamelogic.*;
 import gamelogic.data.Constants;
 import gamelogic.states.gameSetup.*;
+import gamelogic.states.game.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -19,14 +19,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class GraphicalUI extends Application implements Observer {
     private Logic logic;
@@ -75,7 +70,7 @@ public class GraphicalUI extends Application implements Observer {
     }
 
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
-        //USED FOR: GetChooseCrewMembersScene()
+        //USED FOR: GetChoosePlayerBoardCrewMembersScene()
         for (ImageView iv : ivArrChecked) {
             if(!iv.isVisible()){
                 inputArray.add(deckIndex+1);      //Adds input to inputArray
@@ -99,7 +94,7 @@ public class GraphicalUI extends Application implements Observer {
         borderStackPane.setStyle("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: rgb("+RGB.get(0)+","+RGB.get(1)+","+RGB.get(2)+");");
     }
     private boolean CardIsChecked(Group group){
-        //USED FOR: GetChooseCrewMembersScene()
+        //USED FOR: GetChoosePlayerBoardCrewMembersScene()
         return group.getChildren().size() == 2;
     }
     private boolean CardIsChecked(StackPane stackPane){
@@ -117,7 +112,7 @@ public class GraphicalUI extends Application implements Observer {
         }
     }
     private Group NewCard(ArrayList<ImageView> ivArrChecked, Button btnNext, ArrayList<Integer> inputArray, Integer deckIndex){
-        //USED FOR: GetChooseCrewMembersScene()
+        //USED FOR: GetChoosePlayerBoardCrewMembersScene()
         Group group = new Group();
         ImageView ivCard = new ImageView(new Image(logic.GetGameDataHandler().GetDeckCrewMemberImageUrlAt(deckIndex)));
         ivCard.setCursor(Cursor.HAND);
@@ -161,7 +156,7 @@ public class GraphicalUI extends Application implements Observer {
         }));
     }
 
-    //User interfaces for each state
+    //User interfaces for each state (Game Setup)
     private Scene GetInitialMenuScene(){
         //Empty GridPane layout
         GridPane layout = GetGrid(25, 50, 25, 25, 50, 25);
@@ -241,7 +236,7 @@ public class GraphicalUI extends Application implements Observer {
         //Returns scene with layout in it
         return new Scene(centerFlowPane, 400,150);
     }
-    private Scene GetChooseCrewMembersScene(){
+    private Scene GetChoosePlayerBoardCrewMembersScene(){
         //Create inputArray
         ArrayList<Integer> inputArray = new ArrayList<>();
 
@@ -423,6 +418,105 @@ public class GraphicalUI extends Application implements Observer {
         //Returns scene with layout in it
         return new Scene(centerFlowPane, 240,180);
     }
+
+    //User interfaces for each state (Game Setup)
+    private Scene GetChooseUpgradeScene(){
+        return new Scene(new FlowPane());
+    }
+    private Scene GetChooseActionScene(){
+        //Create flowPane
+        FlowPane flowPane = GetFlowPane(Orientation.VERTICAL);
+        flowPane.setAlignment(Pos.CENTER);
+        flowPane.setColumnHalignment(HPos.LEFT);
+
+        //Create title label
+        Label title = new Label("Choose an action to execute");
+        title.setStyle("-fx-font-weight: bold");
+
+        //Add title to flowPane
+        flowPane.getChildren().add(title);
+
+        //Create info label
+        Label info = new Label("Available action points: " + logic.GetGameDataHandler().GetActionPoints());
+
+        //Add info to flowPane
+        flowPane.getChildren().add(info);
+
+        //Get action descriptions
+        ArrayList<String> actionNames = logic.GetGameDataHandler().GetDesciptionArray("Action");
+
+        //Create toggle group
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        //Create array of radio buttons
+        ArrayList<RadioButton> rbActions = new ArrayList<>();
+
+        //Create and add radio button to flow pane
+        for (int i = 0; i <actionNames.size(); i++) {
+            //Create new radio button
+            rbActions.add(new RadioButton(actionNames.get(i)));
+            rbActions.get(i).setToggleGroup(toggleGroup);
+
+            //Add radio button to flowPane
+            flowPane.getChildren().add(rbActions.get(i));
+        }
+
+        //Create "skip" radio button
+        rbActions.add(new RadioButton("Skip"));
+        rbActions.get(actionNames.size()).setToggleGroup(toggleGroup);
+
+        //Add radio button to flowPane
+        flowPane.getChildren().add(rbActions.get(actionNames.size()));
+
+        //Button "Next"
+        Button btnNext = new Button("Next");
+        btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
+        btnNext.setCursor(Cursor.HAND);
+        btnNext.setOnAction(e -> {
+            if(rbActions.get(actionNames.size()).isSelected())
+                logic.Skip();
+            else{
+                int selected = (rbActions.indexOf((RadioButton)toggleGroup.getSelectedToggle())) + 1;
+                logic.EvaluateChosenAction(selected);
+            }
+        });
+
+        //Add btnNext to flowPane
+        flowPane.getChildren().add(btnNext);
+
+        //Returns scene with layout in it
+        return new Scene(flowPane, 300, 350);
+    }
+    private Scene GetChooseEffectCrewMemberScene(){
+        //Create crewMembersFlowPane
+        FlowPane crewMembersFlowPane = GetFlowPane(Orientation.HORIZONTAL);
+        crewMembersFlowPane.setPrefWrapLength(600);
+
+        //Create an array of groups of image views of chosen crew members
+        ArrayList<StackPane> borderStackPanes = new ArrayList<>();
+        for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++){
+            borderStackPanes.add(i, NewCard(i));
+            crewMembersFlowPane.getChildren().add(borderStackPanes.get(i));
+        }
+
+        //Add events to each Image View
+        //Events are set in a seperate function, because the whole array of stackPanes is required
+        for (Integer index = 0; index < borderStackPanes.size(); index++)
+            SetIVCardEvent(borderStackPanes, index);
+
+        //Button "Next"
+        Button btnNext = new Button("Next");
+        btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
+        btnNext.setCursor(Cursor.HAND);
+        btnNext.setOnAction(e -> {
+
+        });
+        btnNext.setDisable(true);
+
+        //Returns scene with layout in it
+        return new Scene(crewMembersFlowPane, 700,400);
+    }
+
     @Override
     public void start(Stage stage) {
         //Add private reference to stage from params
@@ -458,11 +552,33 @@ public class GraphicalUI extends Application implements Observer {
                 else if (logic.GetGameSetupState() instanceof ChooseJourney)
                     stage.setScene(GetChooseJourneyScene()); //Set scene to "Choose journey"
                 else if (logic.GetGameSetupState() instanceof ChooseCrewMembers)
-                    stage.setScene(GetChooseCrewMembersScene());
+                    stage.setScene(GetChoosePlayerBoardCrewMembersScene());
                 else if (logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
                     stage.setScene(GetChooseCrewMemberShipLocationScene());
                 else if (logic.GetGameSetupState() instanceof StartGame) {
+                    if(logic.GetGameState() == null)
+                        logic.StartGame();
+                    else if(logic.GetGameState() instanceof RoundPhase)
+                        logic.EvaluateRound();
+                    else if(logic.GetGameState() instanceof RestPhase)
+                        stage.setScene(GetChooseUpgradeScene());    //TODO
+                    else if(logic.GetGameState() instanceof CrewPhase)
+                        stage.setScene(GetChooseActionScene());
+                    else if(logic.GetGameState() instanceof SelectCrewMember)
+                        stage.setScene(GetChooseEffectCrewMemberScene());
+                    else if(logic.GetGameState() instanceof SelectTrap){
 
+                    } else if(logic.GetGameState() instanceof SelectRoom){
+
+                    } else if(logic.GetGameState() instanceof ExecuteEffect)
+                        logic.EvaluateAndExecuteEffect();
+                    else if(logic.GetGameState() instanceof AlienPhase){
+                        //TODO
+                    } else if(logic.GetGameState() instanceof GameOver || logic.GetGameState() instanceof Win){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, (logic.GetGameState() instanceof GameOver?"Game over": "Win"), ButtonType.OK);
+                        alert.showAndWait();
+                        logic.EndGame();
+                    }
                 }
                 this.stage.show();
             } else
