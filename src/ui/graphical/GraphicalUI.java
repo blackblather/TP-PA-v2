@@ -488,6 +488,16 @@ public class GraphicalUI extends Application implements Observer {
         return new Scene(flowPane, 300, 350);
     }
     private Scene GetChooseEffectCrewMemberScene(){
+        //Create rightFlowPane
+        FlowPane flowPane = GetFlowPane(Orientation.VERTICAL);
+
+        //Create title label
+        Label title = new Label("Choose a crew member");
+        title.setStyle("-fx-font-weight: bold");
+
+        //Add lablel to rightFlowPane
+        flowPane.getChildren().add(title);
+
         //Create crewMembersFlowPane
         FlowPane crewMembersFlowPane = GetFlowPane(Orientation.HORIZONTAL);
         crewMembersFlowPane.setPrefWrapLength(600);
@@ -499,11 +509,6 @@ public class GraphicalUI extends Application implements Observer {
             crewMembersFlowPane.getChildren().add(borderStackPanes.get(i));
         }
 
-        //Add events to each Image View
-        //Events are set in a seperate function, because the whole array of stackPanes is required
-        for (Integer index = 0; index < borderStackPanes.size(); index++)
-            SetIVCardEvent(borderStackPanes, index);
-
         //Button "Next"
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
@@ -513,8 +518,19 @@ public class GraphicalUI extends Application implements Observer {
         });
         btnNext.setDisable(true);
 
+        //Add events to each Image View
+        //Events are set in a seperate function, because the whole array of stackPanes is required
+        for (Integer index = 0; index < borderStackPanes.size(); index++)
+            SetIVCardEvent(borderStackPanes, index);
+
+        //Add crewMembersFlowPane to flowPane
+        flowPane.getChildren().add(crewMembersFlowPane);
+
+        //Add button "Next" to flowPane
+        flowPane.getChildren().add(btnNext);
+
         //Returns scene with layout in it
-        return new Scene(crewMembersFlowPane, 700,400);
+        return new Scene(flowPane, 700,400);
     }
 
     @Override
