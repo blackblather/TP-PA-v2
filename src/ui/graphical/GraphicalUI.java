@@ -147,12 +147,14 @@ public class GraphicalUI extends Application implements Observer {
 
         return borderStackPane;
     }
-    private void SetIVCardEvent(ArrayList<StackPane> borderStackPanes, Integer index){
+    private void SetIVCardEvent(ArrayList<StackPane> borderStackPanes, Integer index, Button btnNext){
         StackPane borderStackPane = borderStackPanes.get(index);
         ImageView ivCard = (ImageView) borderStackPane.getChildren().get(0);  //Downcast from Node to ImageView
         ivCard.addEventFilter(MouseEvent.MOUSE_CLICKED, (e -> {
-            if(!CardIsChecked(borderStackPane))
+            if(!CardIsChecked(borderStackPane)) {
                 CheckCard(borderStackPanes, index);
+                btnNext.setDisable(false);
+            }
         }));
     }
 
@@ -513,15 +515,21 @@ public class GraphicalUI extends Application implements Observer {
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
-        btnNext.setOnAction(e -> {
-
-        });
         btnNext.setDisable(true);
 
         //Add events to each Image View
         //Events are set in a seperate function, because the whole array of stackPanes is required
         for (Integer index = 0; index < borderStackPanes.size(); index++)
-            SetIVCardEvent(borderStackPanes, index);
+            SetIVCardEvent(borderStackPanes, index, btnNext);
+
+        //Set button "Next" event
+        btnNext.setOnAction(e -> {
+            for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++)
+                if(CardIsChecked(borderStackPanes.get(i))) {
+                    logic.EvaluateChosenCrewMember(i + 1);
+                    break;
+                }
+        });
 
         //Add crewMembersFlowPane to flowPane
         flowPane.getChildren().add(crewMembersFlowPane);
@@ -563,15 +571,17 @@ public class GraphicalUI extends Application implements Observer {
         } else {
             if (!(logic.GetGameSetupState() instanceof Exit)) {
                 stage.close();
+                //Game Setup State
                 if (logic.GetGameSetupState() instanceof InitialMenu)
-                    stage.setScene(GetInitialMenuScene()); //Set scene to "Initial Menu"
+                    stage.setScene(GetInitialMenuScene());
                 else if (logic.GetGameSetupState() instanceof ChooseJourney)
-                    stage.setScene(GetChooseJourneyScene()); //Set scene to "Choose journey"
+                    stage.setScene(GetChooseJourneyScene());
                 else if (logic.GetGameSetupState() instanceof ChooseCrewMembers)
                     stage.setScene(GetChoosePlayerBoardCrewMembersScene());
                 else if (logic.GetGameSetupState() instanceof SetCrewMemberShipLocation)
                     stage.setScene(GetChooseCrewMemberShipLocationScene());
                 else if (logic.GetGameSetupState() instanceof StartGame) {
+                    //Game State
                     if(logic.GetGameState() == null)
                         logic.StartGame();
                     else if(logic.GetGameState() instanceof RoundPhase)
