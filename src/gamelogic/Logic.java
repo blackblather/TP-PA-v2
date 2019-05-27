@@ -14,7 +14,7 @@ public class Logic extends Observable {
     //TODO: Decrementar os user-inputs aqui em vez do gamedatahandler
     //Private vars
     private GameDataHandler gameDataHandler = new GameDataHandler();
-    private IGameState gameState;
+    private IGameState gameState = null;
     private IGameSetupState gameSetupState;
 
     //Constructor
@@ -78,7 +78,7 @@ public class Logic extends Observable {
         notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EndGame(){
-        gameSetupState = gameSetupState._EndGame();
+        gameSetupState = gameSetupState.EndGame();
         setChanged();
         notifyObservers(gameDataHandler.GetErrorMessage());
     }
@@ -87,31 +87,47 @@ public class Logic extends Observable {
     public void StartGame(){
         gameDataHandler.LoadChosenCrewMemberSpecials();
         gameState = new RoundPhase(gameDataHandler);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateRound(){
         gameState = gameState.EvaluateRound();
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void Skip(){
         gameState = gameState.Skip();
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateChosenUpgrade(int opt){
         gameState = gameState.EvaluateChosenUpgrade(opt-1);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateChosenAction(int opt){
         gameState = gameState.EvaluateChosenAction(opt-1);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateChosenCrewMember(int opt){
         gameState = gameState.EvaluateChosenCrewMember(opt-1);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateChosenTrap(int opt){
         gameState = gameState.EvaluateChosenTrap(opt-1);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateChosenRoom(int opt){
         gameState = gameState.EvaluateChosenRoom(opt-1);
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
     public void EvaluateAndExecuteEffect(){
         gameState = gameState.EvaluateAndExecuteEffect();
+        setChanged();
+        notifyObservers(gameDataHandler.GetErrorMessage());
     }
 }
-
-
