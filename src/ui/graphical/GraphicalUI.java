@@ -6,6 +6,7 @@ import gamelogic.states.gameSetup.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -19,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -86,7 +88,7 @@ public class GraphicalUI extends Application implements Observer {
         }
     }
     private void CheckCard(ArrayList<StackPane> stackPanes, Integer index){
-        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        //USED FOR: GetChooseCrewMemberShipLocationScene_OLD()
         //Removes all styles    (default style is not empty. Is 3px solid white)
         for (StackPane s : stackPanes)
             s.setStyle("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: white;");
@@ -101,7 +103,7 @@ public class GraphicalUI extends Application implements Observer {
         return group.getChildren().size() == 2;
     }
     private boolean CardIsChecked(StackPane stackPane){
-        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        //USED FOR: GetChooseCrewMemberShipLocationScene_OLD()
         return !stackPane.getStyle().equals("-fx-border-width: 3px; -fx-border-style: solid; -fx-border-color: white;");
     }
     private void UncheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, Group group){
@@ -134,7 +136,7 @@ public class GraphicalUI extends Application implements Observer {
         return group;
     }
     private StackPane NewCard(Integer index){
-        //USED FOR: GetChooseCrewMemberShipLocationScene()
+        //USED FOR: GetChooseCrewMemberShipLocationScene_OLD()
         //Create borderStackPane
         StackPane borderStackPane = new StackPane();
 
@@ -299,8 +301,8 @@ public class GraphicalUI extends Application implements Observer {
         //Returns scene with layout in it
         return new Scene(mainFlowPane, 800,800);
     }
-    private Scene GetChooseCrewMemberShipLocationScene(){
-        //Create inputArray
+    private Scene GetChooseCrewMemberShipLocationScene_OLD(){
+       /* //Create inputArray
         ArrayList<Integer> inputArray = new ArrayList<>();
 
         //Create flowPane
@@ -310,6 +312,29 @@ public class GraphicalUI extends Application implements Observer {
         //Add map image to the left
         Group gMap = new Group();
         ImageView ivMap = new ImageView(new Image("file:map.png"));
+        //Salas
+        // 1 -> (156,73)
+        // 2 -> (186,312)
+        // 3 -> (59,141)
+        // 4 -> (252,160)
+        // 5 -> (129,160)
+        // 6 -> (158,431)
+        // 7 -> (252,330)
+        // 8 -> (186,183)
+        // 9 -> (59,244)
+        // 10 -> (129,312)
+        // 11 -> (252,244)
+        // 12 -> (59,330)
+
+        ivMap.setCursor(Cursor.HAND);
+        ivMap.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+
+        Circle c1 = new Circle(20,156,73, Color.rgb(255,0,0,0.5));
         gMap.getChildren().add(ivMap);
 
         //Add map to flowPane
@@ -359,9 +384,45 @@ public class GraphicalUI extends Application implements Observer {
         flowPane.getChildren().add(rightFlowPane);
 
         //Returns scene with layout in it
-        return new Scene(flowPane, 1000,550);
+        return new Scene(flowPane, 1000,550);*/
+       return new Scene(new FlowPane());
     }
+    private Scene GetChooseCrewMemberShipLocationScene(){
+        //Create centerFlowPane
+        FlowPane centerFlowPane = GetFlowPane(Orientation.VERTICAL);
 
+        //Create label
+        Label title = new Label("Choose the ship location");
+        title.setStyle("-fx-font-weight: bold");
+
+        ArrayList<Spinner> spnrCrewMembers = new ArrayList<>();
+        Label lblCM1 = new Label(logic.GetGameDataHandler().GetChosenCrewMemberNameAt(0) + ":");
+        spnrCrewMembers.add(new Spinner(1,12,1));
+        Label lblCM2 = new Label(logic.GetGameDataHandler().GetChosenCrewMemberNameAt(1) + ":");
+        spnrCrewMembers.add(new Spinner(1,12,1));
+
+        //Button "Next"
+        Button btnNext = new Button("Next");
+        btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
+        btnNext.setCursor(Cursor.HAND);
+        btnNext.setOnAction(e -> {
+            ArrayList<Integer> rooms = new ArrayList<>();
+            rooms.add((Integer)spnrCrewMembers.get(0).getValue());
+            rooms.add((Integer)spnrCrewMembers.get(1).getValue());
+            logic.SetCrewMembersShipLocation(rooms);
+        });
+
+        //Add buttons to centerFlowPane
+        centerFlowPane.getChildren().addAll(title,
+                                            lblCM1,
+                                            spnrCrewMembers.get(0),
+                                            lblCM2,
+                                            spnrCrewMembers.get(1),
+                                            btnNext);
+
+        //Returns scene with layout in it
+        return new Scene(centerFlowPane, 240,180);
+    }
     @Override
     public void start(Stage stage) {
         //Add private reference to stage from params
