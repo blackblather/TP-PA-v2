@@ -8,7 +8,8 @@ public interface IGameSetupState {
     IGameSetupState SelectCustomJourney(String[] customJourney);     //Custom Journey
     IGameSetupState SelectCrewMemberIn(int pos);
     IGameSetupState SelectCrewMembers(ArrayList<Integer> pos);
-    IGameSetupState _SetCrewMemberShipLocation(int roomPos, int crewMemberPos);
+    IGameSetupState SetCrewMembersShipLocation(ArrayList<Integer> rooms);
+    IGameSetupState SetCrewMemberShipLocation(int roomPos, int crewMemberPos);
     IGameSetupState _StartGame();
     IGameSetupState _EndGame();
     IGameSetupState _Exit();

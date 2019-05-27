@@ -40,7 +40,12 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
     }
 
     @Override
-    public IGameSetupState _SetCrewMemberShipLocation(int roomPos, int crewMemberPos) {
+    public IGameSetupState SetCrewMemberShipLocation(int roomPos, int crewMemberPos) {
+        return this;
+    }
+
+    @Override
+    public IGameSetupState SetCrewMembersShipLocation(ArrayList<Integer> rooms) {
         return this;
     }
 
