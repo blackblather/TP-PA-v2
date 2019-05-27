@@ -55,7 +55,7 @@ public abstract class GameSetupStateAdapter implements IGameSetupState{
     }
 
     @Override
-    public IGameSetupState _EndGame() {
+    public IGameSetupState EndGame() {
         return this;
     }
 

@@ -11,6 +11,6 @@ public interface IGameSetupState {
     IGameSetupState SetCrewMembersShipLocation(ArrayList<Integer> rooms);
     IGameSetupState SetCrewMemberShipLocation(int roomPos, int crewMemberPos);
     IGameSetupState _StartGame();
-    IGameSetupState _EndGame();
+    IGameSetupState EndGame();
     IGameSetupState _Exit();
 }
