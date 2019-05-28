@@ -445,7 +445,7 @@ public class GraphicalUI extends Application implements Observer {
         flowPane.getChildren().add(info);
 
         //Get action descriptions
-        ArrayList<String> actionNames = logic.GetGameDataHandler().GetDesciptionArray("Action");
+        ArrayList<String> actionDescriptions = logic.GetGameDataHandler().GetDesciptionArray("Action");
 
         //Create toggle group
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -454,9 +454,9 @@ public class GraphicalUI extends Application implements Observer {
         ArrayList<RadioButton> rbActions = new ArrayList<>();
 
         //Create and add radio button to flow pane
-        for (int i = 0; i <actionNames.size(); i++) {
+        for (int i = 0; i <actionDescriptions.size(); i++) {
             //Create new radio button
-            rbActions.add(new RadioButton(actionNames.get(i)));
+            rbActions.add(new RadioButton(actionDescriptions.get(i)));
             rbActions.get(i).setToggleGroup(toggleGroup);
 
             //Add radio button to flowPane
@@ -465,17 +465,17 @@ public class GraphicalUI extends Application implements Observer {
 
         //Create "skip" radio button
         rbActions.add(new RadioButton("Skip"));
-        rbActions.get(actionNames.size()).setToggleGroup(toggleGroup);
+        rbActions.get(actionDescriptions.size()).setToggleGroup(toggleGroup);
 
         //Add radio button to flowPane
-        flowPane.getChildren().add(rbActions.get(actionNames.size()));
+        flowPane.getChildren().add(rbActions.get(actionDescriptions.size()));
 
         //Button "Next"
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
         btnNext.setOnAction(e -> {
-            if(rbActions.get(actionNames.size()).isSelected())
+            if(rbActions.get(actionDescriptions.size()).isSelected())
                 logic.Skip();
             else{
                 int selected = (rbActions.indexOf((RadioButton)toggleGroup.getSelectedToggle())) + 1;
@@ -561,6 +561,36 @@ public class GraphicalUI extends Application implements Observer {
                 width = 250;
                 height = 150;
             } break;
+            case "trap":{
+                //Get action descriptions
+                ArrayList<String> trapDescriptions = logic.GetGameDataHandler().GetDesciptionArray("Trap");
+
+                //Create toggle group
+                ToggleGroup toggleGroup = new ToggleGroup();
+
+                //Create array of radio buttons
+                ArrayList<RadioButton> rbTraps = new ArrayList<>();
+
+                //Create and add radio button to flow pane
+                for (int i = 0; i < trapDescriptions.size(); i++) {
+                    //Create new radio button
+                    rbTraps.add(new RadioButton(trapDescriptions.get(i)));
+                    rbTraps.get(i).setToggleGroup(toggleGroup);
+
+                    //Add radio button to flowPane
+                    flowPane.getChildren().add(rbTraps.get(i));
+                }
+
+                //Set button "Next" event
+                btnNext.setOnAction(e -> {
+                    int selected = (rbTraps.indexOf((RadioButton)toggleGroup.getSelectedToggle())) + 1;
+                    logic.EvaluateChosenTrap(selected);
+                });
+
+                //Set Scene size
+                width = 250;
+                height = 150;
+            } break;
         }
 
         //Add button "Next" to flowPane
@@ -622,7 +652,7 @@ public class GraphicalUI extends Application implements Observer {
                     else if(logic.GetGameState() instanceof SelectCrewMember)
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
                     else if(logic.GetGameState() instanceof SelectTrap){
-
+                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("trap"));
                     } else if(logic.GetGameState() instanceof SelectRoom){
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("room"));
                     } else if(logic.GetGameState() instanceof ExecuteEffect)
