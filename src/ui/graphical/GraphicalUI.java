@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.intellij.lang.annotations.Flow;
 
 import java.util.*;
 
@@ -156,6 +157,17 @@ public class GraphicalUI extends Application implements Observer {
                 btnNext.setDisable(false);
             }
         }));
+    }
+    private void AddArrayOfRadioButtonsToFlowPane(ToggleGroup toggleGroup, ArrayList<RadioButton> radioButtons, ArrayList<String> radioTexts, FlowPane flowPane){
+        //Create and add radio button to flow pane
+        for (int i = 0; i <radioTexts.size(); i++) {
+            //Create new radio button
+            radioButtons.add(new RadioButton(radioTexts.get(i)));
+            radioButtons.get(i).setToggleGroup(toggleGroup);
+
+            //Add radio button to flowPane
+            flowPane.getChildren().add(radioButtons.get(i));
+        }
     }
 
     //User interfaces for each state (Game Setup)
@@ -453,15 +465,8 @@ public class GraphicalUI extends Application implements Observer {
         //Create array of radio buttons
         ArrayList<RadioButton> rbActions = new ArrayList<>();
 
-        //Create and add radio button to flow pane
-        for (int i = 0; i <actionDescriptions.size(); i++) {
-            //Create new radio button
-            rbActions.add(new RadioButton(actionDescriptions.get(i)));
-            rbActions.get(i).setToggleGroup(toggleGroup);
-
-            //Add radio button to flowPane
-            flowPane.getChildren().add(rbActions.get(i));
-        }
+        //Add Array Of Radio Buttons To FlowPane
+        AddArrayOfRadioButtonsToFlowPane(toggleGroup, rbActions, actionDescriptions, flowPane);
 
         //Create "skip" radio button
         rbActions.add(new RadioButton("Skip"));
@@ -571,15 +576,8 @@ public class GraphicalUI extends Application implements Observer {
                 //Create array of radio buttons
                 ArrayList<RadioButton> rbTraps = new ArrayList<>();
 
-                //Create and add radio button to flow pane
-                for (int i = 0; i < trapDescriptions.size(); i++) {
-                    //Create new radio button
-                    rbTraps.add(new RadioButton(trapDescriptions.get(i)));
-                    rbTraps.get(i).setToggleGroup(toggleGroup);
-
-                    //Add radio button to flowPane
-                    flowPane.getChildren().add(rbTraps.get(i));
-                }
+                //Add Array Of Radio Buttons To FlowPane
+                AddArrayOfRadioButtonsToFlowPane(toggleGroup, rbTraps, trapDescriptions, flowPane);
 
                 //Set button "Next" event
                 btnNext.setOnAction(e -> {
