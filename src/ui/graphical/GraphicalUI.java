@@ -643,20 +643,20 @@ public class GraphicalUI extends Application implements Observer {
                     if(logic.GetGameState() == null)
                         logic.StartGame();
                     else if(logic.GetGameState() instanceof RoundPhase)
-                        logic.EvaluateRound();
-                    else if(logic.GetGameState() instanceof RestPhase)
-                        stage.setScene(GetChooseEffectSceneFor("upgrade"));
-                    else if(logic.GetGameState() instanceof CrewPhase)
-                        stage.setScene(GetChooseEffectSceneFor("action"));
-                    else if(logic.GetGameState() instanceof SelectCrewMember)
-                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
-                    else if(logic.GetGameState() instanceof SelectTrap)
-                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("trap"));
-                    else if(logic.GetGameState() instanceof SelectRoom)
-                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("room"));
-                    else if(logic.GetGameState() instanceof ExecuteEffect)
-                        logic.EvaluateAndExecuteEffect();
-                    else if(logic.GetGameState() instanceof AlienPhase){
+                            logic.EvaluateRound();
+                        else if(logic.GetGameState() instanceof RestPhase)
+                            stage.setScene(GetChooseEffectSceneFor("upgrade"));
+                        else if(logic.GetGameState() instanceof CrewPhase)
+                            stage.setScene(GetChooseEffectSceneFor("action"));
+                        else if(logic.GetGameState() instanceof SelectCrewMember)
+                            stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
+                        else if(logic.GetGameState() instanceof SelectTrap)
+                            stage.setScene(GetChooseEffectAdditionalInputSceneFor("trap"));
+                        else if(logic.GetGameState() instanceof SelectRoom)
+                            stage.setScene(GetChooseEffectAdditionalInputSceneFor("room"));
+                        else if(logic.GetGameState() instanceof ExecuteEffect)
+                            logic.EvaluateAndExecuteEffect();
+                        else if(logic.GetGameState() instanceof AlienPhase){
                         //TODO
                     } else if(logic.GetGameState() instanceof GameOver || logic.GetGameState() instanceof Win){
                         Alert alert = new Alert(Alert.AlertType.INFORMATION, (logic.GetGameState() instanceof GameOver?"Game over": "Win"), ButtonType.OK);
