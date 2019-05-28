@@ -20,7 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.intellij.lang.annotations.Flow;
 
 import java.util.*;
 
@@ -69,7 +68,6 @@ public class GraphicalUI extends Application implements Observer {
             centerFlowPane.setColumnHalignment(HPos.CENTER);
         return centerFlowPane;
     }
-
     private void CheckCard(ArrayList<ImageView> ivArrChecked, ArrayList<Integer> inputArray, Integer deckIndex, ImageView cardImageView, Group group){
         //USED FOR: GetChoosePlayerBoardCrewMembersScene()
         for (ImageView iv : ivArrChecked) {
@@ -434,30 +432,30 @@ public class GraphicalUI extends Application implements Observer {
     }
 
     //User interfaces for each state (Game Setup)
-    private Scene GetChooseUpgradeScene(){
-        return new Scene(new FlowPane());
-    }
-    private Scene GetChooseActionScene(){
+    private Scene GetChooseEffectSceneFor(String type){
+        //Create vars for Scene size
+        int width = (type.equals("action")?300:320), height = (type.equals("action")?350:460);
+
         //Create flowPane
         FlowPane flowPane = GetFlowPane(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setColumnHalignment(HPos.LEFT);
 
         //Create title label
-        Label title = new Label("Choose an action to execute");
+        Label title = new Label("Choose an " + type + " to execute");
         title.setStyle("-fx-font-weight: bold");
 
         //Add title to flowPane
         flowPane.getChildren().add(title);
 
         //Create info label
-        Label info = new Label("Available action points: " + logic.GetGameDataHandler().GetActionPoints());
+        Label info = new Label("Available " + (type.equals("action")?"action points: ":"inspiration points: ") + (type.equals("action")?logic.GetGameDataHandler().GetActionPoints():logic.GetGameDataHandler().GetInsirationPoints()));
 
         //Add info to flowPane
         flowPane.getChildren().add(info);
 
         //Get action descriptions
-        ArrayList<String> actionDescriptions = logic.GetGameDataHandler().GetDesciptionArray("Action");
+        ArrayList<String> effectDescriptions = logic.GetGameDataHandler().GetDesciptionArray((type.equals("action")?"Action":"Upgrade"));
 
         //Create toggle group
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -466,25 +464,28 @@ public class GraphicalUI extends Application implements Observer {
         ArrayList<RadioButton> rbActions = new ArrayList<>();
 
         //Add Array Of Radio Buttons To FlowPane
-        AddArrayOfRadioButtonsToFlowPane(toggleGroup, rbActions, actionDescriptions, flowPane);
+        AddArrayOfRadioButtonsToFlowPane(toggleGroup, rbActions, effectDescriptions, flowPane);
 
         //Create "skip" radio button
         rbActions.add(new RadioButton("Skip"));
-        rbActions.get(actionDescriptions.size()).setToggleGroup(toggleGroup);
+        rbActions.get(effectDescriptions.size()).setToggleGroup(toggleGroup);
 
         //Add radio button to flowPane
-        flowPane.getChildren().add(rbActions.get(actionDescriptions.size()));
+        flowPane.getChildren().add(rbActions.get(effectDescriptions.size()));
 
         //Button "Next"
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
         btnNext.setOnAction(e -> {
-            if(rbActions.get(actionDescriptions.size()).isSelected())
+            if(rbActions.get(effectDescriptions.size()).isSelected())
                 logic.Skip();
             else{
                 int selected = (rbActions.indexOf((RadioButton)toggleGroup.getSelectedToggle())) + 1;
-                logic.EvaluateChosenAction(selected);
+                if(type.equals("action"))
+                    logic.EvaluateChosenAction(selected);
+                else
+                    logic.EvaluateChosenUpgrade(selected);
             }
         });
 
@@ -492,7 +493,7 @@ public class GraphicalUI extends Application implements Observer {
         flowPane.getChildren().add(btnNext);
 
         //Returns scene with layout in it
-        return new Scene(flowPane, 300, 350);
+        return new Scene(flowPane, width, height);
     }
     private Scene GetChooseEffectAdditionalInputSceneFor(String type){
         //Create vars for Scene size
@@ -644,9 +645,9 @@ public class GraphicalUI extends Application implements Observer {
                     else if(logic.GetGameState() instanceof RoundPhase)
                         logic.EvaluateRound();
                     else if(logic.GetGameState() instanceof RestPhase)
-                        stage.setScene(GetChooseUpgradeScene());    //TODO
+                        stage.setScene(GetChooseEffectSceneFor("upgrade"));
                     else if(logic.GetGameState() instanceof CrewPhase)
-                        stage.setScene(GetChooseActionScene());
+                        stage.setScene(GetChooseEffectSceneFor("action"));
                     else if(logic.GetGameState() instanceof SelectCrewMember)
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
                     else if(logic.GetGameState() instanceof SelectTrap){
