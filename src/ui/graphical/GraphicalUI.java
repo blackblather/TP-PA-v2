@@ -392,11 +392,11 @@ public class GraphicalUI extends Application implements Observer {
         Label title = new Label("Choose the ship location");
         title.setStyle("-fx-font-weight: bold");
 
-        ArrayList<Spinner> spnrCrewMembers = new ArrayList<>();
+        ArrayList<Spinner> spnrRooms = new ArrayList<>();
         Label lblCM1 = new Label(logic.GetGameDataHandler().GetChosenCrewMemberNameAt(0) + ":");
-        spnrCrewMembers.add(new Spinner(1,12,1));
+        spnrRooms.add(new Spinner(1,12,1));
         Label lblCM2 = new Label(logic.GetGameDataHandler().GetChosenCrewMemberNameAt(1) + ":");
-        spnrCrewMembers.add(new Spinner(1,12,1));
+        spnrRooms.add(new Spinner(1,12,1));
 
         //Button "Next"
         Button btnNext = new Button("Next");
@@ -404,17 +404,17 @@ public class GraphicalUI extends Application implements Observer {
         btnNext.setCursor(Cursor.HAND);
         btnNext.setOnAction(e -> {
             ArrayList<Integer> rooms = new ArrayList<>();
-            rooms.add((Integer)spnrCrewMembers.get(0).getValue());
-            rooms.add((Integer)spnrCrewMembers.get(1).getValue());
+            rooms.add((Integer)spnrRooms.get(0).getValue());
+            rooms.add((Integer)spnrRooms.get(1).getValue());
             logic.SetCrewMembersShipLocation(rooms);
         });
 
         //Add buttons to centerFlowPane
         centerFlowPane.getChildren().addAll(title,
                                             lblCM1,
-                                            spnrCrewMembers.get(0),
+                                            spnrRooms.get(0),
                                             lblCM2,
-                                            spnrCrewMembers.get(1),
+                                            spnrRooms.get(1),
                                             btnNext);
 
         //Returns scene with layout in it
@@ -489,56 +489,85 @@ public class GraphicalUI extends Application implements Observer {
         //Returns scene with layout in it
         return new Scene(flowPane, 300, 350);
     }
-    private Scene GetChooseEffectCrewMemberScene(){
+    private Scene GetChooseEffectAdditionalInputSceneFor(String type){
+        //Create vars for Scene size
+        int width = 0, height = 0;
+
         //Create rightFlowPane
         FlowPane flowPane = GetFlowPane(Orientation.VERTICAL);
 
         //Create title label
-        Label title = new Label("Choose a crew member");
+        Label title = new Label("Choose a " + type);
         title.setStyle("-fx-font-weight: bold");
 
         //Add lablel to rightFlowPane
         flowPane.getChildren().add(title);
 
-        //Create crewMembersFlowPane
-        FlowPane crewMembersFlowPane = GetFlowPane(Orientation.HORIZONTAL);
-        crewMembersFlowPane.setPrefWrapLength(600);
-
-        //Create an array of groups of image views of chosen crew members
-        ArrayList<StackPane> borderStackPanes = new ArrayList<>();
-        for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++){
-            borderStackPanes.add(i, NewCard(i));
-            crewMembersFlowPane.getChildren().add(borderStackPanes.get(i));
-        }
-
         //Button "Next"
         Button btnNext = new Button("Next");
         btnNext.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;");
         btnNext.setCursor(Cursor.HAND);
-        btnNext.setDisable(true);
 
-        //Add events to each Image View
-        //Events are set in a seperate function, because the whole array of stackPanes is required
-        for (Integer index = 0; index < borderStackPanes.size(); index++)
-            SetIVCardEvent(borderStackPanes, index, btnNext);
+        switch (type){
+            case "crew member":{
+                //Disable button "Next" initially
+                btnNext.setDisable(true);
 
-        //Set button "Next" event
-        btnNext.setOnAction(e -> {
-            for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++)
-                if(CardIsChecked(borderStackPanes.get(i))) {
-                    logic.EvaluateChosenCrewMember(i + 1);
-                    break;
+                //Create crewMembersFlowPane
+                FlowPane horizontalFlowPane = GetFlowPane(Orientation.HORIZONTAL);
+                horizontalFlowPane.setPrefWrapLength(600);
+
+                //Create an array of groups of image views of chosen crew members
+                ArrayList<StackPane> borderStackPanes = new ArrayList<>();
+                for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++){
+                    borderStackPanes.add(i, NewCard(i));
+                    horizontalFlowPane.getChildren().add(borderStackPanes.get(i));
                 }
-        });
 
-        //Add crewMembersFlowPane to flowPane
-        flowPane.getChildren().add(crewMembersFlowPane);
+                //Add events to each Image View
+                //Events are set in a seperate function, because the whole array of stackPanes is required
+                for (Integer index = 0; index < borderStackPanes.size(); index++)
+                    SetIVCardEvent(borderStackPanes, index, btnNext);
+
+                //Set button "Next" event
+                btnNext.setOnAction(e -> {
+                    for(int i = 0; i < logic.GetGameDataHandler().GetTotalChosenCrewMembers(); i++)
+                        if(CardIsChecked(borderStackPanes.get(i))) {
+                            logic.EvaluateChosenCrewMember(i + 1);
+                            break;
+                        }
+                });
+
+                //Add crewMembersFlowPane to flowPane
+                flowPane.getChildren().add(horizontalFlowPane);
+
+                //Set Scene size
+                width = 700;
+                height = 400;
+            } break;
+            case "room":{
+                //Create spinner to select room
+                Spinner spnrRoom = new Spinner(1,12,1);
+
+                //Set button "Next" event
+                btnNext.setOnAction(e -> {
+                    logic.EvaluateChosenRoom((Integer)spnrRoom.getValue());
+                });
+
+                //Add spnrRoom to flowPane
+                flowPane.getChildren().add(spnrRoom);
+
+                //Set Scene size
+                width = 250;
+                height = 150;
+            } break;
+        }
 
         //Add button "Next" to flowPane
         flowPane.getChildren().add(btnNext);
 
         //Returns scene with layout in it
-        return new Scene(flowPane, 700,400);
+        return new Scene(flowPane, width,height);
     }
 
     @Override
@@ -591,11 +620,11 @@ public class GraphicalUI extends Application implements Observer {
                     else if(logic.GetGameState() instanceof CrewPhase)
                         stage.setScene(GetChooseActionScene());
                     else if(logic.GetGameState() instanceof SelectCrewMember)
-                        stage.setScene(GetChooseEffectCrewMemberScene());
+                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
                     else if(logic.GetGameState() instanceof SelectTrap){
 
                     } else if(logic.GetGameState() instanceof SelectRoom){
-
+                        stage.setScene(GetChooseEffectAdditionalInputSceneFor("room"));
                     } else if(logic.GetGameState() instanceof ExecuteEffect)
                         logic.EvaluateAndExecuteEffect();
                     else if(logic.GetGameState() instanceof AlienPhase){
