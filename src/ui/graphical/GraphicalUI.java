@@ -650,11 +650,11 @@ public class GraphicalUI extends Application implements Observer {
                         stage.setScene(GetChooseEffectSceneFor("action"));
                     else if(logic.GetGameState() instanceof SelectCrewMember)
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("crew member"));
-                    else if(logic.GetGameState() instanceof SelectTrap){
+                    else if(logic.GetGameState() instanceof SelectTrap)
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("trap"));
-                    } else if(logic.GetGameState() instanceof SelectRoom){
+                    else if(logic.GetGameState() instanceof SelectRoom)
                         stage.setScene(GetChooseEffectAdditionalInputSceneFor("room"));
-                    } else if(logic.GetGameState() instanceof ExecuteEffect)
+                    else if(logic.GetGameState() instanceof ExecuteEffect)
                         logic.EvaluateAndExecuteEffect();
                     else if(logic.GetGameState() instanceof AlienPhase){
                         //TODO
